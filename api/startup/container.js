@@ -1,6 +1,6 @@
 const { createContainer, asValue, asClass, asFunction } = require('awilix');
 
-// laoders
+// loaders
 const App = require('../../loaders/framework/express.loader');
 const Database = require('../../loaders/database/mongo.loader');
 
@@ -19,6 +19,10 @@ const { UserController, UserDTO, userRoutes } = require('../components/users');
 
 // Errors
 const { ErrorController, ErrorDTO } = require('../components/errors/');
+const AppError = require('../utils/appError');
+
+// Utils
+const catchAsync = require('../utils/catchAsync');
 
 // Middlewares
 const {
@@ -31,7 +35,6 @@ const UserService = require('../../services/users/user.service');
 
 // Data Access Layer
 const { UserRepository, UserEntity } = require('../../dal/users');
-const AppError = require('../utils/appError');
 
 // const container = createContainer({ injectionMode: InjectionMode.CLASSIC });
 const container = createContainer();
@@ -50,13 +53,18 @@ container
   .register({
     getEnviroment: asFunction(getEnviroment).singleton(),
   })
-  // Error Handler
+  // Utils
   .register({
+    // Handler Error
     createAppError: asFunction(() => (message, statusCode) =>
       new AppError(message, statusCode)
     ).singleton(),
-    handlerErrorNotFoundResource: asFunction(handlerErrorNotFoundResource),
+    handlerErrorNotFoundResource: asFunction(
+      () => handlerErrorNotFoundResource
+    ),
     handlerErrors: asFunction(handlerErrors),
+    // Utils
+    catchAsync: asFunction(() => catchAsync).singleton(),
   })
   // Users
   .register({

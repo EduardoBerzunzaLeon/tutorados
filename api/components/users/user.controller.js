@@ -1,7 +1,8 @@
 class UserController {
-  constructor({ UserService, UserDTO }) {
+  constructor({ UserService, UserDTO, catchAsync }) {
     this._userService = UserService;
     this._userDTO = UserDTO;
+    this.catchAsync = catchAsync;
   }
 
   async getUsers(req, res) {
@@ -9,7 +10,7 @@ class UserController {
     const usersSend = this._userDTO.multiple(users, null);
 
     return res.status(200).json({
-      ok: true,
+      status: 'success',
       data: usersSend,
     });
   }

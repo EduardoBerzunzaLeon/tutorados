@@ -1,4 +1,4 @@
-const handlerErrorNotFoundResource = () => (req, res, next) => {
+const handlerErrorNotFoundResource = (req, res, next) => {
   next({ name: 'NotFoundResourceError' });
 };
 

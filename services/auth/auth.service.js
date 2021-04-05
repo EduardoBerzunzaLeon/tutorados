@@ -1,9 +1,10 @@
-class UserService {
+class AuthService {
   constructor({ UserRepository }) {
     this._userRepository = UserRepository;
   }
 
-  async getUsers() {
+  async signup({ name, email, password, confirmPassword }) {
+    const userExists = await this._userRepository.getUserByUsername(name);
     return await this._userRepository.getUsers();
   }
 
@@ -14,4 +15,4 @@ class UserService {
   // save method
 }
 
-module.exports = UserService;
+module.exports = AuthService;
