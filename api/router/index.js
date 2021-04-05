@@ -1,11 +1,11 @@
 const { Router } = require('express');
 
-module.exports = function({ config, teacherRoutes }) {
-    const router = Router();
-    const apiRoute = Router();
+module.exports = function ({ config, userRoutes }) {
+  const router = Router();
+  const apiRoute = Router();
 
-    apiRoute.use("/teacher", teacherRoutes);
-    router.use(`/api/${config.API_VERSION}`, apiRoute);
+  apiRoute.use('/users', userRoutes);
+  router.use(`/api/${config.API_VERSION}`, apiRoute);
 
-    return router;
-}
+  return router;
+};

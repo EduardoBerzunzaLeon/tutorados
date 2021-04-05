@@ -1,11 +1,12 @@
 const fs = require('fs');
+const getEnviroment = require('../../helpers/getEnviroment');
 
-require("dotenv").config();
+require('dotenv').config();
 
-const { NODE_ENV } = process.env;
-const currentEnv = NODE_ENV?.trim();
-const fileEnv = fs.existsSync(`./${currentEnv}.js`) ? currentEnv : 'development';
+const enviroment = getEnviroment();
+const fileEnv = fs.existsSync(`./${enviroment}.js`)
+  ? currentEnv
+  : 'development';
 const env = require(`./${fileEnv}`);
 
 module.exports = env;
-
