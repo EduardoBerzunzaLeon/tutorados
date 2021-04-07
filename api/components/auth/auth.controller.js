@@ -35,28 +35,13 @@ class AuthController {
   };
 
   signup = this.catchAsync(async (req, res) => {
-    const user = await this.authService.signup(req.body);
+    const url = `${req.protocol}://${req.get('host')}/me`;
+    const user = await this.authService.signup(req.body, url);
     this.createSendToken(user, 201, req, res);
   });
 
   login = this.catchAsync(async (req, res) => {
-    // const { email, password } = req.body;
-
-    // // 1) Check if email and password exist
-    // if (!email || !password) {
-    //   return next(
-    //     this.createAppError('Please provide email and password!', 400)
-    //   );
-    // }
-
-    // 2) Check if user exists && password is correct
     const user = await this.authService.login(req.body);
-
-    // if (!user || !(await user.correctPassword(password, user.password))) {
-    //   return next(this.createAppError('Incorrect email or password', 401));
-    // }
-
-    // 3) If everything ok, send token to client
     this.createSendToken(user, 200, req, res);
   });
 
@@ -70,76 +55,26 @@ class AuthController {
 
   // Password Actions
   forgotPassword = this.catchAsync(async (req, res, next) => {
-    // 1) Get user based on POSTed email
-    await this.authService.forgotPassword(req.body);
-    res.status(200).json({
+    const url = `${req.protocol}://${req.get('host')}/api/${
+      this.config.API_VERSION
+    }/users/resetPassword/`;
+
+    await this.authService.forgotPassword(req.body.email, url);
+
+    return res.status(200).json({
       status: 'success',
-      message: 'Token sent to email!',
+      message: 'Token enviado a su correo.',
     });
-
-    // if (!user) {
-    //   return next(
-    //     this.createAppError('There is no user with email address.', 404)
-    //   );
-    // }
-
-    // 2) Generate the random reset token
-    // const resetToken = user.createPasswordResetToken();
-    // await user.save({ validateBeforeSave: false });
-
-    // 3) Send it to user's email
-    // try {
-    //   //   const resetURL = `${req.protocol}://${req.get(
-    //   //     'host'
-    //   //   )}/api/v1/users/resetPassword/${resetToken}`;
-    //   //   await new Email(user, resetURL).sendPasswordReset();
-
-    //   res.status(200).json({
-    //     status: 'success',
-    //     message: 'Token sent to email!',
-    //   });
-    // } catch (err) {
-    //   user.passwordResetToken = undefined;
-    //   user.passwordResetExpires = undefined;
-    //   // TODO: Implements save method
-    //   await this.userService.save({ validateBeforeSave: false });
-
-    //   return next(
-    //     this.createAppError(
-    //       'There was an error sending the email. Try again later!'
-    //     ),
-    //     500
-    //   );
-    // }
   });
 
   resetPassword = this.catchAsync(async (req, res) => {
-    // 1) Get user based on the token
-    // const hashedToken = crypto
-    //   .createHash('sha256')
-    //   .update(req.params.token)
-    //   .digest('hex');
-
     const user = await this.authService.resetPassword(req.params.token);
     this.createSendToken(user, 200, req, res);
-
-    // // 2) If token has not expired, and there is user, set the new password
-    // if (!user) {
-    //   return next(this.createAppError('Token is invalid or has expired', 400));
-    // }
-    // user.password = req.body.password;
-    // user.passwordConfirm = req.body.passwordConfirm;
-    // user.passwordResetToken = undefined;
-    // user.passwordResetExpires = undefined;
-    // await this.userService.save();
-
-    // 3) Update changedPasswordAt property for the user
-    // 4) Log the user in, send JWT
   });
 
   updatePassword = this.catchAsync(async (req, res) => {
     // 1) Get user from collection
-    const user = await this.authService.updatePassword(req.user);
+    const user = await this.authService.updatePassword(req.user, req.body);
     this.createSendToken(user, 200, req, res);
     // 2) Check if POSTed current password is correct
     // if (
