@@ -6,7 +6,7 @@ class AuthService {
   }
 
   async signup({ name, email, password, confirmPassword }, url) {
-    const userExists = await this._userRepository.findOne(name);
+    const userExists = await this._userRepository.findOne({ name });
 
     if (userExists) throw createAppError('Usuario ya existe', 401);
 
@@ -36,7 +36,7 @@ class AuthService {
     if (!email || !password)
       throw createAppError('El usuario y contraseña son obligatorios', 400);
 
-    const user = await this._userRepository.findOneByEmailAndPassword({
+    const user = await this._userRepository.findOne({
       email,
       password,
       active: true,
@@ -53,7 +53,7 @@ class AuthService {
 
     const resetToken = user.createPasswordResetToken();
     const resetURL = `${url}${resetToken}`;
-    await this._userRepository.save({ validateBeforeSave: false });
+    await this._userRepository.save(user);
 
     try {
       // TODO: Implements emailService
@@ -63,7 +63,7 @@ class AuthService {
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
 
-      await this._userRepository.save({ validateBeforeSave: false });
+      await this._userRepository.save(user);
 
       throw createAppError(
         'Ocurrio un error al enviar el correo. Intentelo más tarde.',
@@ -90,7 +90,7 @@ class AuthService {
     user.passwordConfirm = req.body.passwordConfirm;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
-    await this._userRepository.save();
+    await this._userRepository.save(user);
   }
 
   async updatePassword(id, { password, passwordConfirm, passwordCurrent }) {
@@ -102,7 +102,7 @@ class AuthService {
 
     user.password = password;
     user.passwordConfirm = passwordConfirm;
-    await user.save();
+    await this._userRepository.save(user);
 
     return user;
   }
