@@ -22,7 +22,7 @@ class AuthService {
 
     try {
       // TODO: Implements emailService
-      await this._emailService.createEmail(user, url).sendWelcome();
+      await this._emailService.createEmail(user).sendWelcome(url);
       return userCreated;
     } catch (error) {
       throw createAppError(
@@ -57,7 +57,7 @@ class AuthService {
 
     try {
       // TODO: Implements emailService
-      await this._emailService.createEmail(user, resetURL).sendPasswordReset();
+      await this._emailService.createEmail(user).sendPasswordReset(resetURL);
       return true;
     } catch (error) {
       user.passwordResetToken = undefined;
