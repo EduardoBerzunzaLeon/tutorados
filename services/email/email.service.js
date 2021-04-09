@@ -40,7 +40,6 @@ class EmailService {
     };
     return this;
   }
-
   // Send the actual email
   async sendEmail(template, subject, ...args) {
     // 1) Render HTML based on a pug template

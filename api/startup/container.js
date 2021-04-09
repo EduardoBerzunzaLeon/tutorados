@@ -11,7 +11,7 @@ const config = require('../../config/environments');
 const router = require('../router');
 
 // Helpers
-const getEnviroment = require('../../helpers/getEnviroment');
+const getEnviroment = require('../utils/getEnviroment');
 
 // Application
 // Users
