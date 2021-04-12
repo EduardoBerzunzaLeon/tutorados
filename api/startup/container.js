@@ -49,16 +49,13 @@ container
     config: asValue(config),
     router: asFunction(router).singleton(),
   })
-  // Helpers
-  .register({
-    getEnviroment: asFunction(getEnviroment).singleton(),
-  })
   // Utils
   .register({
     createAppError: asFunction(() => (message, statusCode) =>
       new AppError(message, statusCode)
     ).singleton(),
     catchAsync: asFunction(() => catchAsync).singleton(),
+    getEnviroment: asFunction(getEnviroment).singleton(),
   })
   // middlewares
   .register({

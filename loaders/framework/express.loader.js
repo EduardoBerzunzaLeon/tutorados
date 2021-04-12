@@ -14,7 +14,7 @@ class App {
   constructor({ router, handlerErrorNotFoundResource, handlerErrors }) {
     // console.log(AppError);
     this.app = express();
-    this._router = router;
+    this.router = router;
     this.handlerErrorNotFoundResource = handlerErrorNotFoundResource;
     this.handlerErrors = handlerErrors;
 
@@ -32,7 +32,7 @@ class App {
 
   middlewares() {
     // Basic Settings
-    this.app.use(this._router);
+    this.app.use(this.router);
     this.app.use(logger('dev'));
     this.app.use(express.json({ limit: '10kb' }));
     this.app.use(express.urlencoded({ extended: false }));

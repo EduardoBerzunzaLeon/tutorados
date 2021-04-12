@@ -2,18 +2,18 @@ const { trimRight } = require('../../helpers/getEnviroment');
 
 class Startup {
   constructor({ Server, Database }) {
-    this._Server = Server;
-    this._Database = Database;
+    this.server = Server;
+    this.database = Database;
   }
 
   async start() {
     const [server] = await Promise.all([
-      this._Server.start(),
-      this._Database.dbConnection(),
+      this.server.start(),
+      this.database.dbConnection(),
     ]);
 
     // If the server detect somekind of error, the server will shutdown.
-    this._Server.errorsListener(server);
+    this.server.errorsListener(server);
   }
 }
 

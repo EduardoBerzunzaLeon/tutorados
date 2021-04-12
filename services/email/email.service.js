@@ -52,12 +52,8 @@ class EmailService {
     await this.newTransport().sendMail(mailOptionsSen);
   }
 
-  async sendWelcome(refreshToken) {
-    await this.sendEmail(
-      'welcome',
-      'Welcome to the tutorados app!',
-      refreshToken
-    );
+  async sendWelcome(url) {
+    await this.sendEmail('welcome', 'Welcome to the tutorados app!', url);
   }
 
   async sendPasswordReset(url) {

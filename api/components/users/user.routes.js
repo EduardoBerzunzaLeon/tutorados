@@ -1,5 +1,4 @@
 // api/v1/users
-
 const { Router } = require('express');
 
 module.exports = function ({ UserController, AuthController, AuthMiddleware }) {

@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 class Database {
   constructor({ config }) {
-    this._config = config;
+    this.config = config;
   }
 
   async dbConnection() {
     try {
-      await mongoose.connect(this._config.DB.databaseURL, {
+      await mongoose.connect(this.config.DB.databaseURL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
