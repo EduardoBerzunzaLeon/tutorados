@@ -14,29 +14,29 @@ const router = require('../router');
 const getEnviroment = require('../utils/getEnviroment');
 
 // Application
-// Users
 const { UserController, UserDTO, userRoutes } = require('../components/users');
-
-// Errors
+const { AuthController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
-const AppError = require('../utils/appError');
 
 // Utils
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 // Middlewares
 const {
   handlerErrorNotFoundResource,
   handlerErrors,
+  authMiddleware,
 } = require('../middlewares');
 
 // Services
 const UserService = require('../../services/users/user.service');
+const AuthService = require('../../services/auth/auth.service');
+const { EmailService, EmailTemplates } = require('../../services/email');
 
 // Data Access Layer
 const { UserRepository, UserEntity } = require('../../dal/users');
 
-// const container = createContainer({ injectionMode: InjectionMode.CLASSIC });
 const container = createContainer();
 
 container
@@ -55,16 +55,18 @@ container
   })
   // Utils
   .register({
-    // Handler Error
     createAppError: asFunction(() => (message, statusCode) =>
       new AppError(message, statusCode)
     ).singleton(),
+    catchAsync: asFunction(() => catchAsync).singleton(),
+  })
+  // middlewares
+  .register({
     handlerErrorNotFoundResource: asFunction(
       () => handlerErrorNotFoundResource
     ),
     handlerErrors: asFunction(handlerErrors),
-    // Utils
-    catchAsync: asFunction(() => catchAsync).singleton(),
+    AuthMiddleware: asClass(authMiddleware).singleton(),
   })
   // Users
   .register({
@@ -78,6 +80,14 @@ container
   .register({
     ErrorController: asClass(ErrorController).singleton(),
     ErrorDTO: asClass(ErrorDTO).singleton(),
+  })
+  .register({
+    AuthController: asClass(AuthController.bind(AuthController)).singleton(),
+    AuthService: asClass(AuthService).singleton(),
+  })
+  .register({
+    EmailService: asClass(EmailService),
+    EmailTemplates: asClass(EmailTemplates),
   });
 
 module.exports = container;

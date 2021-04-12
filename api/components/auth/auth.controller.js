@@ -76,20 +76,6 @@ class AuthController {
     // 1) Get user from collection
     const user = await this.authService.updatePassword(req.user, req.body);
     this.createSendToken(user, 200, req, res);
-    // 2) Check if POSTed current password is correct
-    // if (
-    //   !(await user.correctPassword(req.body.passwordCurrent, user.password))
-    // ) {
-    //   return next(this.createAppError('Your current password is wrong.', 401));
-    // }
-
-    // // 3) If so, update password
-    // user.password = req.body.password;
-    // user.passwordConfirm = req.body.passwordConfirm;
-    // await this.userService.save();
-    // User.findByIdAndUpdate will NOT work as intended!
-
-    // 4) Log user in, send JWT
   });
 }
 

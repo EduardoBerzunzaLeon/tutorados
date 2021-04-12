@@ -42,7 +42,7 @@ class EmailService {
   }
   // Send the actual email
   async sendEmail(template, subject, ...args) {
-    // 1) Render HTML based on a pug template
+    // 1) Render HTML based
     const html = this.emailTemplates[template](...args);
 
     // 2) Define email options
