@@ -91,6 +91,8 @@ class AuthService {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await this.userRepository.save(user);
+
+    return user;
   }
 
   async updatePassword(id, { password, passwordConfirm, passwordCurrent }) {
