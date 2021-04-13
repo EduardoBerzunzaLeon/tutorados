@@ -36,7 +36,7 @@ class AuthMiddleware {
     );
 
     // 3) Check if user still exists
-    const currentUser = await userService.findById(decoded.id);
+    const currentUser = await this.userService.findById(decoded.id);
     if (!currentUser) {
       return next(
         this.createAppError(
@@ -72,7 +72,7 @@ class AuthMiddleware {
         );
 
         // 2) Check if user still exists
-        const currentUser = await userService.findById(decoded.id);
+        const currentUser = await this.userService.findById(decoded.id);
         if (!currentUser) {
           return next();
         }
@@ -93,7 +93,6 @@ class AuthMiddleware {
   });
 
   restrictTo = (...roles) => (req, res, next) => {
-    // roles ['admin', 'lead-guide']. role='user'
     if (!roles.includes(req.user.role)) {
       return next(
         this.createAppError(
