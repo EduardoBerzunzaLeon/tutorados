@@ -1,4 +1,4 @@
-const authController = ({ config, UserDTO, AuthService, catchAsync }) => {
+module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
   const self = {
     config,
     userDTO: UserDTO,
@@ -48,7 +48,7 @@ const authController = ({ config, UserDTO, AuthService, catchAsync }) => {
       expires: new Date(Date.now() + 10 * 1000),
       httpOnly: true,
     });
-    res.status(200).json({ status: 'success' });
+    return res.status(200).json({ status: 'success' });
   };
 
   const forgotPassword = async (req, res, next) => {
@@ -92,5 +92,3 @@ const authController = ({ config, UserDTO, AuthService, catchAsync }) => {
 
   return methods(authSelf);
 };
-
-module.exports = authController;
