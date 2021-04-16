@@ -1,5 +1,5 @@
 const fs = require('fs');
-const getEnviroment = require('../../helpers/getEnviroment');
+const getEnviroment = require('../../api/utils/getEnviroment');
 
 require('dotenv').config();
 

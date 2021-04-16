@@ -1,5 +1,3 @@
-const { trimRight } = require('../../helpers/getEnviroment');
-
 class Startup {
   constructor({ Server, Database }) {
     this.server = Server;

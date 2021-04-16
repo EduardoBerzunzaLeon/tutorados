@@ -15,7 +15,7 @@ const getEnviroment = require('../utils/getEnviroment');
 
 // Application
 const { UserController, UserDTO, userRoutes } = require('../components/users');
-const { AuthController } = require('../components/auth');
+const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
 
 // Utils
@@ -79,7 +79,7 @@ container
     ErrorDTO: asClass(ErrorDTO).singleton(),
   })
   .register({
-    AuthController: asClass(AuthController.bind(AuthController)).singleton(),
+    AuthController: asFunction(authController).singleton(),
     AuthService: asClass(AuthService).singleton(),
   })
   .register({
