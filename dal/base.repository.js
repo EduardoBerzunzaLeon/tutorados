@@ -46,8 +46,8 @@ class BaseRepository {
     return this.entity.create([data]);
   }
 
-  save(entity) {
-    return entity.save({ validateBeforeSave: false });
+  save(entity, options = {}) {
+    return entity.save(options);
   }
 }
 

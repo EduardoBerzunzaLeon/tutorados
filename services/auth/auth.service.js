@@ -56,11 +56,11 @@ class AuthService {
 
   async forgotPassword(email, url) {
     const user = await this.userRepository.findOne({ email });
-    if (user) throw createAppError('Correo no existente', 404);
+    if (!user) throw createAppError('Correo no existente', 404);
 
     const resetToken = user.createPasswordResetToken();
     const resetURL = `${url}${resetToken}`;
-    await this.userRepository.save(user);
+    await this.userRepository.save(user, { validateBeforeSave: false });
 
     try {
       // TODO: Implements emailService
@@ -70,7 +70,7 @@ class AuthService {
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
 
-      await this.userRepository.save(user);
+      await this.userRepository.save(user, { validateBeforeSave: false });
 
       throw createAppError(
         'Ocurrio un error al enviar el correo. Intentelo más tarde.',
