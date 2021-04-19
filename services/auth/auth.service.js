@@ -43,8 +43,13 @@ class AuthService {
 
     if (!user) throw createAppError('Credenciales incorrectas', 401);
 
-    const validPassword = await user.correctPassword(password, user?.password);
-    if (!validPassword) throw createAppError('Credenciales incorrectas', 401);
+    const isCorrectPassword = await user.correctPassword(
+      password,
+      user.password
+    );
+
+    if (!isCorrectPassword)
+      throw createAppError('Credenciales incorrectas', 401);
 
     return user;
   }
