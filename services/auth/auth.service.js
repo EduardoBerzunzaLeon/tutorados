@@ -38,11 +38,13 @@ class AuthService {
 
     const user = await this.userRepository.findOne({
       email,
-      password,
       active: true,
     });
 
     if (!user) throw createAppError('Credenciales incorrectas', 401);
+
+    const validPassword = await user.correctPassword(password, user?.password);
+    if (!validPassword) throw createAppError('Credenciales incorrectas', 401);
 
     return user;
   }

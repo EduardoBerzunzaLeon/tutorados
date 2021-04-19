@@ -34,7 +34,6 @@ const UserSchema = new Schema(
       type: String,
       required: [true, 'La contraseña es obligatoria'],
       minlength: 8,
-      select: false,
     },
     passwordConfirm: {
       type: String,
