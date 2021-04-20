@@ -43,7 +43,7 @@ class BaseRepository {
   }
 
   create(data) {
-    return this.entity.create([data]);
+    return this.entity.create(data);
   }
 
   save(entity, options = {}) {

@@ -32,10 +32,9 @@ class App {
 
   middlewares() {
     // Basic Settings
-    this.app.use(this.router);
     this.app.use(logger('dev'));
     this.app.use(express.json({ limit: '10kb' }));
-    this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
     // Security
     this.app.use(xss());
@@ -46,6 +45,9 @@ class App {
 
     // Performance
     this.app.use(compression());
+
+    // routes
+    this.app.use(this.router);
   }
 
   errorHandlers() {

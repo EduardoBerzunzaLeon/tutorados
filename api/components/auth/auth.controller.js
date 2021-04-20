@@ -1,88 +1,94 @@
 const jwt = require('jsonwebtoken');
 
-let catchAsyncMethod;
+module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
+  const self = {
+    config,
+    userDTO: UserDTO,
+    authService: AuthService,
+    catchAsync,
+  };
 
-class AuthController {
-  constructor({ config, UserDTO, AuthService, catchAsync }) {
-    this.config = config;
-    this.userDTO = UserDTO;
-    catchAsyncMethod = catchAsync;
-    this.authService = AuthService;
-  }
+  const canSignToken = (self) => ({
+    signToken: (id) =>
+      jwt.sign({ id }, self.config.SECURITY.JWT_SECRET, {
+        expiresIn: self.config.SECURITY.JWT_EXPIRES_IN,
+      }),
+  });
 
-  signToken(id) {
-    return jwt.sign({ id }, this.config.SECURITY.JWT_SECRET, {
-      expiresIn: this.config.SECURITY.JWT_EXPIRES_IN,
-    });
-  }
+  const canCreateSendToken = (self) => ({
+    createSendToken: (user, statusCode, req, res) => {
+      const token = self.signToken(user._id);
+      res.cookie('jwt', token, {
+        expires: new Date(
+          Date.now() +
+            self.config.SECURITY.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+        secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+      });
 
-  createSendToken(user, statusCode, req, res) {
-    const token = this.signToken(user._id);
+      const userSend = self.userDTO.single(user, null);
 
-    res.cookie('jwt', token, {
-      expires: new Date(
-        Date.now() +
-          this.config.SECURITY.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-      ),
-      httpOnly: true,
-      secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
-    });
+      return res.status(statusCode).json({
+        status: 'success',
+        token,
+        data: userSend,
+      });
+    },
+  });
 
-    const userSend = this.userDTO.single(users, null);
-
-    return res.status(statusCode).json({
-      status: 'success',
-      token,
-      data: userSend,
-    });
-  }
-
-  // catch
-  async signup(req, res) {
+  const signup = (self) => async (req, res) => {
     const url = `${req.protocol}://${req.get('host')}/me`;
-    const user = await this.authService.signup(req.body, url);
-    this.createSendToken(user, 201, req, res);
-  }
+    const user = await self.authService.signup(req.body, url);
+    self.createSendToken(user, 201, req, res);
+  };
 
-  // catch
-  async login(req, res) {
-    const user = await this.authService.login(req.body);
-    this.createSendToken(user, 200, req, res);
-  }
+  const login = (self) => async (req, res) => {
+    const user = await self.authService.login(req.body);
+    self.createSendToken(user, 200, req, res);
+  };
 
-  logout(req, res) {
+  const logout = (req, res) => {
     res.cookie('jwt', 'loggedout', {
       expires: new Date(Date.now() + 10 * 1000),
       httpOnly: true,
     });
-    res.status(200).json({ status: 'success' });
-  }
+    return res.status(200).json({ status: 'success' });
+  };
 
-  // Password Actions catch
-  async forgotPassword(req, res, next) {
+  const forgotPassword = (self) => async (req, res, next) => {
     const url = `${req.protocol}://${req.get('host')}/api/${
-      this.config.API_VERSION
+      self.config.API_VERSION
     }/users/resetPassword/`;
 
-    await this.authService.forgotPassword(req.body.email, url);
+    await self.authService.forgotPassword(req.body.email, url);
 
     return res.status(200).json({
       status: 'success',
       message: 'Token enviado a su correo.',
     });
-  }
+  };
 
-  // catch
-  async resetPassword(req, res) {
-    const user = await this.authService.resetPassword(req.params.token);
-    this.createSendToken(user, 200, req, res);
-  }
+  const resetPassword = (self) => async (req, res) => {
+    const user = await self.authService.resetPassword(req.params.token);
+    self.createSendToken(user, 200, req, res);
+  };
 
-  // catch
-  async updatePassword(req, res) {
-    const user = await this.authService.updatePassword(req.user, req.body);
-    this.createSendToken(user, 200, req, res);
-  }
-}
+  const updatePassword = (self) => async (req, res) => {
+    const user = await self.authService.updatePassword(req.user, req.body);
+    self.createSendToken(user, 200, req, res);
+  };
 
-module.exports = AuthController;
+  const methods = (self) => ({
+    logout,
+    login: self.catchAsync(login(self)),
+    signup: self.catchAsync(signup(self)),
+    forgotPassword: self.catchAsync(forgotPassword(self)),
+    resetPassword: self.catchAsync(resetPassword(self)),
+    updatePassword: self.catchAsync(updatePassword(self)),
+  });
+
+  Object.assign(self, canSignToken(self), canCreateSendToken(self));
+
+  return methods(self);
+};

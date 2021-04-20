@@ -40,6 +40,9 @@ class ErrorController {
 
   getSpecificHandleError = (err, { originalUrl }) => {
     let error = { ...err };
+    error.message = err.message;
+    error.stack = err.stack;
+
     if (error.name === 'CastError') error = this.handleCastErrorDB(error);
     if (error.name === 'NotFoundResourceError')
       error = this.handleErrorNotFound(originalUrl);

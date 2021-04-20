@@ -1,12 +1,7 @@
 class ErrorDTO {
   sendErrorDevelopment = (err) => ({
-    statusCode: err.statusCode,
-    object: {
-      status: err.status,
-      error: err,
-      msg: err.msg,
-      stack: err.stack,
-    },
+    status: err.status,
+    error: err,
   });
 
   sendErrorProduction = (err) => {
@@ -14,11 +9,8 @@ class ErrorDTO {
     // A) Operational, trusted error: send msg to client
     if (err.isOperational) {
       return {
-        statusCode: err.statusCode,
-        object: {
-          status: err.status,
-          msg: err.msg,
-        },
+        status: err.status,
+        error: err,
       };
     }
     // B) Programming or other unknown error: don't leak error details
@@ -27,10 +19,12 @@ class ErrorDTO {
     // 2) Send generic msg
     const statusCode = 500;
     return {
-      statusCode,
-      object: {
-        status: 'error',
-        msg: 'Something went very wrong!',
+      status: 'fail',
+      error: {
+        isOperational: false,
+        statusCode,
+        status: 'fail',
+        message: '¡Algo salio mal :c!',
       },
     };
   };

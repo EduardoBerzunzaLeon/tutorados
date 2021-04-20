@@ -1,13 +1,12 @@
 const crypto = require('crypto');
 const { Schema, model } = require('mongoose');
-const bcrypt = require('bcryptjs');
 // const uniqueValidator = require('mongoose-unique-validator');
 // const mongoosePaginate = require('mongoose-paginate-v2');
 
 const bcrypt = require('bcrypt');
 
 const validGenders = {
-  values: ['masculino', 'femenino'],
+  values: ['M', 'F'],
   message: '{VALUE} no es un género válido',
 };
 
@@ -37,7 +36,7 @@ const UserSchema = new Schema(
       required: [true, 'La contraseña es obligatoria'],
       minlength: 8,
     },
-    passwordConfirm: {
+    confirmPassword: {
       type: String,
       required: [true, 'Por favor confirmar su contraseña'],
       validate: {
@@ -79,8 +78,8 @@ UserSchema.pre('save', async function (next) {
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
 
-  // Delete passwordConfirm field
-  this.passwordConfirm = undefined;
+  // Delete confirmPassword field
+  this.confirmPassword = undefined;
   next();
 });
 
@@ -97,7 +96,7 @@ UserSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+UserSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
@@ -111,7 +110,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
-userSchema.methods.createPasswordResetToken = function () {
+UserSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
 
   this.passwordResetToken = crypto

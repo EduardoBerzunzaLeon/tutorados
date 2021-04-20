@@ -11,4 +11,9 @@ module.exports = {
     EMAIL_PORT: 2525,
     EMAIL_FROM: process.env.EMAIL_FROM,
   },
+  SECURITY: {
+    JWT_SECRET: process.env.JWT_SECRET,
+    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
+    JWT_COOKIE_EXPIRES_IN: process.env.JWT_COOKIE_EXPIRES_IN,
+  },
 };
