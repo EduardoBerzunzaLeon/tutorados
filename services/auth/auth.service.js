@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 class AuthService {
   constructor({ EmailService, UserRepository, createAppError }) {
     this.emailService = EmailService;
@@ -22,17 +24,24 @@ class AuthService {
     if (!userCreated)
       throw this.createAppError('No se pudo concluir su registro', 500);
 
-    return userCreated;
-    // try {
-    //   // TODO: Implements emailService
-    //   await this.emailService.createEmail(user).sendWelcome(url);
-    //   return userCreated;
-    // } catch (error) {
-    //   throw this.createAppError(
-    //     'Ocurrio un error al enviar el correo. Intentelo más tarde.',
-    //     500
-    //   );
-    // }
+    const urlWithId = `${url}${userCreated._id}`;
+
+    try {
+      // TODO: Implements emailService
+      await this.emailService.createEmail(userCreated).sendWelcome(urlWithId);
+      return userCreated;
+    } catch (error) {
+      console.log(error);
+      throw this.createAppError(
+        'Ocurrio un error al enviar el correo. Intentelo más tarde.',
+        500
+      );
+    }
+  }
+
+  async activate({ id }) {
+    if (!id) throw this.createAppError('Ruta no valida', 401);
+    return await this.userRepository.updateById(id, { active: true });
   }
 
   async login({ email, password }) {
@@ -73,6 +82,7 @@ class AuthService {
       await this.emailService.createEmail(user).sendPasswordReset(resetURL);
       return true;
     } catch (error) {
+      console.log(error);
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
 
@@ -85,7 +95,7 @@ class AuthService {
     }
   }
 
-  async resetPassword(token) {
+  async resetPassword(token, { password, confirmPassword }) {
     // 1) Get user based on the token
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
@@ -99,10 +109,11 @@ class AuthService {
       throw this.createAppError('Token invalido o ha expirado.', 500);
     }
 
-    user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
+    user.password = password;
+    user.confirmPassword = confirmPassword;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
+
     await this.userRepository.save(user);
 
     return user;

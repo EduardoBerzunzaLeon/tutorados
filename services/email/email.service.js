@@ -34,8 +34,7 @@ class EmailService {
   createEmail(user) {
     this.mailOptions = {
       to: user.email,
-      firstName: user.name.split(' ')[0],
-      subject,
+      firstName: user.name.first.split(' ')[0],
       from: `Tutorado app <${this.config.EMAIL.EMAIL_FROM}>`,
     };
     return this;
@@ -46,10 +45,10 @@ class EmailService {
     const html = this.emailTemplates[template](...args);
 
     // 2) Define email options
-    const mailOptionsSen = { ...mailOptions, subject, html };
+    const mailOptionsSen = { ...this.mailOptions, subject, html };
 
     // 3) Create a transport and send email
-    await this.newTransport().sendMail(mailOptionsSen);
+    await this.createTransport().sendMail(mailOptionsSen);
   }
 
   async sendWelcome(url) {
@@ -57,7 +56,7 @@ class EmailService {
   }
 
   async sendPasswordReset(url) {
-    await this.send(
+    await this.sendEmail(
       'passwordReset',
       'Your password reset token (valid for only 10 minutes)',
       url

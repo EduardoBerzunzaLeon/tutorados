@@ -38,9 +38,19 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
   });
 
   const signup = (self) => async (req, res) => {
-    const url = `${req.protocol}://${req.get('host')}/me`;
+    const url = `${req.protocol}://${req.get('host')}/api/${
+      self.config.API_VERSION
+    }/users/activate/`;
     const user = await self.authService.signup(req.body, url);
     self.createSendToken(user, 201, req, res);
+  };
+
+  const activate = (self) => async (req, res) => {
+    await self.authService.activate(req.params);
+    return res.status(200).json({
+      status: 'success',
+      message: 'Cuenta activada.',
+    });
   };
 
   const login = (self) => async (req, res) => {
@@ -70,7 +80,10 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
   };
 
   const resetPassword = (self) => async (req, res) => {
-    const user = await self.authService.resetPassword(req.params.token);
+    const user = await self.authService.resetPassword(
+      req.params.token,
+      req.body
+    );
     self.createSendToken(user, 200, req, res);
   };
 
@@ -83,6 +96,7 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     logout,
     login: self.catchAsync(login(self)),
     signup: self.catchAsync(signup(self)),
+    activate: self.catchAsync(activate(self)),
     forgotPassword: self.catchAsync(forgotPassword(self)),
     resetPassword: self.catchAsync(resetPassword(self)),
     updatePassword: self.catchAsync(updatePassword(self)),
