@@ -1,4 +1,6 @@
+const crypto = require('crypto');
 const { Schema, model } = require('mongoose');
+const bcrypt = require('bcryptjs');
 // const uniqueValidator = require('mongoose-unique-validator');
 // const mongoosePaginate = require('mongoose-paginate-v2');
 
@@ -34,7 +36,6 @@ const UserSchema = new Schema(
       type: String,
       required: [true, 'La contraseña es obligatoria'],
       minlength: 8,
-      select: false,
     },
     passwordConfirm: {
       type: String,
@@ -96,6 +97,34 @@ UserSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means NOT changed
+  return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // console.log({ resetToken }, this.passwordResetToken);
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
 // UserSchema.virtual('fullName').get(function () {
 //   return `${this.name.first} ${this.name.last}`;
 // });
