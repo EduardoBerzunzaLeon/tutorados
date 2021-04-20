@@ -15,18 +15,18 @@ class EmailService {
       return nodemailer.createTransport({
         service: 'SendGrid',
         auth: {
-          user: this.config.email.SENDGRID_USERNAME,
-          pass: this.config.email.SENDGRID_PASSWORD,
+          user: this.config.EMAIL.SENDGRID_USERNAME,
+          pass: this.config.EMAIL.SENDGRID_PASSWORD,
         },
       });
     }
 
     return nodemailer.createTransport({
-      host: this.config.email.EMAIL_HOST,
-      port: this.config.email.EMAIL_PORT,
+      host: this.config.EMAIL.EMAIL_HOST,
+      port: this.config.EMAIL.EMAIL_PORT,
       auth: {
-        user: this.config.email.EMAIL_USERNAME,
-        pass: this.config.email.EMAIL_PASSWORD,
+        user: this.config.EMAIL.EMAIL_USERNAME,
+        pass: this.config.EMAIL.EMAIL_PASSWORD,
       },
     });
   }
@@ -36,7 +36,7 @@ class EmailService {
       to: user.email,
       firstName: user.name.split(' ')[0],
       subject,
-      from: `Tutorado app <${this.config.email.EMAIL_FROM}>`,
+      from: `Tutorado app <${this.config.EMAIL.EMAIL_FROM}>`,
     };
     return this;
   }

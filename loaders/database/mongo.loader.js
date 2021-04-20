@@ -7,7 +7,7 @@ class Database {
 
   async dbConnection() {
     try {
-      await mongoose.connect(this.config.DB.databaseURL, {
+      await mongoose.connect(this.config.DB.URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,

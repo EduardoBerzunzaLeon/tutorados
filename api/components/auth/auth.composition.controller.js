@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
   const self = {
     config,
@@ -6,9 +8,9 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     catchAsync,
   };
 
-  const signToken = (self) =>
-    jwt.sign({ id }, self.config.security.JWT_SECRET, {
-      expiresIn: self.config.security.JWT_EXPIRES_IN,
+  const signToken = (self) => (id) =>
+    jwt.sign({ id }, self.config.SECURITY.JWT_SECRET, {
+      expiresIn: self.config.SECURITY.JWT_EXPIRES_IN,
     });
 
   const createSendToken = (self) => (user, statusCode, req, res) => {
@@ -17,7 +19,7 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     res.cookie('jwt', token, {
       expires: new Date(
         Date.now() +
-          self.config.security.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+          self.config.SECURITY.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
       ),
       httpOnly: true,
       secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
@@ -79,8 +81,6 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     createSendToken: createSendToken(self),
   });
 
-  const authSelf = { ...self, ...privateMethods(self) };
-
   const methods = (self) => ({
     logout,
     login: self.catchAsync(login),
@@ -89,6 +89,8 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     resetPassword: self.catchAsync(resetPassword),
     updatePassword: self.catchAsync(updatePassword),
   });
+
+  const authSelf = { ...self, ...privateMethods(self) };
 
   return methods(authSelf);
 };

@@ -63,7 +63,7 @@ container
       () => handlerErrorNotFoundResource
     ),
     handlerErrors: asFunction(handlerErrors),
-    AuthMiddleware: asClass(authMiddleware).singleton(),
+    AuthMiddleware: asFunction(authMiddleware).singleton(),
   })
   // Users
   .register({

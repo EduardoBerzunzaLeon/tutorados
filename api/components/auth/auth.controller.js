@@ -11,8 +11,8 @@ class AuthController {
   }
 
   signToken(id) {
-    return jwt.sign({ id }, this.config.security.JWT_SECRET, {
-      expiresIn: this.config.security.JWT_EXPIRES_IN,
+    return jwt.sign({ id }, this.config.SECURITY.JWT_SECRET, {
+      expiresIn: this.config.SECURITY.JWT_EXPIRES_IN,
     });
   }
 
@@ -22,7 +22,7 @@ class AuthController {
     res.cookie('jwt', token, {
       expires: new Date(
         Date.now() +
-          this.config.security.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+          this.config.SECURITY.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
       ),
       httpOnly: true,
       secure: req.secure || req.headers['x-forwarded-proto'] === 'https',

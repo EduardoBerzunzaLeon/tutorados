@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
 
-class AuthMiddleware {
-  constructor({ catchAsync, userService, createAppError, config }) {
-    this.catchAsync = catchAsync;
-    this.userService = userService;
-    this.createAppError = createAppError;
-    this.config = config;
-  }
+module.exports = ({ catchAsync, UserService, createAppError, config }) => {
+  const self = {
+    config,
+    userService: UserService,
+    createAppError,
+    catchAsync,
+  };
 
-  protect = this.catchAsync(async (req, res, next) => {
+  const protect = async (req, res, next) => {
     // 1) Getting token and check of it's there
     let token;
     if (
@@ -22,7 +22,7 @@ class AuthMiddleware {
 
     if (!token) {
       return next(
-        this.createAppError(
+        self.createAppError(
           'You are not logged in! Please log in to get access.',
           401
         )
@@ -32,14 +32,14 @@ class AuthMiddleware {
     // 2) Verification token
     const decoded = await promisify(jwt.verify)(
       token,
-      this.config.security.JWT_SECRET
+      self.config.SECURITY.JWT_SECRET
     );
 
     // 3) Check if user still exists
-    const currentUser = await this.userService.findById(decoded.id);
+    const currentUser = await self.userService.findById(decoded.id);
     if (!currentUser) {
       return next(
-        this.createAppError(
+        self.createAppError(
           'The user belonging to this token does no longer exist.',
           401
         )
@@ -49,7 +49,7 @@ class AuthMiddleware {
     // 4) Check if user changed password after the token was issued
     if (currentUser.changedPasswordAfter(decoded.iat)) {
       return next(
-        this.createAppError(
+        self.createAppError(
           'User recently changed password! Please log in again.',
           401
         )
@@ -58,21 +58,22 @@ class AuthMiddleware {
 
     // GRANT ACCESS TO PROTECTED ROUTE
     req.user = currentUser;
+
     res.locals.user = currentUser;
     next();
-  });
+  };
 
-  isLoggedIn = this.catchAsync(async (req, res, next) => {
+  const isLoggedIn = async (req, res, next) => {
     if (req.cookies.jwt) {
       try {
         // 1) verify token
         const decoded = await promisify(jwt.verify)(
           req.cookies.jwt,
-          this.config.security.JWT_SECRET
+          self.config.SECURITY.JWT_SECRET
         );
 
         // 2) Check if user still exists
-        const currentUser = await this.userService.findById(decoded.id);
+        const currentUser = await self.userService.findById(decoded.id);
         if (!currentUser) {
           return next();
         }
@@ -90,12 +91,12 @@ class AuthMiddleware {
       }
     }
     next();
-  });
+  };
 
-  restrictTo = (...roles) => (req, res, next) => {
+  const restrictTo = (...roles) => (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
-        this.createAppError(
+        self.createAppError(
           'You do not have permission to perform this action',
           403
         )
@@ -103,6 +104,12 @@ class AuthMiddleware {
     }
     next();
   };
-}
 
-module.exports = AuthMiddleware;
+  const methods = (self) => ({
+    protect: self.catchAsync(protect),
+    isLoggedIn: self.catchAsync(isLoggedIn),
+    restrictTo,
+  });
+
+  return methods(self);
+};
