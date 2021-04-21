@@ -5,20 +5,27 @@ class ErrorController {
     this.getDTO = this.createDTO(getEnviroment);
   }
 
-  handleCastErrorDB = (err) => {
-    const msg = `Invalid ${err.path}: ${err.value}`;
+  cloneError = (err) => {
+    const error = { ...err };
+    error.message = err.message;
+    error.stack = err.stack;
+    return error;
+  };
+
+  handleCastErrorDB = ({ path, value }) => {
+    const msg = `Invalid ${path}: ${value}`;
     return this.createAppError(msg, 400);
   };
 
-  handleDuplicateFieldsDB = (err) => {
-    const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  handleDuplicateFieldsDB = ({ message }) => {
+    const value = message.match(/(["'])(\\?.)*?\1/)[0];
     const msg = `Duplicate field value: ${value}. Please use another value!`;
     return this.createAppError(msg, 400);
   };
 
-  handleValidationErrorDB = (err) => {
-    const errors = Object.values(err.errors).map((el) => el.msg);
-    const message = `Invalid input data. ${errors.join('. ')}`;
+  handleValidationErrorDB = ({ errors }) => {
+    const errorsPrepare = Object.values(errors).map((el) => el.msg);
+    const message = `Invalid input data. ${errorsPrepare.join('. ')}`;
     return this.createAppError(message, 400);
   };
 
@@ -39,19 +46,16 @@ class ErrorController {
   };
 
   getSpecificHandleError = (err, { originalUrl }) => {
-    let error = { ...err };
-    error.message = err.message;
-    error.stack = err.stack;
+    const error = this.cloneError(err);
 
-    if (error.name === 'CastError') error = this.handleCastErrorDB(error);
+    if (error.name === 'CastError') return this.handleCastErrorDB(error);
     if (error.name === 'NotFoundResourceError')
-      error = this.handleErrorNotFound(originalUrl);
+      return this.handleErrorNotFound(originalUrl);
     if (error.name === 'ValidationError')
-      error = this.handleValidationErrorDB(error);
-    if (error.name === 'JsonWebTokenError') error = this.handleJWTError();
-    if (error.name === 'TokenExpiredError')
-      error = this.handleJWTExpiredError();
-    if (error?.code === 11000) error = this.handleDuplicateFieldsDB(error);
+      return this.handleValidationErrorDB(error);
+    if (error.name === 'JsonWebTokenError') return this.handleJWTError();
+    if (error.name === 'TokenExpiredError') return this.handleJWTExpiredError();
+    if (error?.code === 11000) return this.handleDuplicateFieldsDB(error);
 
     return error;
   };

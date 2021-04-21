@@ -1,8 +1,7 @@
 const crypto = require('crypto');
 const { Schema, model } = require('mongoose');
-// const uniqueValidator = require('mongoose-unique-validator');
-// const mongoosePaginate = require('mongoose-paginate-v2');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
 
 const generateHashedToken = require('../../api/utils/generateHashedToken');
 
@@ -36,6 +35,7 @@ const UserSchema = new Schema(
       lowercase: true,
       trim: true,
       required: [true, 'El email es obligatorio'],
+      validate: [validator.isEmail, 'Please provide a valid email'],
     },
     photo: {
       type: String,

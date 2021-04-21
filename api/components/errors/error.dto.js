@@ -1,8 +1,10 @@
 class ErrorDTO {
-  sendErrorDevelopment = (err) => ({
-    status: err.status,
-    error: err,
-  });
+  sendErrorDevelopment = (err) => {
+    return {
+      status: err.status,
+      error: err,
+    };
+  };
 
   sendErrorProduction = (err) => {
     // A) API

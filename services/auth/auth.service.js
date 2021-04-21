@@ -11,9 +11,9 @@ class AuthService {
   }
 
   async signup({ name, email, password, confirmPassword, gender }, url) {
-    const userExists = await this.userRepository.findOne({ name });
+    const userExists = await this.userRepository.findOne({ email });
 
-    if (userExists) throw this.createAppError('Usuario ya existe', 401);
+    // if (userExists) throw this.createAppError('Usuario ya existe', 401);
 
     const userCreated = await this.userRepository.create({
       name,
