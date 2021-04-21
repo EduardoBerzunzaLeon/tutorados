@@ -1,7 +1,10 @@
-const crypto = require('crypto');
-
 class AuthService {
-  constructor({ EmailService, UserRepository, createAppError }) {
+  constructor({
+    EmailService,
+    UserRepository,
+    createAppError,
+    generateHashedToken,
+  }) {
     this.emailService = EmailService;
     this.userRepository = UserRepository;
     this.createAppError = createAppError;
@@ -97,7 +100,7 @@ class AuthService {
 
   async resetPassword(token, { password, confirmPassword }) {
     // 1) Get user based on the token
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const hashedToken = generateHashedToken(token);
 
     const user = await this.userRepository.findOne({
       passwordResetToken: hashedToken,

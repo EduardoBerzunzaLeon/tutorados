@@ -2,8 +2,9 @@ const crypto = require('crypto');
 const { Schema, model } = require('mongoose');
 // const uniqueValidator = require('mongoose-unique-validator');
 // const mongoosePaginate = require('mongoose-paginate-v2');
-
 const bcrypt = require('bcryptjs');
+
+const generateHashedToken = require('../../api/utils/generateHashedToken');
 
 const validGenders = {
   values: ['M', 'F'],
@@ -114,10 +115,7 @@ UserSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 UserSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
 
-  this.passwordResetToken = crypto
-    .createHash('sha256')
-    .update(resetToken)
-    .digest('hex');
+  this.passwordResetToken = generateHashedToken(resetToken);
 
   // console.log({ resetToken }, this.passwordResetToken);
 

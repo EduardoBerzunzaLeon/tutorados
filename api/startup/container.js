@@ -21,6 +21,7 @@ const { ErrorController, ErrorDTO } = require('../components/errors/');
 // Utils
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const generateHashedToken = require('../utils/generateHashedToken');
 
 // Middlewares
 const {
@@ -56,6 +57,7 @@ container
     ).singleton(),
     catchAsync: asFunction(() => catchAsync).singleton(),
     getEnviroment: asFunction(getEnviroment).singleton(),
+    generateHashedToken: asFunction(() => generateHashedToken).singleton(),
   })
   // middlewares
   .register({

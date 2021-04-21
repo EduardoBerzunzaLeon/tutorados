@@ -1,5 +1,4 @@
 const { promisify } = require('util');
-
 const jwt = require('jsonwebtoken');
 
 module.exports = ({ catchAsync, UserService, createAppError, config }) => {
@@ -23,12 +22,7 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     }
 
     if (!token) {
-      return next(
-        self.createAppError(
-          'You are not logged in! Please log in to get access.',
-          401
-        )
-      );
+      return next(self.createAppError('Favor de iniciar sesión.', 401));
     }
 
     // 2) Verification token
@@ -42,7 +36,7 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     if (!currentUser) {
       return next(
         self.createAppError(
-          'The user belonging to this token does no longer exist.',
+          'El usuario que pertenece a este token ya no existe.',
           401
         )
       );
@@ -52,7 +46,7 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     if (currentUser.changedPasswordAfter(decoded.iat)) {
       return next(
         self.createAppError(
-          'User recently changed password! Please log in again.',
+          'Usuario recientemente cambio de contraseña! Por favor inicia sesión otra vez.',
           401
         )
       );
@@ -98,10 +92,7 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
   const restrictTo = (...roles) => (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
-        self.createAppError(
-          'You do not have permission to perform this action',
-          403
-        )
+        self.createAppError('No tienes permiso para realizar esta acción.', 403)
       );
     }
     next();
