@@ -11,6 +11,11 @@ const validGenders = {
   message: '{VALUE} no es un género válido',
 };
 
+const validRoles = {
+  values: ['admin', 'user'],
+  message: '{VALUE} no es un role válido',
+};
+
 const UserSchema = new Schema(
   {
     name: {
@@ -31,6 +36,15 @@ const UserSchema = new Schema(
       lowercase: true,
       trim: true,
       required: [true, 'El email es obligatorio'],
+    },
+    photo: {
+      type: String,
+      default: 'default.jpg',
+    },
+    role: {
+      type: String,
+      enum: validRoles,
+      required: [true, 'El rol es obligatorio'],
     },
     password: {
       type: String,

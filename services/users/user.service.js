@@ -3,8 +3,8 @@ class UserService {
     this.userRepository = UserRepository;
   }
 
-  async getUsers() {
-    return await this.userRepository.getUsers();
+  async getUsers(query) {
+    return await this.userRepository.findAll(query);
   }
 
   async findById(id) {

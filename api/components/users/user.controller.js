@@ -1,19 +1,23 @@
-class UserController {
-  constructor({ UserService, UserDTO, catchAsync }) {
-    this.userService = UserService;
-    this.userDTO = UserDTO;
-    this.catchAsync = catchAsync;
-  }
+module.exports = ({ UserService, UserDTO, catchAsync }) => {
+  const self = {
+    userService: UserService,
+    userDTO: UserDTO,
+    catchAsync,
+  };
 
-  async getUsers(req, res) {
-    const users = await this.userService.getUsers();
-    const usersSend = this.userDTO.multiple(users, null);
+  const getUsers = (self) => async (req, res) => {
+    const users = await self.userService.getUsers(req.query);
+    const usersSend = self.userDTO.multiple(users, null);
 
     return res.status(200).json({
       status: 'success',
       data: usersSend,
     });
-  }
-}
+  };
 
-module.exports = UserController;
+  const methods = (self) => ({
+    getUsers: self.catchAsync(getUsers(self)),
+  });
+
+  return methods(self);
+};

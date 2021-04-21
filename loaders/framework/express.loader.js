@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const cookieParser = require('cookie-parser');
 
 // const AppError = require('../../api/utils/appError');
 // const hpp = require('hpp'); TODO: Implements Prevent parameter pollution
@@ -35,6 +36,7 @@ class App {
     this.app.use(logger('dev'));
     this.app.use(express.json({ limit: '10kb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+    this.app.use(cookieParser());
 
     // Security
     this.app.use(xss());

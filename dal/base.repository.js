@@ -14,6 +14,7 @@ class BaseRepository {
       .sort()
       .limitFields()
       .paginate();
+
     return features.query;
   }
 

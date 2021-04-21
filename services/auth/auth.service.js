@@ -22,6 +22,7 @@ class AuthService {
       confirmPassword,
       gender,
       active: false,
+      role: 'user',
     });
 
     if (!userCreated)

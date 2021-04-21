@@ -17,7 +17,7 @@ module.exports = function ({ UserController, AuthController, AuthMiddleware }) {
   router.patch('/updateMyPassword', AuthController.updatePassword);
   // router.use(AuthMiddleware.restrictTo('admin'));
 
-  router.get('/', UserController.getUsers);
+  router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
 
   return router;
 };

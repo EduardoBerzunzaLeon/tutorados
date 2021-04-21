@@ -69,7 +69,7 @@ container
   })
   // Users
   .register({
-    UserController: asClass(UserController.bind(UserController)).singleton(),
+    UserController: asFunction(UserController).singleton(),
     userRoutes: asFunction(userRoutes).singleton(),
     UserDTO: asClass(UserDTO).singleton(),
     UserService: asClass(UserService).singleton(),
