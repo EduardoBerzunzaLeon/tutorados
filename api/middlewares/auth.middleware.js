@@ -1,3 +1,5 @@
+const { promisify } = require('util');
+
 const jwt = require('jsonwebtoken');
 
 module.exports = ({ catchAsync, UserService, createAppError, config }) => {

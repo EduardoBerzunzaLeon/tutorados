@@ -99,7 +99,7 @@ class AuthService {
     // 1) Get user based on the token
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
-    const user = this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       passwordResetToken: hashedToken,
       passwordResetExpires: { $gt: Date.now() },
     });
@@ -119,15 +119,16 @@ class AuthService {
     return user;
   }
 
-  async updatePassword(id, { password, passwordConfirm, passwordCurrent }) {
+  async updatePassword(id, { password, confirmPassword, currentPassword }) {
     const user = await this.userRepository.findById(id);
 
-    if (!(await user.correctPassword(passwordCurrent, user.password))) {
+    if (!(await user.correctPassword(currentPassword, user.password))) {
       throw this.createAppError('Contraseña invalida.', 500);
     }
 
     user.password = password;
-    user.passwordConfirm = passwordConfirm;
+    user.confirmPassword = confirmPassword;
+
     await this.userRepository.save(user);
 
     return user;

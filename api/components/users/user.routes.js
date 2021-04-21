@@ -12,7 +12,9 @@ module.exports = function ({ UserController, AuthController, AuthMiddleware }) {
   router.post('/forgotPassword', AuthController.forgotPassword);
   router.patch('/resetPassword/:token', AuthController.resetPassword);
 
-  // router.use(AuthMiddleware.protect);
+  router.use(AuthMiddleware.protect);
+
+  router.patch('/updateMyPassword', AuthController.updatePassword);
   // router.use(AuthMiddleware.restrictTo('admin'));
 
   router.get('/', UserController.getUsers);

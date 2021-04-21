@@ -3,7 +3,7 @@ const { Schema, model } = require('mongoose');
 // const uniqueValidator = require('mongoose-unique-validator');
 // const mongoosePaginate = require('mongoose-paginate-v2');
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const validGenders = {
   values: ['M', 'F'],
@@ -93,6 +93,7 @@ UserSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword
 ) {
+  console.log('candiate', candidatePassword, 'userPassword', userPassword);
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
