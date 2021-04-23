@@ -26,13 +26,13 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     }
 
     // 2) Verification token
-    const decoded = await promisify(jwt.verify)(
+    const { id, iat } = await promisify(jwt.verify)(
       token,
       self.config.SECURITY.JWT_SECRET
     );
 
     // 3) Check if user still exists
-    const currentUser = await self.userService.findById(decoded.id);
+    const currentUser = await self.userService.findById(id);
     if (!currentUser) {
       return next(
         self.createAppError(
@@ -43,7 +43,7 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     }
 
     // 4) Check if user changed password after the token was issued
-    if (currentUser.changedPasswordAfter(decoded.iat)) {
+    if (currentUser.changedPasswordAfter(iat)) {
       return next(
         self.createAppError(
           'Usuario recientemente cambio de contraseña! Por favor inicia sesión otra vez.',
@@ -63,20 +63,29 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     if (req.cookies.jwt) {
       try {
         // 1) verify token
-        const decoded = await promisify(jwt.verify)(
+        const { id, iat } = await promisify(jwt.verify)(
           req.cookies.jwt,
           self.config.SECURITY.JWT_SECRET
         );
 
         // 2) Check if user still exists
-        const currentUser = await self.userService.findById(decoded.id);
+        const currentUser = await self.userService.findById(id);
         if (!currentUser) {
-          return next();
+          return next(self.createAppError('Usuario no existente.', 404));
+        }
+
+        if (!currentUser.active) {
+          return next(self.createAppError('Usuario inactivo.', 401));
         }
 
         // 3) Check if user changed password after the token was issued
-        if (currentUser.changedPasswordAfter(decoded.iat)) {
-          return next();
+        if (currentUser.changedPasswordAfter(iat)) {
+          return next(
+            self.createAppError(
+              'Usuario recientemente cambio de contraseña! Por favor inicia sesión otra vez.',
+              401
+            )
+          );
         }
 
         // THERE IS A LOGGED IN USER
