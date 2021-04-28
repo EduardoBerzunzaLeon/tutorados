@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken');
 module.exports = ({ catchAsync, UserService, createAppError, config }) => {
   const self = {
     config,
-    userService: UserService,
-    createAppError,
     catchAsync,
+    createAppError,
+    userService: UserService,
   };
 
   const protect = async (req, res, next) => {

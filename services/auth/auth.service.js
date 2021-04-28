@@ -8,12 +8,13 @@ class AuthService {
     this.emailService = EmailService;
     this.userRepository = UserRepository;
     this.createAppError = createAppError;
+    this.generateHashedToken = generateHashedToken;
   }
 
   async signup({ name, email, password, confirmPassword, gender }, url) {
     const userExists = await this.userRepository.findOne({ email });
 
-    // if (userExists) throw this.createAppError('Usuario ya existe', 401);
+    if (userExists) throw this.createAppError('Usuario ya existe', 401);
 
     const userCreated = await this.userRepository.create({
       name,
@@ -31,7 +32,6 @@ class AuthService {
     const urlWithId = `${url}${userCreated._id}`;
 
     try {
-      // TODO: Implements emailService
       await this.emailService.createEmail(userCreated).sendWelcome(urlWithId);
       return userCreated;
     } catch (error) {
@@ -82,7 +82,6 @@ class AuthService {
     await this.userRepository.save(user, { validateBeforeSave: false });
 
     try {
-      // TODO: Implements emailService
       await this.emailService.createEmail(user).sendPasswordReset(resetURL);
       return true;
     } catch (error) {
@@ -101,7 +100,7 @@ class AuthService {
 
   async resetPassword(token, { password, confirmPassword }) {
     // 1) Get user based on the token
-    const hashedToken = generateHashedToken(token);
+    const hashedToken = this.generateHashedToken(token);
 
     const user = await this.userRepository.findOne({
       passwordResetToken: hashedToken,

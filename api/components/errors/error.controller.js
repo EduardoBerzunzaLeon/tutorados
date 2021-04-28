@@ -1,3 +1,5 @@
+// const { MulterError } = require('multer');
+
 class ErrorController {
   constructor({ createAppError, ErrorDTO, getEnviroment }) {
     this.createAppError = createAppError;
@@ -29,6 +31,31 @@ class ErrorController {
     return this.createAppError(message, 400);
   };
 
+  handleMulterError = ({ code }) => {
+    const errorMessages = {
+      FILE_UNEXPECTED_EXTENSION: 'El archivo tiene extensiones no validas',
+      FILE_MOVE_DIRECTORY: 'No se pudo mover el archivo',
+      FILE_SAVE_MODEL: 'Ocurrio un error al grabar la imagen al modelo',
+      FILE_NO_FILE: 'No se envio el archivo',
+      FILE_NO_DELETE: 'No se pudo eliminar el archivo',
+      // Multer event handler
+      LIMIT_PART_COUNT: 'Demasiadas partes',
+      LIMIT_FILE_SIZE: 'Archivo muy grande',
+      LIMIT_FILE_COUNT: 'Demasiados archivos',
+      LIMIT_FIELD_KEY: 'Nombre del archivo muy grande',
+      LIMIT_FIELD_VALUE: 'Valor del campo muy largo',
+      LIMIT_FIELD_COUNT: 'Demasiados campos de archivos',
+      LIMIT_UNEXPECTED_FILE: 'Campo inesperado',
+      GENERIC_ERROR: 'Ocurrio un error en la subida del archivo',
+    };
+
+    const message = errorMessages.hasOwnProperty(code)
+      ? errorMessages[code]
+      : errorMessages['GENERIC_ERROR'];
+
+    return this.createAppError(message, 400);
+  };
+
   handleJWTError = () =>
     this.createAppError('Invalid token. Please log in again!', 401);
 
@@ -56,6 +83,7 @@ class ErrorController {
     if (error.name === 'JsonWebTokenError') return this.handleJWTError();
     if (error.name === 'TokenExpiredError') return this.handleJWTExpiredError();
     if (error?.code === 11000) return this.handleDuplicateFieldsDB(error);
+    if (error.name === 'MulterError') return this.handleMulterError(error);
 
     return error;
   };
