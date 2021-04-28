@@ -1,11 +1,4 @@
-module.exports = (size) => {
-  const seed =
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$_()-';
-  let randomString = '';
+const crypto = require('crypto');
 
-  for (let index = 0; index < size; index++) {
-    randomString += seed.charAt(Math.floor(Math.random() * seed.length));
-  }
-
-  return randomString;
-};
+module.exports = (length) =>
+  crypto.randomBytes(length).toString('hex').substring(0, length);
