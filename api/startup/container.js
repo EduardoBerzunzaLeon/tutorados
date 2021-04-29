@@ -19,20 +19,31 @@ const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
 
 // Utils
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
-const generateHashedToken = require('../utils/generateHashedToken');
+// const catchAsync = require('../utils/catchAsync');
+// const AppError = require('../utils/appError');
+// const generateHashedToken = require('../utils/generateHashedToken');
+// const generateRandomString = require('../utils/generateRandomString');
+
+const {
+  catchAsync,
+  AppError,
+  generateHashedToken,
+  generateRandomString,
+} = require('../utils/');
 
 // Middlewares
 const {
   handlerErrorNotFoundResource,
   handlerErrors,
   authMiddleware,
+  uploadSingleFile,
 } = require('../middlewares');
 
 // Services
 const UserService = require('../../services/users/user.service');
 const AuthService = require('../../services/auth/auth.service');
+const FileService = require('../../services/files/file.service');
+
 const { EmailService, EmailTemplates } = require('../../services/email');
 
 // Data Access Layer
@@ -58,6 +69,7 @@ container
     catchAsync: asFunction(() => catchAsync).singleton(),
     getEnviroment: asFunction(getEnviroment).singleton(),
     generateHashedToken: asFunction(() => generateHashedToken).singleton(),
+    generateRandomString: asFunction(() => generateRandomString).singleton(),
   })
   // middlewares
   .register({
@@ -66,6 +78,7 @@ container
     ),
     handlerErrors: asFunction(handlerErrors),
     AuthMiddleware: asFunction(authMiddleware).singleton(),
+    UploadSingleFile: asFunction(uploadSingleFile).singleton(),
   })
   // Users
   .register({
@@ -75,6 +88,8 @@ container
     UserService: asClass(UserService).singleton(),
     UserRepository: asClass(UserRepository).singleton(),
     UserEntity: asValue(UserEntity),
+    // FIXME: Move later
+    FileService: asClass(FileService).singleton(),
   })
   .register({
     ErrorController: asClass(ErrorController).singleton(),

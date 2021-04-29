@@ -1,13 +1,13 @@
 const path = require('path');
 // import { access, unlink } from 'fs/promises';
-import { unlink } from 'fs/promises';
+const { unlink } = require('fs/promises');
 // import { constants, rename } from 'fs';
-import { rename } from 'fs';
+const { rename } = require('fs');
 
 class FileService {
-  constructor({ createAppError, randomString }) {
+  constructor({ createAppError, generateRandomString }) {
     this.createAppError = createAppError;
-    this.randomString = randomString;
+    this.generateRandomString = generateRandomString;
   }
 
   async deleteFile(path) {
@@ -27,7 +27,7 @@ class FileService {
 
   async createImageName(file, folder) {
     const ext = path.extname(file.originalname).toLowerCase();
-    const imgName = this.randomString(30) + ext;
+    const imgName = this.generateRandomString(30) + ext;
     const path = path.resolve(`public/uploads/${folder}/${imgName}`);
 
     if (await access(path, constants.R_OK)) {
@@ -66,8 +66,8 @@ class FileService {
     return async function (file) {
       checkIfExistInRequest(file);
       const { imgName, path: url } = await createImageName(file, folder);
-      const paramsFind = { [field]: imgName };
-      await saveInEntity(model, file, imgName, url, paramsFind);
+      // const paramsFind = { [field]: imgName };
+      // await saveInEntity(model, file, imgName, url, paramsFind);
     };
   }
 

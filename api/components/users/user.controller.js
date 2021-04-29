@@ -1,6 +1,7 @@
-module.exports = ({ UserService, UserDTO, catchAsync }) => {
+module.exports = ({ UserService, UserDTO, catchAsync, FileService }) => {
   const self = {
     userService: UserService,
+    fileService: FileService,
     userDTO: UserDTO,
     catchAsync,
   };
@@ -15,8 +16,18 @@ module.exports = ({ UserService, UserDTO, catchAsync }) => {
     });
   };
 
+  const uptadeAvatar = (self) => async (req, res) => {
+    console.log(req.file);
+    return res.status(200).json({
+      status: 'success',
+    });
+    // const uploadAvatar = self.fileService.uploadFile('', 'images', 'avatar');
+    // await uploadAvatar(req.file);
+  };
+
   const methods = (self) => ({
     getUsers: self.catchAsync(getUsers(self)),
+    uptadeAvatar: self.catchAsync(uptadeAvatar(self)),
   });
 
   return methods(self);

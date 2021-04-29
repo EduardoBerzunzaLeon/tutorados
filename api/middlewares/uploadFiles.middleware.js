@@ -2,19 +2,22 @@ const path = require('path');
 
 const multer = require('multer');
 
-const uploadSingleFile = ({ config, createAppError }) => (
+module.exports = ({ config, createAppError }) => (
   filetypes,
   fileSize,
   fieldname,
   pathTemp = config.PATH_TEMP
 ) => (req, res, next) => {
   const fileFilter = (req, file, cb) => {
-    const mimetype = filetypes.test(file.mimetype);
+    // const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase()
     );
 
-    if (mimetype && extname) {
+    // console.log(file.mimetype);
+
+    // if (mimetype && extname) {
+    if (extname) {
       return cb(null, true);
     }
 
@@ -41,5 +44,3 @@ const uploadSingleFile = ({ config, createAppError }) => (
     next();
   });
 };
-
-module.exports = uploadSingleFile;

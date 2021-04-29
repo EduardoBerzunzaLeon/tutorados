@@ -1,7 +1,12 @@
 // api/v1/users
 const { Router } = require('express');
 
-module.exports = function ({ UserController, AuthController, AuthMiddleware }) {
+module.exports = function ({
+  UserController,
+  AuthController,
+  AuthMiddleware,
+  UploadSingleFile,
+}) {
   const router = Router();
 
   router.post('/signup', AuthController.signup);
@@ -18,6 +23,11 @@ module.exports = function ({ UserController, AuthController, AuthMiddleware }) {
   // router.use(AuthMiddleware.restrictTo('admin'));
 
   router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
+  router.patch(
+    '/avatar',
+    UploadSingleFile(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i, '2000', 'avatar'),
+    UserController.uptadeAvatar
+  );
 
   return router;
 };
