@@ -37,7 +37,7 @@ const UserSchema = new Schema(
       required: [true, 'El email es obligatorio'],
       validate: [validator.isEmail, 'Please provide a valid email'],
     },
-    photo: {
+    avatar: {
       type: String,
       default: 'default.jpg',
     },
@@ -75,7 +75,6 @@ const UserSchema = new Schema(
       enum: validGenders,
       required: [true, 'El género es obligatorio'],
     },
-    avatar: String,
     google: {
       type: Boolean,
       default: false,
@@ -108,7 +107,6 @@ UserSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword
 ) {
-  console.log('candiate', candidatePassword, 'userPassword', userPassword);
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 

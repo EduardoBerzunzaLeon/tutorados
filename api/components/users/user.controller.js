@@ -1,7 +1,16 @@
-module.exports = ({ UserService, UserDTO, catchAsync, FileService }) => {
+const UserRepository = require('../../../dal/users/user.repository');
+
+module.exports = ({
+  UserService,
+  UserDTO,
+  catchAsync,
+  FileService,
+  UserRepository,
+}) => {
   const self = {
     userService: UserService,
     fileService: FileService,
+    userRepository: UserRepository,
     userDTO: UserDTO,
     catchAsync,
   };
@@ -16,18 +25,19 @@ module.exports = ({ UserService, UserDTO, catchAsync, FileService }) => {
     });
   };
 
-  const uptadeAvatar = (self) => async (req, res) => {
-    console.log(req.file);
+  const updateAvatar = (self) => async (req, res) => {
+    const { file, user } = req;
+    const imagenSaved = await self.userService.uploadAvatar(user._id, file);
+
     return res.status(200).json({
       status: 'success',
+      data: imagenSaved,
     });
-    // const uploadAvatar = self.fileService.uploadFile('', 'images', 'avatar');
-    // await uploadAvatar(req.file);
   };
 
   const methods = (self) => ({
     getUsers: self.catchAsync(getUsers(self)),
-    uptadeAvatar: self.catchAsync(uptadeAvatar(self)),
+    updateAvatar: self.catchAsync(updateAvatar(self)),
   });
 
   return methods(self);

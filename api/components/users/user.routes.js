@@ -26,7 +26,7 @@ module.exports = function ({
   router.patch(
     '/avatar',
     UploadSingleFile(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i, '2000', 'avatar'),
-    UserController.uptadeAvatar
+    UserController.updateAvatar
   );
 
   return router;

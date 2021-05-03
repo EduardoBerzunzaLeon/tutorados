@@ -1,4 +1,5 @@
 const handlerErrors = ({ ErrorController }) => (err, req, res, next) => {
+  console.log('error');
   const sendError = ErrorController.getDTO;
   const error = ErrorController.getSpecificHandleError(err, req);
 

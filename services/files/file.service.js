@@ -1,8 +1,6 @@
 const path = require('path');
-// import { access, unlink } from 'fs/promises';
-const { unlink } = require('fs/promises');
-// import { constants, rename } from 'fs';
-const { rename } = require('fs');
+const { access, rename, unlink } = require('fs/promises');
+const { constants } = require('fs');
 
 class FileService {
   constructor({ createAppError, generateRandomString }) {
@@ -12,10 +10,10 @@ class FileService {
 
   async deleteFile(path) {
     try {
-      //   await access(path, constants.R_OK | constants.W_OK);
       await unlink(path);
+      return true;
     } catch {
-      throw this.createAppError('No se pudo eliminar el archivo', 404);
+      return false;
     }
   }
 
@@ -28,51 +26,62 @@ class FileService {
   async createImageName(file, folder) {
     const ext = path.extname(file.originalname).toLowerCase();
     const imgName = this.generateRandomString(30) + ext;
-    const path = path.resolve(`public/uploads/${folder}/${imgName}`);
+    const url = path.resolve(`public/uploads/${folder}`);
+    const urlComplete = `${url}/${imgName}`;
 
-    if (await access(path, constants.R_OK)) {
-      return await createImageName(file, folder);
-    } else {
-      return { imgName, path };
+    try {
+      await access(`${url}${imgName}`, constants.R_OK);
+      return createImageName(file, folder);
+    } catch (error) {
+      return { imgName, url, urlComplete };
     }
   }
 
-  async saveInEntity(model, file, imgName, url, paramsFind) {
-    const imageTempPath = file.path;
-    const targetPath = url;
+  async uploadRealFile(deletePath, newPath) {
     try {
-      const [fileStored] = await Promise.all([
-        model.updateById(_id, paramsFind),
-        rename(imageTempPath, targetPath),
-      ]);
+      await rename(deletePath, newPath);
+    } catch (error) {
+      await this.deleteFile(deletePath);
+      throw this.createAppError(
+        'No se pudo subir el archivo al servidor, favor de volverlo a intentar',
+        400
+      );
+    }
+  }
+
+  async saveInEntity(_id, repository, image, field) {
+    const { imgName, url, urlComplete } = image;
+    try {
+      const dataUpdate = { [field]: imgName };
+      const exists = await repository.findOne(_id);
+
+      if (exists[field] !== '' || exists[field] !== 'default.jpg') {
+        await this.deleteFile(`${url}/${exists[field]}`);
+      }
+
+      const fileStored = await repository.updateById(_id, dataUpdate);
       if (!fileStored) {
-        deleteFile(targetPath);
-        deleteFile(imageTempPath);
+        await this.deleteFile(urlComplete);
         throw this.createAppError(
           'Ocurrio un error al guardar la imagen a la Base de datos',
           404
         );
       }
-      return imgName;
+      return true;
     } catch (error) {
-      console.log(error);
-      deleteFile(targetPath);
-      deleteFile(imageTempPath);
+      await this.deleteFile(urlComplete);
       throw this.createAppError('No se pudo mover el archivo', 404);
     }
   }
 
-  uploadFile(model, folder = 'images', field = 'image') {
+  uploadFile(folder = 'img') {
     return async function (file) {
-      checkIfExistInRequest(file);
-      const { imgName, path: url } = await createImageName(file, folder);
-      // const paramsFind = { [field]: imgName };
-      // await saveInEntity(model, file, imgName, url, paramsFind);
+      this.checkIfExistInRequest(file);
+      const fileUpload = await this.createImageName(file, folder);
+      await this.uploadRealFile(file.path, fileUpload.urlComplete);
+      return fileUpload;
     };
   }
-
-  // TODO: Implements this in user service
-  // uploadAvatar = this.uploadFile(User, 'images', 'avatar');
 }
 
 module.exports = FileService;
