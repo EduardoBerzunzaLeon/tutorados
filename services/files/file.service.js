@@ -49,7 +49,7 @@ class FileService {
     }
   }
 
-  async saveInEntity(_id, repository, image, field) {
+  async saveInDB(_id, repository, image, field) {
     const { imgName, url, urlComplete } = image;
     try {
       const dataUpdate = { [field]: imgName };

@@ -13,15 +13,17 @@ class UserService {
   }
 
   async uploadAvatar(id, file) {
+    // Move the temp file to images folder
     const uploadAvatar = this.fileService.uploadFile('img');
     const image = await uploadAvatar.bind(this.fileService, file)();
-    const imageSavedInEntity = await this.fileService.saveInEntity(
+    // Save Image in DataBase
+    const imageSavedInDB = await this.fileService.saveInDB(
       id,
       this.userRepository,
       image,
       'avatar'
     );
-    return imageSavedInEntity;
+    return imageSavedInDB;
   }
 }
 
