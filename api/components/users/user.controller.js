@@ -1,5 +1,3 @@
-const UserRepository = require('../../../dal/users/user.repository');
-
 module.exports = ({
   UserService,
   UserDTO,

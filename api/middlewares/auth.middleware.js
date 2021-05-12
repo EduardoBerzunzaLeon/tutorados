@@ -98,14 +98,19 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     next();
   };
 
-  const restrictTo = (...roles) => (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return next(
-        self.createAppError('No tienes permiso para realizar esta acción.', 403)
-      );
-    }
-    next();
-  };
+  const restrictTo =
+    (...roles) =>
+    (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+        return next(
+          self.createAppError(
+            'No tienes permiso para realizar esta acción.',
+            403
+          )
+        );
+      }
+      next();
+    };
 
   const methods = (self) => ({
     protect: self.catchAsync(protect),

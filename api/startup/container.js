@@ -63,8 +63,8 @@ container
   })
   // Utils
   .register({
-    createAppError: asFunction(() => (message, statusCode) =>
-      new AppError(message, statusCode)
+    createAppError: asFunction(
+      () => (message, statusCode) => new AppError(message, statusCode)
     ).singleton(),
     catchAsync: asFunction(() => catchAsync).singleton(),
     getEnviroment: asFunction(getEnviroment).singleton(),
