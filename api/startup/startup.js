@@ -12,6 +12,7 @@ class Startup {
 
     // If the server detect somekind of error, the server will shutdown.
     this.server.errorsListener(server);
+    return server;
   }
 }
 

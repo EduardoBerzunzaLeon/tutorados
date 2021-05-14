@@ -2,15 +2,16 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const should = chai.should();
 const container = require('../../../api/startup/container');
-const Startup = container.resolve('Startup');
-
-Startup.start().catch((err) => {
-  console.log(err);
-});
 
 chai.use(chaiHttp);
 const { app } = container.resolve('App');
+const Startup = container.resolve('Startup');
+
 const api = chai.request(app);
+
+before(async () => {
+  await Startup.start();
+});
 
 describe('Users api', () => {
   it('users are returned as json', (done) => {
