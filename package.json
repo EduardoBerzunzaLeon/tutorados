@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development && nodemon index",
-    "start": "cross-env NODE_ENV=production && node index",
+    "start": "set NODE_ENV=production && node index",
     "test": "cross-env NODE_ENV=test mocha --recursive --timeout 15000",
     "test:watch": "npm run test -- --watch"
   },

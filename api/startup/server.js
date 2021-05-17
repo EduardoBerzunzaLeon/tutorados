@@ -2,6 +2,7 @@ class Server {
   constructor({ config, App }) {
     this.app = App.app;
     this.port = this.normalizePort(config.PORT);
+    this.config = config;
   }
 
   normalizePort(port) {

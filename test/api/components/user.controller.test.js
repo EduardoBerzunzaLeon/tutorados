@@ -9,16 +9,20 @@ const Startup = container.resolve('Startup');
 
 const api = chai.request(app);
 
+let server;
+
 before(async () => {
-  await Startup.start();
+  server = await Startup.start();
 });
+
+after(() => server.close());
 
 describe('Users api', () => {
   it('users are returned as json', (done) => {
     api.get('/api/v1/users').end((err, res) => {
       res.should.have.status(200);
-      res.body.should.be.a('array');
-      // res.body.length.should.be.eql(0);
+      res.body.data.should.be.a('array');
+      res.body.status.should.be.eql('success');
       done();
     });
   });
