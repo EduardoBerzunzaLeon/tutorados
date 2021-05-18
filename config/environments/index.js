@@ -1,14 +1,11 @@
 const fs = require('fs');
+const path = require('path');
 const getEnviroment = require('../../api/utils/getEnviroment');
 
 require('dotenv').config();
 
 const enviroment = getEnviroment();
+const pathJoin = path.join(__dirname, `/${enviroment}.js`);
+const fileEnv = fs.existsSync(pathJoin) ? enviroment : 'development';
 
-const fileEnv = fs.existsSync(`./${enviroment}.js`)
-  ? currentEnv
-  : 'development';
-console.log(fs.existsSync(`./test.js`));
-const env = require(`./${fileEnv}`);
-
-module.exports = env;
+module.exports = require(`./${fileEnv}`);

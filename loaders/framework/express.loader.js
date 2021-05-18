@@ -13,7 +13,6 @@ const cookieParser = require('cookie-parser');
 
 class App {
   constructor({ router, handlerErrorNotFoundResource, handlerErrors }) {
-    // console.log(AppError);
     this.app = express();
     this.router = router;
     this.handlerErrorNotFoundResource = handlerErrorNotFoundResource;

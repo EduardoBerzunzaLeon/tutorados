@@ -35,7 +35,6 @@ class AuthService {
       await this.emailService.createEmail(userCreated).sendWelcome(urlWithId);
       return userCreated;
     } catch (error) {
-      console.log(error);
       throw this.createAppError(
         'Ocurrio un error al enviar el correo. Intentelo más tarde.',
         500
@@ -85,7 +84,6 @@ class AuthService {
       await this.emailService.createEmail(user).sendPasswordReset(resetURL);
       return true;
     } catch (error) {
-      console.log(error);
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
 

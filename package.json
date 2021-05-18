@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development && nodemon index",
-    "start": "set NODE_ENV=production && node index",
+    "dev": "cross-env NODE_ENV=development nodemon index",
+    "start": "cross-env NODE_ENV=production node index",
     "test": "cross-env NODE_ENV=test mocha --recursive --timeout 15000",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "nodemon --exec \"npm run test\""
   },
   "keywords": [],
   "author": "",
@@ -31,6 +31,7 @@
     "express-mongo-sanitize": "2.0.2",
     "express-rate-limit": "5.2.6",
     "fs-extra": "9.1.0",
+    "g": "^2.0.1",
     "helmet": "4.4.1",
     "hpp": "0.2.3",
     "jsonwebtoken": "8.5.1",
