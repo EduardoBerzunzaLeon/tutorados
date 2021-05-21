@@ -57,44 +57,29 @@ describe('Users api', () => {
           expect(res).to.have.status(200);
           assert.isArray(res.body.data, 'Its array');
           assert.equal(res.body.status, 'success', 'All is right');
-          // res.should.have.status(200);
-          // res.body.data.should.be.a('array');
-          // res.body.status.should.be.eql('success');
-          //  Content-Type /application\/json/
           done();
         });
     });
 
-    // it('Returned two records: one contains "Eduardo Jesus Berzunza Leon" and noone contain password', (done) => {
-    //   request(app)
-    //     .get('/api/v1/users')
-    //     .set({ Authorization: `Bearer ${tokenAdmin}` })
-    //     .end((err, res) => {
-    //       const {
-    //         body: { data: users },
-    //       } = res;
+    it('Returned two records: one contains "Eduardo Jesus Berzunza Leon" and no one contain password', (done) => {
+      request(app)
+        .get('/api/v1/users')
+        .set({ Authorization: `Bearer ${tokenAdmin}` })
+        .end((err, res) => {
+          const {
+            body: { data: users },
+          } = res;
 
-    //       const findUser = users.find(
-    //         (u) => u.fullname === 'Eduardo Jesús Berzunza León'
-    //       );
-    //       const findPassword = users.find((u) => u['password'] !== undefined);
+          const findUser = users.find(
+            ({ fullname }) => fullname === 'Eduardo Jesús Berzunza León'
+          );
+          const findPassword = users.find((u) => u['password'] !== undefined);
 
-    //       console.log('findUser', findUser);
-    //       console.log('findPassword', findPassword);
+          assert.isUndefined(findPassword, 'Not returned the password field');
+          assert.isObject(findUser, 'Not returned the password field');
 
-    //       assert.strictEqual(
-    //         findPassword,
-    //         undefined,
-    //         'Not returned the password field'
-    //       );
-    //       assert.strictEqual(
-    //         findUser,
-    //         Object,
-    //         'Not returned the password field'
-    //       );
-
-    //       done();
-    //     });
-    // });
+          done();
+        });
+    });
   });
 });
