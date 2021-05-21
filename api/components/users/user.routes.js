@@ -19,7 +19,7 @@ module.exports = function ({
 
   router.use(AuthMiddleware.protect);
 
-  router.patch('/updateMyPassword', AuthController.updatePassword);
+  router.patch('/me/password', AuthController.updatePassword);
   // router.use(AuthMiddleware.restrictTo('admin'));
 
   router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);

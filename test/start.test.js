@@ -12,12 +12,18 @@ const request = chai.request;
 let server;
 
 const credentials = {
-  email: 'eduardoberzunzal@gmail.com',
-  password: '12345678',
+  admin: {
+    email: 'eduardoberzunzal@gmail.com',
+    password: '12345678',
+  },
+  user: {
+    email: 'cindy.peña@gmail.com',
+    password: '12345678',
+  },
 };
 
-const postAuthentication = async (credentials) =>
-  await request(app).post('/api/v1/users/login').send(credentials);
+const postAuthentication = async (user) =>
+  await request(app).post('/api/v1/users/login').send(user);
 
 before(async () => {
   server = await Startup.start();

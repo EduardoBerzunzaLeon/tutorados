@@ -1,56 +1,31 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const { assert, expect } = require('chai');
 
-const should = chai.should();
 const container = require('../../../api/startup/container');
+const { app } = container.resolve('App');
 
 const { postAuthentication, credentials } = require('../../start.test');
-
-const { app } = container.resolve('App');
-const UserRepository = container.resolve('UserRepository');
+const { initialize, data } = require('../../initialization/user');
 
 chai.use(chaiHttp);
 const request = chai.request;
 
-let token;
+let tokenAdmin;
+let tokenUser;
 
 before(async () => {
-  await initializeUsers();
-  const { body } = await postAuthentication(credentials);
-  token = body.token;
+  await initialize(data);
+  const { admin, user } = credentials;
+
+  const [{ body: adminResponse }, { body: userResponse }] = await Promise.all([
+    postAuthentication(admin),
+    postAuthentication(user),
+  ]);
+
+  tokenAdmin = adminResponse.token;
+  tokenUser = userResponse.token;
 });
-
-const users = [
-  {
-    name: {
-      first: 'Eduardo Jesús',
-      last: 'Berzunza León',
-    },
-    password: '12345678',
-    confirmPassword: '12345678',
-    email: 'eduardoberzunzal@gmail.com',
-    gender: 'M',
-    role: 'admin',
-  },
-  {
-    name: {
-      first: 'Cindy',
-      last: 'Peña',
-    },
-    password: '12345678',
-    confirmPassword: '12345678',
-    email: 'cindy.peña@gmail.com',
-    gender: 'F',
-    role: 'user',
-  },
-];
-
-const initializeUsers = async () => {
-  await UserRepository.deleteAll();
-  for (const user of users) {
-    await UserRepository.create(user);
-  }
-};
 
 describe('Users api', () => {
   describe('Get Users', () => {
@@ -58,7 +33,17 @@ describe('Users api', () => {
       request(app)
         .get('/api/v1/users')
         .end((err, res) => {
-          res.should.have.status(401);
+          expect(res).to.have.status(401);
+          done();
+        });
+    });
+
+    it('users are returned 403 with user role', (done) => {
+      request(app)
+        .get('/api/v1/users')
+        .set({ Authorization: `Bearer ${tokenUser}` })
+        .end((err, res) => {
+          expect(res).to.have.status(403);
           done();
         });
     });
@@ -66,14 +51,50 @@ describe('Users api', () => {
     it('users are returned data and status 200 with authetication', (done) => {
       request(app)
         .get('/api/v1/users')
-        .set({ Authorization: `Bearer ${token}` })
+        .set({ Authorization: `Bearer ${tokenAdmin}` })
         .end((err, res) => {
-          res.should.have.status(200);
-          res.body.data.should.be.a('array');
-          res.body.status.should.be.eql('success');
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          assert.isArray(res.body.data, 'Its array');
+          assert.equal(res.body.status, 'success', 'All is right');
+          // res.should.have.status(200);
+          // res.body.data.should.be.a('array');
+          // res.body.status.should.be.eql('success');
           //  Content-Type /application\/json/
           done();
         });
     });
+
+    // it('Returned two records: one contains "Eduardo Jesus Berzunza Leon" and noone contain password', (done) => {
+    //   request(app)
+    //     .get('/api/v1/users')
+    //     .set({ Authorization: `Bearer ${tokenAdmin}` })
+    //     .end((err, res) => {
+    //       const {
+    //         body: { data: users },
+    //       } = res;
+
+    //       const findUser = users.find(
+    //         (u) => u.fullname === 'Eduardo Jesús Berzunza León'
+    //       );
+    //       const findPassword = users.find((u) => u['password'] !== undefined);
+
+    //       console.log('findUser', findUser);
+    //       console.log('findPassword', findPassword);
+
+    //       assert.strictEqual(
+    //         findPassword,
+    //         undefined,
+    //         'Not returned the password field'
+    //       );
+    //       assert.strictEqual(
+    //         findUser,
+    //         Object,
+    //         'Not returned the password field'
+    //       );
+
+    //       done();
+    //     });
+    // });
   });
 });
