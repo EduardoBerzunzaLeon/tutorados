@@ -1,10 +1,11 @@
+const { readFile } = require('fs/promises');
+
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { assert, expect } = require('chai');
 
 const container = require('../../../api/startup/container');
 const { app } = container.resolve('App');
-
 const { postAuthentication, credentials } = require('../../start.test');
 const { initialize, data } = require('../../initialization/user');
 
@@ -13,6 +14,7 @@ const request = chai.request;
 
 let tokenAdmin;
 let tokenUser;
+let avatarFile;
 
 before(async () => {
   await initialize(data);
@@ -22,7 +24,7 @@ before(async () => {
     postAuthentication(admin),
     postAuthentication(user),
   ]);
-
+  avatarFile = await readFile(`${__dirname}/avatar.png`);
   tokenAdmin = adminResponse.token;
   tokenUser = userResponse.token;
 });
@@ -78,6 +80,41 @@ describe('Users api', () => {
           assert.isUndefined(findPassword, 'Not returned the password field');
           assert.isObject(findUser, 'Not returned the password field');
 
+          done();
+        });
+    });
+  });
+
+  describe('Upload Avatar', () => {
+    it('Should return 401 without authetication', (done) => {
+      request(app)
+        .patch('/api/v1/users/avatar')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          done();
+        });
+    });
+
+    it('Should return 404 - Not file found', (done) => {
+      request(app)
+        .patch('/api/v1/users/avatar')
+        .set({ Authorization: `Bearer ${tokenUser}` })
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
+
+    // check the returned is correctly
+    it('All was corrected', (done) => {
+      request(app)
+        .patch('/api/v1/users/avatar')
+        .set('content-type', 'multipart/form-data')
+        .set({ Authorization: `Bearer ${tokenUser}` })
+        .attach('avatar', avatarFile)
+        .end((err, res) => {
+          // console.log(res);
+          expect(res).to.have.status(200);
           done();
         });
     });

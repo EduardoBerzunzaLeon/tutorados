@@ -8,6 +8,8 @@ module.exports =
   (req, res, next) => {
     const fileFilter = (req, file, cb) => {
       // const mimetype = filetypes.test(file.mimetype);
+
+      console.log('file before middleware', file);
       const extname = filetypes.test(
         path.extname(file.originalname).toLowerCase()
       );

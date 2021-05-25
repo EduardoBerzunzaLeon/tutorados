@@ -18,7 +18,10 @@ class FileService {
   }
 
   checkIfExistInRequest(file) {
-    if (!file.hasOwnProperty('originalname') || !file.hasOwnProperty('path')) {
+    if (
+      !file?.hasOwnProperty('originalname') ||
+      !file?.hasOwnProperty('path')
+    ) {
       throw this.createAppError('No se envio el archivo', 404);
     }
   }
