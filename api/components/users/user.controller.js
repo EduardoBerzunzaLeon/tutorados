@@ -25,11 +25,13 @@ module.exports = ({
 
   const updateAvatar = (self) => async (req, res) => {
     const { file, user } = req;
-    const imagenSaved = await self.userService.uploadAvatar(user._id, file);
+    const avatar = await self.userService.uploadAvatar(user._id, file);
 
     return res.status(200).json({
       status: 'success',
-      data: imagenSaved,
+      data: {
+        avatar,
+      },
     });
   };
 

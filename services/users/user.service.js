@@ -14,8 +14,9 @@ class UserService {
 
   async uploadAvatar(id, file) {
     // Move the temp file to images folder
-    const uploadAvatar = this.fileService.uploadFile();
-    const image = await uploadAvatar.bind(this.fileService, file)();
+    const uploadFile = this.fileService.uploadFile();
+    const image = await uploadFile.bind(this.fileService, file)();
+
     // Save Image in DataBase
     const imageSavedInDB = await this.fileService.saveInDB(
       id,

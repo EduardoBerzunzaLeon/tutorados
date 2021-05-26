@@ -8,8 +8,6 @@ module.exports =
   (req, res, next) => {
     const fileFilter = (req, file, cb) => {
       // const mimetype = filetypes.test(file.mimetype);
-
-      console.log('file before middleware', file);
       const extname = filetypes.test(
         path.extname(file.originalname).toLowerCase()
       );
@@ -22,7 +20,7 @@ module.exports =
       cb(
         createAppError(
           `El archivo solo soporta las siguientes extensiones: - ${filetypes}`,
-          404
+          400
         ),
         false
       );

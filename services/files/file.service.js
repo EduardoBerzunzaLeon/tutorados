@@ -1,5 +1,5 @@
 const path = require('path');
-const { access, rename, unlink } = require('fs/promises');
+const { access, rename, unlink, readdir } = require('fs/promises');
 const { constants } = require('fs');
 
 class FileService {
@@ -70,7 +70,7 @@ class FileService {
           404
         );
       }
-      return true;
+      return fileStored[field];
     } catch (error) {
       await this.deleteFile(urlComplete);
       throw this.createAppError('No se pudo mover el archivo', 404);
@@ -84,6 +84,12 @@ class FileService {
       await this.uploadRealFile(file.path, fileUpload.urlComplete);
       return fileUpload;
     };
+  }
+
+  async clearDir(dir) {
+    const files = await readdir(dir);
+    const promises = files.map((file) => unlink(`${dir}${file}`));
+    await Promise.all(promises);
   }
 }
 

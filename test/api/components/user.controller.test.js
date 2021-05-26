@@ -6,6 +6,7 @@ const { assert, expect } = require('chai');
 
 const container = require('../../../api/startup/container');
 const { app } = container.resolve('App');
+const { clearDir } = container.resolve('FileService');
 const { postAuthentication, credentials } = require('../../start.test');
 const { initialize, data } = require('../../initialization/user');
 
@@ -14,7 +15,6 @@ const request = chai.request;
 
 let tokenAdmin;
 let tokenUser;
-let avatarFile;
 
 before(async () => {
   await initialize(data);
@@ -23,8 +23,10 @@ before(async () => {
   const [{ body: adminResponse }, { body: userResponse }] = await Promise.all([
     postAuthentication(admin),
     postAuthentication(user),
+    // Clean img's image directory
+    clearDir('./public/uploads/img/'),
   ]);
-  avatarFile = await readFile(`${__dirname}/avatar.png`);
+
   tokenAdmin = adminResponse.token;
   tokenUser = userResponse.token;
 });
@@ -63,7 +65,7 @@ describe('Users api', () => {
         });
     });
 
-    it('Returned two records: one contains "Eduardo Jesus Berzunza Leon" and no one contain password', (done) => {
+    it('Returned two records: one contains "Eduardo Jesus Berzunza Leon" and no one contain password property', (done) => {
       request(app)
         .get('/api/v1/users')
         .set({ Authorization: `Bearer ${tokenAdmin}` })
@@ -105,16 +107,34 @@ describe('Users api', () => {
         });
     });
 
-    // check the returned is correctly
-    it('All was corrected', (done) => {
+    it('Should return 400 if upload no file extension', async (done) => {
+      const noImage = await readFile(`${__dirname}/noImage.pdf`);
       request(app)
         .patch('/api/v1/users/avatar')
         .set('content-type', 'multipart/form-data')
         .set({ Authorization: `Bearer ${tokenUser}` })
-        .attach('avatar', avatarFile)
+        .attach('avatar', noImage, 'noImage.pdf')
         .end((err, res) => {
-          // console.log(res);
+          expect(res).to.have.status(400);
+          assert.include(
+            res.body.error.message,
+            'El archivo solo soporta las siguientes extensiones',
+            'Correctly message'
+          );
+          done();
+        });
+    });
+
+    it('Should return 200 and filename the avatar of user', async (done) => {
+      const avatarFile = await readFile(`${__dirname}/avatar.png`);
+      request(app)
+        .patch('/api/v1/users/avatar')
+        .set('content-type', 'multipart/form-data')
+        .set({ Authorization: `Bearer ${tokenUser}` })
+        .attach('avatar', avatarFile, 'avatar.png')
+        .end((err, res) => {
           expect(res).to.have.status(200);
+          assert.property(res.body.data, 'avatar');
           done();
         });
     });
