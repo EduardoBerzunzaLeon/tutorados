@@ -7,12 +7,10 @@ module.exports =
   (filetypes, fileSize, fieldname, pathTemp = config.PATH_TEMP) =>
   (req, res, next) => {
     const fileFilter = (req, file, cb) => {
-      // const mimetype = filetypes.test(file.mimetype);
       const extname = filetypes.test(
         path.extname(file.originalname).toLowerCase()
       );
 
-      // if (mimetype && extname) {
       if (extname) {
         return cb(null, true);
       }
