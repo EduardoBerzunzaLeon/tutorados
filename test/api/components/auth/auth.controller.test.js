@@ -44,7 +44,11 @@ describe.only('Auth API', () => {
         'rosita-es-la-m4as-perrona-del-lugar-puto-quien-l0-l3a'
       );
 
-      console.log(resve);
+      const newDate = new Date();
+      console.log(newDate.getTime());
+      console.log(Date.now());
+      console.log(iat);
+      console.log(exp);
       expect(res).to.have.status(201);
     });
   });
