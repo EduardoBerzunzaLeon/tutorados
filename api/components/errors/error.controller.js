@@ -26,8 +26,11 @@ class ErrorController {
   };
 
   handleValidationErrorDB = ({ errors }) => {
-    const errorsPrepare = Object.values(errors).map((el) => el.msg);
-    const message = `Invalid input data. ${errorsPrepare.join('. ')}`;
+    const errorsPrepare = Object.values(errors).map(
+      ({ properties }) => properties.message
+    );
+
+    const message = errorsPrepare.join('. ');
     return this.createAppError(message, 400);
   };
 
@@ -75,10 +78,11 @@ class ErrorController {
   getSpecificHandleError = (err, { originalUrl }) => {
     const error = this.cloneError(err);
 
-    if (error.name === 'CastError') return this.handleCastErrorDB(error);
+    if (error.stack.startsWith('CastError'))
+      return this.handleCastErrorDB(error);
     if (error.name === 'NotFoundResourceError')
       return this.handleErrorNotFound(originalUrl);
-    if (error.name === 'ValidationError')
+    if (error.stack.startsWith('ValidationError'))
       return this.handleValidationErrorDB(error);
     if (error.name === 'JsonWebTokenError') return this.handleJWTError();
     if (error.name === 'TokenExpiredError') return this.handleJWTExpiredError();

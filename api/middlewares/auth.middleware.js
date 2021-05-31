@@ -31,6 +31,8 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
       self.config.SECURITY.JWT_SECRET
     );
 
+    console.log(id);
+
     // 3) Check if user still exists
     const currentUser = await self.userService.findById(id);
     if (!currentUser) {

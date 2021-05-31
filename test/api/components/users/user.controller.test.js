@@ -16,22 +16,23 @@ const request = chai.request;
 let tokenAdmin;
 let tokenUser;
 
-before(async () => {
-  await initialize(data);
-  const { admin, user } = credentials;
-
-  const [{ body: adminResponse }, { body: userResponse }] = await Promise.all([
-    postAuthentication(admin),
-    postAuthentication(user),
-    // Clean img's image directory
-    clearDir('./public/uploads/img/'),
-  ]);
-
-  tokenAdmin = adminResponse.token;
-  tokenUser = userResponse.token;
-});
-
 describe('Users api', () => {
+  before(async () => {
+    await initialize(data);
+    const { admin, user } = credentials;
+
+    const [{ body: adminResponse }, { body: userResponse }] = await Promise.all(
+      [
+        postAuthentication(admin),
+        postAuthentication(user),
+        // Clean img's image directory
+        clearDir('./public/uploads/img/'),
+      ]
+    );
+
+    tokenAdmin = adminResponse.token;
+    tokenUser = userResponse.token;
+  });
   describe('Get Users', () => {
     it('users are returned 401 without authetication', async () => {
       const res = await request(app).get('/api/v1/users');
@@ -80,6 +81,7 @@ describe('Users api', () => {
       const res = await request(app).patch('/api/v1/users/avatar');
 
       expect(res).to.have.status(401);
+      expect(res.body.error.message).to.equal('Favor de iniciar sesión.');
     });
 
     it('Should return 404, Not file found', async () => {

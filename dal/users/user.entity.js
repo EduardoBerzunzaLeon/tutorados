@@ -35,7 +35,7 @@ const UserSchema = new Schema(
       lowercase: true,
       trim: true,
       required: [true, 'El email es obligatorio'],
-      validate: [validator.isEmail, 'Please provide a valid email'],
+      validate: [validator.isEmail, 'Porfavor ingresa un correo valido'],
     },
     avatar: {
       type: String,
@@ -59,7 +59,7 @@ const UserSchema = new Schema(
         validator: function (el) {
           return el === this.password;
         },
-        message: '¡Las contraseñas no coinciden!',
+        message: 'Las contraseñas no coinciden',
       },
     },
     passwordChangedAt: Date,

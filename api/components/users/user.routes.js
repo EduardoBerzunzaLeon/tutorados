@@ -12,7 +12,7 @@ module.exports = function ({
   router.post('/signup', AuthController.signup);
   router.post('/login', AuthController.login);
   router.get('/logout', AuthController.logout);
-  router.get('/activate/:id', AuthController.activate);
+  router.patch('/activate/:id', AuthController.activate);
 
   router.post('/forgotPassword', AuthController.forgotPassword);
   router.patch('/resetPassword/:token', AuthController.resetPassword);

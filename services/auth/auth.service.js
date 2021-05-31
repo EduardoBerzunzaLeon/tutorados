@@ -43,8 +43,16 @@ class AuthService {
   }
 
   async activate({ id }) {
-    if (!id) throw this.createAppError('Ruta no valida', 401);
-    return await this.userRepository.updateById(id, { active: true });
+    if (!id) throw this.createAppError('El id es requerido', 401);
+    const userUpdated = await this.userRepository.updateById(id, {
+      active: true,
+    });
+
+    if (!userUpdated) {
+      throw this.createAppError('No se pudo actualizar el usuario', 400);
+    }
+
+    return userUpdated;
   }
 
   async login({ email, password }) {
