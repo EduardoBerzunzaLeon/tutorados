@@ -10,7 +10,6 @@ const { app } = container.resolve('App');
 const { postAuthentication, credentials } = require('../../../start.test');
 const { data: authData } = require('../../../initialization/auth');
 const { initialize, data: userData } = require('../../../initialization/user');
-const auth = require('../../../../api/components/auth');
 
 chai.use(chaiHttp);
 const request = chai.request;
@@ -113,8 +112,7 @@ describe.only('Auth API', () => {
   });
 
   describe('Login endpoint', () => {
-    // password and email not provided
-    it('Should returned 400, not pass email and password', async () => {
+    it('Should returned 400, not provided email and password', async () => {
       const res = await request(app).post('/api/v1/users/login');
 
       expect(res).to.have.status(400);
@@ -122,7 +120,7 @@ describe.only('Auth API', () => {
         'El usuario y contraseña son obligatorios'
       );
     });
-    //  Email correct but active False
+
     it('Should returned 401, email correct but user not active', async () => {
       const res = await request(app)
         .post('/api/v1/users/login')
@@ -131,8 +129,42 @@ describe.only('Auth API', () => {
       expect(res).to.have.status(401);
       expect(res.body.error.message).to.equal('Credenciales incorrectas');
     });
-    //  check a email incorrect
-    //  Password incorrect
-    // Success case
+
+    it('Should returned 401 email incorrect', async () => {
+      const res = await request(app)
+        .post('/api/v1/users/login')
+        .send({ email: 'testError', password: '123456' });
+      expect(res).to.have.status(401);
+      expect(res.body.error.message).to.equal('Credenciales incorrectas');
+    });
+
+    it('Should returned 401 email correct but password incorrect', async () => {
+      const adminIncorrect = {
+        ...credentials.admin,
+        password: 'incorrectPassword',
+      };
+      const res = await request(app)
+        .post('/api/v1/users/login')
+        .send(adminIncorrect);
+      expect(res).to.have.status(401);
+      expect(res.body.error.message).to.equal('Credenciales incorrectas');
+    });
+
+    it('Should returned 200, success case', async () => {
+      const res = await request(app)
+        .post('/api/v1/users/login')
+        .send(credentials.admin);
+
+      expect(res).to.have.status(200);
+      assert.property(res.body, 'token');
+      assert.isObject(res.body.data, 'Data its a object');
+    });
+  });
+
+  describe.only('Logout Enpoint', () => {
+    it('Should returned 200, success case', async () => {
+      const res = await request(app).get('/api/v1/users/logout');
+      expect(res).to.have.status(200);
+    });
   });
 });

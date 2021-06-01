@@ -86,11 +86,12 @@ class AuthService {
 
     const resetToken = user.createPasswordResetToken();
     const resetURL = `${url}${resetToken}`;
-    await this.userRepository.save(user, { validateBeforeSave: false });
-
+    const userSaved = await this.userRepository.save(user, {
+      validateBeforeSave: false,
+    });
+    console.log(userSaved);
     try {
       await this.emailService.createEmail(user).sendPasswordReset(resetURL);
-      return true;
     } catch (error) {
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;

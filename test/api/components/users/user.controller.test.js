@@ -33,6 +33,7 @@ describe('Users api', () => {
     tokenAdmin = adminResponse.token;
     tokenUser = userResponse.token;
   });
+
   describe('Get Users', () => {
     it('users are returned 401 without authetication', async () => {
       const res = await request(app).get('/api/v1/users');
