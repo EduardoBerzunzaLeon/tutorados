@@ -80,18 +80,22 @@ class AuthService {
     return user;
   }
 
-  async forgotPassword(email, url) {
+  async forgotPassword({ email }, url) {
+    if (!email) throw this.createAppError('Correo es requerido', 400);
+
     const user = await this.userRepository.findOne({ email });
+
     if (!user) throw this.createAppError('Correo no existente', 404);
 
     const resetToken = user.createPasswordResetToken();
     const resetURL = `${url}${resetToken}`;
-    const userSaved = await this.userRepository.save(user, {
+    await this.userRepository.save(user, {
       validateBeforeSave: false,
     });
-    console.log(userSaved);
+
     try {
       await this.emailService.createEmail(user).sendPasswordReset(resetURL);
+      return resetURL;
     } catch (error) {
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
@@ -132,8 +136,9 @@ class AuthService {
   async updatePassword(id, { password, confirmPassword, currentPassword }) {
     const user = await this.userRepository.findById(id);
 
+    console.log(user);
     if (!(await user.correctPassword(currentPassword, user.password))) {
-      throw this.createAppError('Contraseña invalida.', 500);
+      throw this.createAppError('Contraseña invalida.', 400);
     }
 
     user.password = password;

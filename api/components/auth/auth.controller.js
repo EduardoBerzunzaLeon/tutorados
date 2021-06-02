@@ -71,11 +71,14 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
       self.config.API_VERSION
     }/users/resetPassword/`;
 
-    await self.authService.forgotPassword(req.body.email, url);
+    const resetUrl = await self.authService.forgotPassword(req.body, url);
 
     return res.status(200).json({
       status: 'success',
       message: 'Token enviado a su correo.',
+      data: {
+        resetUrl,
+      },
     });
   };
 

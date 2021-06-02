@@ -43,6 +43,10 @@ class BaseRepository {
     return this.entity.findByIdAndDelete(id);
   }
 
+  deleteOne(params) {
+    return this.entity.deleteOne(params);
+  }
+
   deleteAll() {
     return this.entity.deleteMany({});
   }

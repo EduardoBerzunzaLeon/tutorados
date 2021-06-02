@@ -1,5 +1,3 @@
-// const { MulterError } = require('multer');
-
 class ErrorController {
   constructor({ createAppError, ErrorDTO, getEnviroment }) {
     this.createAppError = createAppError;
@@ -21,7 +19,7 @@ class ErrorController {
 
   handleDuplicateFieldsDB = ({ message }) => {
     const value = message.match(/(["'])(\\?.)*?\1/)[0];
-    const msg = `Duplicate field value: ${value}. Please use another value!`;
+    const msg = `El valor ${value} ya existe. Favor de ingresar otro valor`;
     return this.createAppError(msg, 400);
   };
 
@@ -69,7 +67,9 @@ class ErrorController {
     this.createAppError(`Can't find ${originalUrl} on this server!`, 404);
 
   createDTO = (env) => {
-    const generateMethod = `sendError${env.charAt(0)}${env.slice(1)}`;
+    const generateMethod = `sendError${env.charAt(0).toUpperCase()}${env.slice(
+      1
+    )}`;
     return typeof this.errorDTO[generateMethod] === 'function'
       ? this.errorDTO[generateMethod]
       : this.errorDTO.sendErrorDevelopment;

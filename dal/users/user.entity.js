@@ -49,7 +49,7 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: [true, 'La contraseña es obligatoria'],
-      minlength: 8,
+      minlength: [8, 'El {PATH} debe ser mínimo de 8 carácteres'],
     },
     confirmPassword: {
       type: String,
