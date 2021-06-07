@@ -12,11 +12,17 @@ const cookieParser = require('cookie-parser');
 // const hpp = require('hpp'); TODO: Implements Prevent parameter pollution
 
 class App {
-  constructor({ router, handlerErrorNotFoundResource, handlerErrors }) {
+  constructor({
+    router,
+    handlerErrorNotFoundResource,
+    handlerErrors,
+    getEnviroment,
+  }) {
     this.app = express();
     this.router = router;
     this.handlerErrorNotFoundResource = handlerErrorNotFoundResource;
     this.handlerErrors = handlerErrors;
+    this.enviroment = getEnviroment;
 
     this.limiter = rateLimit({
       max: 100,
@@ -32,7 +38,9 @@ class App {
 
   middlewares() {
     // Basic Settings
-    this.app.use(logger('dev'));
+    this.app.use(
+      logger('dev', { skip: (req, res) => this.enviroment === 'test' })
+    );
     this.app.use(express.json({ limit: '10kb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '10kb' }));
     this.app.use(cookieParser());

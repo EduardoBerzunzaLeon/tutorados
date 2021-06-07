@@ -204,7 +204,7 @@ describe('Auth API', () => {
     before(async () => {
       const { body } = await request(app)
         .post('/api/v1/users/forgotPassword')
-        .send({ email: credentials.admin.email });
+        .send({ email: credentials.user.email });
 
       const { resetUrl } = body.data;
       tokenPassword = resetUrl.split('/').slice(-1)[0];
@@ -286,7 +286,25 @@ describe('Auth API', () => {
       );
     });
     // Current password and password Send are different
-    it('Should returned 400, sent currentPassword incorrect', async () => {
+    it('Should returned 401, recent password change ', async () => {
+      const newPassword = '123456788';
+
+      const res = await request(app)
+        .post('/api/v1/users/me/password')
+        .set({ Authorization: `Bearer ${userSaved.token}` })
+        .send({
+          password: newPassword,
+          confirmPassword: newPassword,
+          currentPassword: 'incorrectPassword',
+        });
+
+      expect(res).to.have.status(401);
+      expect(res.body.error.message).to.equal(
+        'Usuario recientemente cambio de contraseña! Por favor inicia sesión otra vez.'
+      );
+    });
+
+    it('Should returned 400, send currentPassword incorrect', async () => {
       const newPassword = '123456788';
 
       const res = await request(app)

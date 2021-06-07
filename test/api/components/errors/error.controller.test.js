@@ -5,10 +5,9 @@ const ErrorController = container.resolve('ErrorController');
 const createAppError = container.resolve('createAppError');
 const UserRepository = container.resolve('UserRepository');
 
-const { credentials } = require('../../../start.test');
 const { initialize, data } = require('../../../initialization/user');
 
-describe.only('Error controller', () => {
+describe('Error controller', () => {
   let userAdmin;
   before(async () => {
     await initialize(data);
@@ -142,5 +141,33 @@ describe.only('Error controller', () => {
     assert.equal(dtoFunction.name, 'sendErrorDevelopment');
   });
 
-  //   TODO: Implements getSpecificHandleError test
+  it('Should return a Multer Error', () => {
+    const verifyText = 'Demasiados archivos';
+    const newError = new Error('Nuevo error');
+    const multerError = {
+      ...ErrorController.cloneError(newError),
+      name: 'MulterError',
+      code: 'LIMIT_FILE_COUNT',
+    };
+
+    const error = ErrorController.getSpecificHandleError(multerError, {});
+
+    assert.deepInclude(error, {
+      isOperational: true,
+      statusCode: 400,
+      message: verifyText,
+    });
+  });
+
+  it('Should return a generic error when not catch in ifs', () => {
+    const verifyText = 'this is a generic error';
+    const genericError = new Error(verifyText);
+    const error = ErrorController.getSpecificHandleError(genericError, {});
+
+    assert.deepInclude(error, {
+      isOperational: true,
+      statusCode: 500,
+      message: verifyText,
+    });
+  });
 });

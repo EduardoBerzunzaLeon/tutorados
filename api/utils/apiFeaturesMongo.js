@@ -1,7 +1,7 @@
 class APIFeaturesMongo {
-  constructor(query, queryString) {
-    this.query = query;
+  constructor(queryString, query) {
     this.queryString = queryString;
+    this.query = query;
   }
 
   filter() {

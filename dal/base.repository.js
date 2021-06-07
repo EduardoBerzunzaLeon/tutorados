@@ -5,11 +5,8 @@ class BaseRepository {
     this.entity = entity;
   }
 
-  findAll(queryParams = {}, filterFields = {}) {
-    const features = new APIFeaturesMongo(
-      this.entity.find(filterFields),
-      queryParams
-    )
+  findAll(queryParams = {}) {
+    const features = new APIFeaturesMongo(queryParams, this.entity.find())
       .filter()
       .sort()
       .limitFields()
@@ -44,7 +41,11 @@ class BaseRepository {
   }
 
   deleteOne(params) {
-    return this.entity.deleteOne(params);
+    // console.log(Object.entries(null));
+    if (!params || (typeof params === 'object' && !Object.keys(params))) {
+      return null;
+    }
+    return this.entity.findOneAndDelete(params);
   }
 
   deleteAll() {

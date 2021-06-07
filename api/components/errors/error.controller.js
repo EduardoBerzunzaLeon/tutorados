@@ -29,6 +29,7 @@ class ErrorController {
     );
 
     const message = errorsPrepare.join('. ');
+
     return this.createAppError(message, 400);
   };
 
@@ -88,6 +89,10 @@ class ErrorController {
     if (error.name === 'TokenExpiredError') return this.handleJWTExpiredError();
     if (error?.code === 11000) return this.handleDuplicateFieldsDB(error);
     if (error.name === 'MulterError') return this.handleMulterError(error);
+
+    error.statusCode = error.statusCode || 500;
+    error.status = error.status || 'error';
+    error.isOperational = error.isOperational || true;
 
     return error;
   };

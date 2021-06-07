@@ -13,10 +13,9 @@ const { initialize, data } = require('../../../initialization/user');
 chai.use(chaiHttp);
 const request = chai.request;
 
-let tokenAdmin;
-let tokenUser;
-
 describe('Users api', () => {
+  let tokenAdmin;
+  let tokenUser;
   before(async () => {
     await initialize(data);
     const { admin, user } = credentials;

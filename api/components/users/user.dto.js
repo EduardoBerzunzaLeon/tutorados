@@ -13,8 +13,9 @@ class UserDTO {
     role: resource?.role,
   });
 
-  multiple = (resources, authUser) =>
-    resources.map((resource) => this.single(resource, authUser));
+  multiple = (resources, authUser) => {
+    return resources.map((resource) => this.single(resource, authUser));
+  };
 }
 
 module.exports = UserDTO;

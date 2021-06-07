@@ -136,7 +136,6 @@ class AuthService {
   async updatePassword(id, { password, confirmPassword, currentPassword }) {
     const user = await this.userRepository.findById(id);
 
-    console.log(user);
     if (!(await user.correctPassword(currentPassword, user.password))) {
       throw this.createAppError('Contraseña invalida.', 400);
     }

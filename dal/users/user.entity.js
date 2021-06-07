@@ -15,75 +15,70 @@ const validRoles = {
   message: '{VALUE} no es un role válido',
 };
 
-const UserSchema = new Schema(
-  {
-    name: {
-      first: {
-        type: String,
-        required: [true, 'El nombre es obligatorio'],
-        trim: true,
-      },
-      last: {
-        type: String,
-        required: [true, 'Los apellidos es obligatorio'],
-        trim: true,
-      },
-    },
-    email: {
+const UserSchema = new Schema({
+  name: {
+    first: {
       type: String,
-      unique: true,
-      lowercase: true,
+      required: [true, 'El nombre es obligatorio'],
       trim: true,
-      required: [true, 'El email es obligatorio'],
-      validate: [validator.isEmail, 'Porfavor ingresa un correo valido'],
     },
-    avatar: {
+    last: {
       type: String,
-      default: 'default.jpg',
-    },
-    role: {
-      type: String,
-      enum: validRoles,
-      required: [true, 'El rol es obligatorio'],
-    },
-    password: {
-      type: String,
-      required: [true, 'La contraseña es obligatoria'],
-      minlength: [8, 'El {PATH} debe ser mínimo de 8 carácteres'],
-    },
-    confirmPassword: {
-      type: String,
-      required: [true, 'Por favor confirmar su contraseña'],
-      validate: {
-        // This only works on CREATE and SAVE!!!
-        validator: function (el) {
-          return el === this.password;
-        },
-        message: 'Las contraseñas no coinciden',
-      },
-    },
-    passwordChangedAt: Date,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
-    active: {
-      type: Boolean,
-      default: true,
-      select: false,
-    },
-    gender: {
-      type: String,
-      enum: validGenders,
-      required: [true, 'El género es obligatorio'],
-    },
-    google: {
-      type: Boolean,
-      default: false,
+      required: [true, 'El apellido es obligatorio'],
+      trim: true,
     },
   },
-  {
-    toObject: { virtuals: true },
-  }
-);
+  email: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    required: [true, 'El email es obligatorio'],
+    validate: [validator.isEmail, 'Porfavor ingresa un correo valido'],
+  },
+  avatar: {
+    type: String,
+    default: 'default.jpg',
+  },
+  role: {
+    type: String,
+    enum: validRoles,
+    required: [true, 'El rol es obligatorio'],
+  },
+  password: {
+    type: String,
+    required: [true, 'La contraseña es obligatoria'],
+    minlength: [8, 'El {PATH} debe ser mínimo de 8 carácteres'],
+  },
+  confirmPassword: {
+    type: String,
+    required: [true, 'Por favor confirmar su contraseña'],
+    validate: {
+      // This only works on CREATE and SAVE!!!
+      validator: function (el) {
+        return el === this.password;
+      },
+      message: 'Las contraseñas no coinciden',
+    },
+  },
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
+  gender: {
+    type: String,
+    enum: validGenders,
+    required: [true, 'El género es obligatorio'],
+  },
+  google: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 UserSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
@@ -91,7 +86,6 @@ UserSchema.pre('save', async function (next) {
 
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
-
   // Delete confirmPassword field
   this.confirmPassword = undefined;
   next();
@@ -100,7 +94,7 @@ UserSchema.pre('save', async function (next) {
 UserSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
-  next();
+  return next();
 });
 
 UserSchema.methods.correctPassword = async function (
@@ -133,9 +127,6 @@ UserSchema.methods.createPasswordResetToken = function () {
 
   return resetToken;
 };
-// UserSchema.virtual('fullName').get(function () {
-//   return `${this.name.first} ${this.name.last}`;
-// });
 
 // UserSchema.plugin(uniqueValidator, { message: '{PATH} ya existe' });
 // UserSchema.plugin(mongoosePaginate);
