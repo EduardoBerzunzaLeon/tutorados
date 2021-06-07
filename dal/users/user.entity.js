@@ -67,7 +67,6 @@ const UserSchema = new Schema({
   active: {
     type: Boolean,
     default: true,
-    select: false,
   },
   gender: {
     type: String,
