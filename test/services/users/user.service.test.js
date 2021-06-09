@@ -6,7 +6,9 @@ const { assert, expect } = require('chai');
 const container = require('../../../api/startup/container');
 
 const { clearDir } = container.resolve('FileService');
+const { PATH_AVATAR_UPLOAD } = container.resolve('config');
 const UserService = container.resolve('UserService');
+
 const { initialize, data } = require('../../initialization/user');
 
 describe('User Service', () => {
@@ -15,7 +17,7 @@ describe('User Service', () => {
   before(async () => {
     await Promise.all([
       await initialize(data),
-      await clearDir('./public/uploads/img/'),
+      await clearDir(PATH_AVATAR_UPLOAD),
       await copyFile(
         `${pathAssets}/avatar.png`,
         `${pathAssets}/deleteAvatar.png`
@@ -113,10 +115,7 @@ describe('User Service', () => {
 
         const [user] = await UserService.getUsers({ avatar: fileUploaded });
 
-        await access(
-          `${__dirname}/../../../public/uploads/img/${user.avatar}`,
-          constants.R_OK
-        );
+        await access(`${PATH_AVATAR_UPLOAD}${user.avatar}`, constants.R_OK);
 
         canAccess = true;
       } catch (error) {

@@ -7,6 +7,7 @@ const { assert, expect } = require('chai');
 const container = require('../../../../api/startup/container');
 const { app } = container.resolve('App');
 const { clearDir } = container.resolve('FileService');
+const { PATH_AVATAR_UPLOAD } = container.resolve('config');
 const { postAuthentication, credentials } = require('../../../start.test');
 const { initialize, data } = require('../../../initialization/user');
 
@@ -19,13 +20,12 @@ describe('Users api', () => {
   before(async () => {
     await initialize(data);
     const { admin, user } = credentials;
-
     const [{ body: adminResponse }, { body: userResponse }] = await Promise.all(
       [
         postAuthentication(admin),
         postAuthentication(user),
         // Clean img's image directory
-        clearDir('./public/uploads/img/'),
+        clearDir(PATH_AVATAR_UPLOAD),
       ]
     );
 

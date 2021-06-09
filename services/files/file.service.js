@@ -3,9 +3,10 @@ const { access, rename, unlink, readdir } = require('fs/promises');
 const { constants } = require('fs');
 
 class FileService {
-  constructor({ createAppError, generateRandomString }) {
+  constructor({ createAppError, generateRandomString, config }) {
     this.createAppError = createAppError;
     this.generateRandomString = generateRandomString;
+    this.PATH_FILE_UPLOAD = config.PATH_FILE_UPLOAD;
   }
 
   async deleteFile(path) {
@@ -28,9 +29,14 @@ class FileService {
 
   async createImageName(file, folder) {
     const ext = path.extname(file.originalname).toLowerCase();
+    if (ext === '')
+      throw this.createAppError(
+        'Es requerido que el archivo tenga una extensión',
+        400
+      );
     const imgName = this.generateRandomString(30) + ext;
-    const url = path.resolve(`public/uploads/${folder}`);
-    const urlComplete = `${url}/${imgName}`;
+    const url = path.resolve(`${this.PATH_FILE_UPLOAD}${folder}`);
+    const urlComplete = path.resolve(`${url}/${imgName}`);
 
     try {
       await access(`${url}${imgName}`, constants.R_OK);
@@ -54,9 +60,25 @@ class FileService {
 
   async saveInDB(_id, repository, image, field) {
     const { imgName, url, urlComplete } = image;
+
     try {
+      if (!imgName || !url || !urlComplete)
+        throw this.createAppError('No se encontró datos del archivos', 404);
+
       const dataUpdate = { [field]: imgName };
-      const exists = await repository.findOne(_id);
+      const exists = await repository.findById(_id);
+
+      if (!exists)
+        throw this.createAppError(
+          'No se encontro el registro en la base de datos',
+          404
+        );
+
+      if (!exists[field])
+        throw this.createAppError(
+          'No se encontro el campo en el elemento a modificar',
+          404
+        );
 
       if (exists[field] !== '' || exists[field] !== 'default.jpg') {
         await this.deleteFile(`${url}/${exists[field]}`);
@@ -67,13 +89,14 @@ class FileService {
         await this.deleteFile(urlComplete);
         throw this.createAppError(
           'Ocurrio un error al guardar la imagen a la Base de datos',
-          404
+          400
         );
       }
       return fileStored[field];
     } catch (error) {
+      if (error.isOperational) throw error;
       await this.deleteFile(urlComplete);
-      throw this.createAppError('No se pudo mover el archivo', 404);
+      throw this.createAppError('No se pudo mover el archivo', 400);
     }
   }
 
@@ -88,8 +111,11 @@ class FileService {
 
   async clearDir(dir) {
     const files = await readdir(dir);
-    const promises = files.map((file) => unlink(`${dir}${file}`));
-    await Promise.all(promises);
+
+    if (files.length > 0) {
+      const promises = files.map((file) => unlink(`${dir}${file}`));
+      await Promise.all(promises);
+    }
   }
 }
 

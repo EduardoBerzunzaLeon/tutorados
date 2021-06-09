@@ -2,6 +2,8 @@ module.exports = {
   PORT: process.env.PORT,
   API_VERSION: process.env.API_VERSION,
   PATH_TEMP: process.env.PATH_UPLOAD_TEMP,
+  PATH_FILE_UPLOAD: 'test/public/uploads/',
+  PATH_AVATAR_UPLOAD: 'test/public/uploads/img/',
   DB: {
     URL: process.env.MONGODB_URI_TEST,
   },

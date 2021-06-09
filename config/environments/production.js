@@ -1,5 +1,7 @@
 module.exports = {
   PORT: process.env.PORT,
+  PATH_FILE_UPLOAD: 'public/uploads/',
+  PATH_AVATAR_UPLOAD: 'public/uploads/img/',
   DB: {
     USERNAME: 'postgres',
     PASSWORD: process.env.DB_PASSWORD,
