@@ -9,12 +9,12 @@ const { initialize, data } = require('../../../initialization/user');
 
 describe('Error controller', () => {
   let userAdmin;
+  let genericError = createAppError('This is a generic error', 401);
+
   before(async () => {
     await initialize(data);
     userAdmin = await UserRepository.findOne({ email: data[0].email });
   });
-
-  let genericError = createAppError('This is a generic error', 401);
 
   it('Should clone the error with message and stack', () => {
     const error = ErrorController.cloneError(genericError);
@@ -159,7 +159,7 @@ describe('Error controller', () => {
     });
   });
 
-  it('Should return a generic error when not catch in ifs', () => {
+  it('Should return a generic error when not catch in if', () => {
     const verifyText = 'this is a generic error';
     const genericError = new Error(verifyText);
     const error = ErrorController.getSpecificHandleError(genericError, {});

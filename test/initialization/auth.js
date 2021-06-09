@@ -1,5 +1,11 @@
+const chai = require('chai');
+const chaiHttp = require('chai-http');
 const container = require('../../api/startup/container');
 const UserRepository = container.resolve('UserRepository');
+const { app } = container.resolve('App');
+
+chai.use(chaiHttp);
+const request = chai.request;
 
 const userSignup = {
   name: {
@@ -12,14 +18,27 @@ const userSignup = {
   gender: 'M',
 };
 
-const newCredentials = {
-  email: 'heriberto.ramon@gmail.com',
-  password: '12345678',
+const credentials = {
+  admin: {
+    email: 'eduardoberzunzal@gmail.com',
+    password: '12345678',
+  },
+  user: {
+    email: 'cindy.peña@gmail.com',
+    password: '12345678',
+  },
+  newUser: {
+    email: 'heriberto.ramon@gmail.com',
+    password: '12345678',
+  },
 };
+
+const postAuthentication = async (user) =>
+  await request(app).post('/api/v1/users/login').send(user);
 
 const data = {
   userSignup,
-  newCredentials,
+  credentials,
 };
 
 const initialize = async () => {
@@ -29,4 +48,5 @@ const initialize = async () => {
 module.exports = {
   data,
   initialize,
+  postAuthentication,
 };

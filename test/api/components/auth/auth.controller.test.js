@@ -8,20 +8,27 @@ const jwt = require('jsonwebtoken');
 const container = require('../../../../api/startup/container');
 const { app } = container.resolve('App');
 const UserRepository = container.resolve('UserRepository');
-const { postAuthentication, credentials } = require('../../../start.test');
-const { data: authData } = require('../../../initialization/auth');
+const {
+  SECURITY: { JWT_SECRET },
+} = container.resolve('config');
+
+const {
+  data: authData,
+  postAuthentication,
+} = require('../../../initialization/auth');
 const { initialize, data: userData } = require('../../../initialization/user');
 
 chai.use(chaiHttp);
 const request = chai.request;
 
-let tokenAdmin;
-let userSaved;
-
 describe('Auth API', () => {
+  const { admin, user, newUser } = authData.credentials;
+  const errorEmail = 'notexistemail@gmail.com';
+  let tokenAdmin;
+  let userSaved;
+
   before(async () => {
     await initialize(userData);
-    const { admin, user } = credentials;
 
     const [{ body: adminResponse }, { body: userResponse }] = await Promise.all(
       [postAuthentication(admin), postAuthentication(user)]
@@ -32,7 +39,7 @@ describe('Auth API', () => {
   });
 
   describe('Signup Enpoint', () => {
-    it('Should returned 400, email incorrect structure, password is required and password and confirmPassword are different', async () => {
+    it('Should return 400, email incorrect structure, password is required and password and confirmPassword are different', async () => {
       const userWithPassword = { ...authData.userSignup };
       delete userWithPassword.password;
       userWithPassword.email = 'thisisnotacorrectemail';
@@ -46,7 +53,7 @@ describe('Auth API', () => {
       );
     });
 
-    it('Should returned 401 for user already exists', async () => {
+    it('Should return 401 for user already exists', async () => {
       const res = await request(app)
         .post('/api/v1/users/signup')
         .set('content-type', 'application/x-www-form-urlencoded')
@@ -54,14 +61,14 @@ describe('Auth API', () => {
       expect(res).to.have.status(401);
     });
 
-    it('Should returned 201, create the user with active false and role user for default', async () => {
+    it('Should return 201, create the user with active false and role user for default', async () => {
       const res = await request(app)
         .post('/api/v1/users/signup')
         .send(authData.userSignup);
 
       const { iat, exp } = await promisify(jwt.verify)(
         res.body.token,
-        'rosita-es-la-m4as-perrona-del-lugar-puto-quien-l0-l3a'
+        JWT_SECRET
       );
 
       const {
@@ -76,14 +83,14 @@ describe('Auth API', () => {
   });
 
   describe('Activate Enpoint', () => {
-    it('Should returned 401 without authetication', async () => {
+    it('Should return 401 without authetication', async () => {
       const res = await request(app).patch('/api/v1/users/activate/');
 
       expect(res).to.have.status(401);
       expect(res.body.error.message).to.equal('Favor de iniciar sesión.');
     });
 
-    it('Should returned 401 with a incorrect ID', async () => {
+    it('Should return 401 with a incorrect ID', async () => {
       const res = await request(app)
         .patch('/api/v1/users/activate/null')
         .set({ Authorization: `Bearer ${userSaved.token}` });
@@ -92,7 +99,7 @@ describe('Auth API', () => {
       expect(res.body.error.message).to.equal('Invalid _id: null');
     });
 
-    it('Should returned 401 with a ID expired', async () => {
+    it('Should return 401 with a ID expired', async () => {
       const res = await request(app)
         .patch('/api/v1/users/activate/60b5231415feb740184088fd')
         .set({ Authorization: `Bearer ${userSaved.token}` });
@@ -103,7 +110,7 @@ describe('Auth API', () => {
       );
     });
 
-    it('Should returned 200, all correct', async () => {
+    it('Should return 200, all correct', async () => {
       const res = await request(app)
         .patch(`/api/v1/users/activate/${userSaved.data.id}`)
         .set({ Authorization: `Bearer ${userSaved.token}` });
@@ -113,7 +120,7 @@ describe('Auth API', () => {
   });
 
   describe('Login endpoint', () => {
-    it('Should returned 400, not provided email and password', async () => {
+    it('Should return 400, not provided email and password', async () => {
       const res = await request(app).post('/api/v1/users/login');
 
       expect(res).to.have.status(400);
@@ -122,26 +129,24 @@ describe('Auth API', () => {
       );
     });
 
-    it('Should returned 401, email correct but user not active', async () => {
-      const res = await request(app)
-        .post('/api/v1/users/login')
-        .send(authData.newCredentials);
+    it('Should return 401, email correct but user not active', async () => {
+      const res = await request(app).post('/api/v1/users/login').send(newUser);
 
       expect(res).to.have.status(401);
       expect(res.body.error.message).to.equal('Credenciales incorrectas');
     });
 
-    it('Should returned 401 email incorrect', async () => {
+    it('Should return 401 email incorrect', async () => {
       const res = await request(app)
         .post('/api/v1/users/login')
-        .send({ email: 'testError', password: '123456' });
+        .send({ email: errorEmail, password: '123456' });
       expect(res).to.have.status(401);
       expect(res.body.error.message).to.equal('Credenciales incorrectas');
     });
 
-    it('Should returned 401 email correct but password incorrect', async () => {
+    it('Should return 401 email correct but password incorrect', async () => {
       const adminIncorrect = {
-        ...credentials.admin,
+        ...admin,
         password: 'incorrectPassword',
       };
       const res = await request(app)
@@ -151,10 +156,8 @@ describe('Auth API', () => {
       expect(res.body.error.message).to.equal('Credenciales incorrectas');
     });
 
-    it('Should returned 200, success case', async () => {
-      const res = await request(app)
-        .post('/api/v1/users/login')
-        .send(credentials.admin);
+    it('Should return 200, success case', async () => {
+      const res = await request(app).post('/api/v1/users/login').send(admin);
 
       expect(res).to.have.status(200);
       assert.property(res.body, 'token');
@@ -163,29 +166,29 @@ describe('Auth API', () => {
   });
 
   describe('Logout Enpoint', () => {
-    it('Should returned 200, success case', async () => {
+    it('Should return 200, success case', async () => {
       const res = await request(app).get('/api/v1/users/logout');
       expect(res).to.have.status(200);
     });
   });
 
   describe('ForgotPassword Endpoint', () => {
-    it('Should returned 400, not send email', async () => {
+    it('Should return 400, not send email', async () => {
       const res = await request(app).post('/api/v1/users/forgotPassword');
       expect(res).to.have.status(400);
       expect(res.body.error.message).to.equal('Correo es requerido');
     });
 
-    it('Should returned 404, when de email not exists en database', async () => {
+    it('Should return 404, when de email not exists en database', async () => {
       const res = await request(app)
         .post('/api/v1/users/forgotPassword')
-        .send({ email: 'notFoundEmail@gmail.com.mx' });
+        .send({ email: errorEmail });
 
       expect(res).to.have.status(404);
       expect(res.body.error.message).to.equal('Correo no existente');
     });
 
-    it('Should returned 200, success case', async () => {
+    it('Should return 200, success case', async () => {
       await request(app).post('/api/v1/users/signup').send(authData.userSignup);
 
       const { email } = authData.userSignup;
@@ -204,13 +207,13 @@ describe('Auth API', () => {
     before(async () => {
       const { body } = await request(app)
         .post('/api/v1/users/forgotPassword')
-        .send({ email: credentials.user.email });
+        .send({ email: user.email });
 
       const { resetUrl } = body.data;
       tokenPassword = resetUrl.split('/').slice(-1)[0];
     });
 
-    it('Should returned 500, token non-existent user', async () => {
+    it('Should return 500, token non-existent user', async () => {
       const res = await request(app)
         .patch('/api/v1/users/resetPassword/12345')
         .send({ password: '1234', confirmPassword: '1234' });
@@ -219,7 +222,7 @@ describe('Auth API', () => {
       expect(res.body.error.message).to.equal('Token invalido o ha expirado.');
     });
 
-    it('Should returned 400, Not equals password and confirmPassword', async () => {
+    it('Should return 400, Not equals password and confirmPassword', async () => {
       const res = await request(app)
         .patch(`/api/v1/users/resetPassword/${tokenPassword}`)
         .send({ password: '1234', confirmPassword: '12345' });
@@ -228,7 +231,7 @@ describe('Auth API', () => {
       assert.include(res.body.error.message, 'Las contraseñas no coinciden');
     });
 
-    it('Should returned 200, set passwordResetToken and passwordResetExpires to undefined ', async () => {
+    it('Should return 200, set passwordResetToken and passwordResetExpires to undefined ', async () => {
       const res = await request(app)
         .patch(`/api/v1/users/resetPassword/${tokenPassword}`)
         .send({ password: '12345678', confirmPassword: '12345678' });
@@ -241,8 +244,9 @@ describe('Auth API', () => {
   });
 
   describe('UpdatePassword Enpoint', () => {
-    it('Should returned 401, Invalid token', async () => {
-      const newPassword = '123456788';
+    const newPassword = '123456788';
+
+    it('Should return 401, Invalid token', async () => {
       const fakeToken = `${tokenAdmin}2`;
       const res = await request(app)
         .post('/api/v1/users/me/password')
@@ -250,7 +254,7 @@ describe('Auth API', () => {
         .send({
           password: newPassword,
           confirmPassword: newPassword,
-          currentPassword: credentials.password,
+          currentPassword: admin.password,
         });
 
       expect(res).to.have.status(401);
@@ -259,7 +263,7 @@ describe('Auth API', () => {
       );
     });
 
-    it('Should returned 404, user not found', async () => {
+    it('Should return 404, user not found', async () => {
       await UserRepository.deleteOne({ email: authData.userSignup.email });
 
       const resSignUp = await request(app)
@@ -270,14 +274,13 @@ describe('Auth API', () => {
 
       const tokenNotExists = resSignUp.body.token;
 
-      const newPassword = '123456788';
       const res = await request(app)
         .post('/api/v1/users/me/password')
         .set({ Authorization: `Bearer ${tokenNotExists}` })
         .send({
           password: newPassword,
           confirmPassword: newPassword,
-          currentPassword: credentials.password,
+          currentPassword: admin.password,
         });
 
       expect(res).to.have.status(401);
@@ -286,9 +289,7 @@ describe('Auth API', () => {
       );
     });
     // Current password and password Send are different
-    it('Should returned 401, recent password change ', async () => {
-      const newPassword = '123456788';
-
+    it('Should return 401, recent password change ', async () => {
       const res = await request(app)
         .post('/api/v1/users/me/password')
         .set({ Authorization: `Bearer ${userSaved.token}` })
@@ -304,9 +305,7 @@ describe('Auth API', () => {
       );
     });
 
-    it('Should returned 400, send currentPassword incorrect', async () => {
-      const newPassword = '123456788';
-
+    it('Should return 400, send currentPassword incorrect', async () => {
       const res = await request(app)
         .post('/api/v1/users/me/password')
         .set({ Authorization: `Bearer ${tokenAdmin}` })
@@ -320,16 +319,14 @@ describe('Auth API', () => {
       expect(res.body.error.message).to.equal('Contraseña invalida.');
     });
     // success case, overhaul user that include the new token.
-    it('Should returned 200, success', async () => {
-      const newPassword = '123456788';
-
+    it('Should return 200, success', async () => {
       const res = await request(app)
         .post('/api/v1/users/me/password')
         .set({ Authorization: `Bearer ${tokenAdmin}` })
         .send({
           password: newPassword,
           confirmPassword: newPassword,
-          currentPassword: credentials.admin.password,
+          currentPassword: admin.password,
         });
 
       expect(res).to.have.status(200);

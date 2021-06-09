@@ -4,12 +4,16 @@ const container = require('../../../api/startup/container');
 
 const AuthService = container.resolve('AuthService');
 const UserService = container.resolve('UserService');
+
 const { initialize, data } = require('../../initialization/user');
-const { credentials } = require('../../start.test');
+const {
+  data: { credentials },
+} = require('../../initialization/auth');
 
 describe('Auth Service', () => {
   let idAdmin;
   let password;
+
   before(async () => {
     await initialize(data);
     const user = await UserService.getUsers({ email: data[0].email });
@@ -21,8 +25,7 @@ describe('Auth Service', () => {
     it('Should return an error, user already exists ', async () => {
       let errorVerify;
       try {
-        const user = await AuthService.signup(data[0]);
-        console.log(user);
+        await AuthService.signup(data[0]);
       } catch (error) {
         errorVerify = error;
       }
@@ -38,8 +41,7 @@ describe('Auth Service', () => {
       const newUser = { ...data[0], email: 'incorrectEmail' };
 
       try {
-        const user = await AuthService.signup(newUser);
-        console.log(user);
+        await AuthService.signup(newUser);
       } catch (error) {
         errorVerify = error;
       }

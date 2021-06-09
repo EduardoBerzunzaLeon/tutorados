@@ -8,7 +8,11 @@ const container = require('../../../../api/startup/container');
 const { app } = container.resolve('App');
 const { clearDir } = container.resolve('FileService');
 const { PATH_AVATAR_UPLOAD } = container.resolve('config');
-const { postAuthentication, credentials } = require('../../../start.test');
+
+const {
+  data: { credentials },
+  postAuthentication,
+} = require('../../../initialization/auth');
 const { initialize, data } = require('../../../initialization/user');
 
 chai.use(chaiHttp);
