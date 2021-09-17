@@ -20,6 +20,7 @@ module.exports = function ({
   router.use(AuthMiddleware.protect);
 
   router.post('/me/password', AuthController.updatePassword);
+  router.post('/renew', AuthController.renewToken);
   // router.use(AuthMiddleware.restrictTo('admin'));
 
   router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);

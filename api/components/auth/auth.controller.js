@@ -95,6 +95,10 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     self.createSendToken(user, 200, req, res);
   };
 
+  const renewToken = (self) => async (req, res) => {
+    self.createSendToken(req.user, 200, req, res);
+  };
+
   const methods = (self) => ({
     logout,
     login: self.catchAsync(login(self)),
@@ -103,6 +107,7 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     forgotPassword: self.catchAsync(forgotPassword(self)),
     resetPassword: self.catchAsync(resetPassword(self)),
     updatePassword: self.catchAsync(updatePassword(self)),
+    renewToken: self.catchAsync(renewToken(self)),
   });
 
   Object.assign(self, canSignToken(self), canCreateSendToken(self));
