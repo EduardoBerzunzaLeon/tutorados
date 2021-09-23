@@ -41,7 +41,6 @@ class BaseRepository {
   }
 
   deleteOne(params) {
-    // console.log(Object.entries(null));
     if (!params || (typeof params === 'object' && !Object.keys(params))) {
       return null;
     }
