@@ -79,10 +79,10 @@ class ErrorController {
   getSpecificHandleError = (err, { originalUrl }) => {
     const error = this.cloneError(err);
 
-    if (error.stack.startsWith('CastError'))
-      return this.handleCastErrorDB(error);
     if (error.name === 'NotFoundResourceError')
       return this.handleErrorNotFound(originalUrl);
+    if (error.stack?.startsWith('CastError'))
+      return this.handleCastErrorDB(error);
     if (error.stack.startsWith('ValidationError'))
       return this.handleValidationErrorDB(error);
     if (error.name === 'JsonWebTokenError') return this.handleJWTError();
