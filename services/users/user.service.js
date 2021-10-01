@@ -12,6 +12,10 @@ class UserService {
     return await this.userRepository.findById(id);
   }
 
+  async findActiveUser(id) {
+    return await this.userRepository.findOne({ id, active: true });
+  }
+
   async uploadAvatar(id, file) {
     // Move the temp file to images folder
     const uploadFile = this.fileService.uploadFile();

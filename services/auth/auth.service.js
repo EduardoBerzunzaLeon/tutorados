@@ -32,7 +32,7 @@ class AuthService {
     const urlWithId = `${url}${userCreated._id}`;
 
     try {
-      await this.emailService.createEmail(userCreated).sendWelcome(urlWithId);
+      // await this.emailService.createEmail(userCreated).sendWelcome(urlWithId);
       return userCreated;
     } catch (error) {
       throw this.createAppError(

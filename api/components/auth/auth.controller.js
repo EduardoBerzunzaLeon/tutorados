@@ -16,7 +16,7 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
   });
 
   const canCreateSendToken = (self) => ({
-    createSendToken: (user, statusCode, req, res) => {
+    createSendToken: (user, statusCode, req, res, withUser = true) => {
       const token = self.signToken(user._id);
       res.cookie('jwt', token, {
         expires: new Date(
@@ -27,12 +27,18 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
         secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
       });
 
-      const userSend = self.userDTO.single(user, null);
+      if (withUser) {
+        const userSend = self.userDTO.single(user, null);
+        return res.status(statusCode).json({
+          status: 'success',
+          token,
+          data: userSend,
+        });
+      }
 
       return res.status(statusCode).json({
         status: 'success',
         token,
-        data: userSend,
       });
     },
   });
@@ -42,7 +48,8 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
       self.config.API_VERSION
     }/users/activate/`;
     const user = await self.authService.signup(req.body, url);
-    self.createSendToken(user, 201, req, res);
+
+    self.createSendToken(user, 201, req, res, false);
   };
 
   const activate = (self) => async (req, res) => {

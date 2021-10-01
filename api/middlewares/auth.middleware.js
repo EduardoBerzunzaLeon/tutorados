@@ -13,7 +13,6 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     // 1) Getting token and check of it's there
     let token;
     if (req.headers.authorization?.startsWith('Bearer')) {
-      console.log(req.headers);
       token = req.headers.authorization.split(' ')[1];
     } else if (req.cookies?.jwt) {
       token = req.cookies.jwt;
@@ -30,14 +29,9 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     );
 
     // 3) Check if user still exists
-    const currentUser = await self.userService.findById(id);
+    const currentUser = await self.userService.findActiveUser(id);
     if (!currentUser) {
-      return next(
-        self.createAppError(
-          'El usuario que pertenece a este token ya no existe.',
-          401
-        )
-      );
+      return next(self.createAppError('Usuario no encontrado.', 404));
     }
 
     // 4) Check if user changed password after the token was issued
@@ -66,7 +60,7 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
         );
 
         // 2) Check if user still exists
-        const currentUser = await self.userService.findById(id);
+        const currentUser = await self.userService.findActiveUser(id);
         if (!currentUser) {
           return next(self.createAppError('Usuario no existente.', 404));
         }
