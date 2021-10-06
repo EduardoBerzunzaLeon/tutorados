@@ -30,6 +30,8 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
 
     // 3) Check if user still exists
     const currentUser = await self.userService.findActiveUser(id);
+
+    console.log(currentUser);
     if (!currentUser) {
       return next(self.createAppError('Usuario no encontrado.', 404));
     }

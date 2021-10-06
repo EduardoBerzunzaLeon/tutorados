@@ -12,8 +12,8 @@ class UserService {
     return await this.userRepository.findById(id);
   }
 
-  async findActiveUser(id) {
-    return await this.userRepository.findOne({ id, active: true });
+  async findActiveUser(_id) {
+    return await this.userRepository.findOne({ _id, active: true });
   }
 
   async uploadAvatar(id, file) {

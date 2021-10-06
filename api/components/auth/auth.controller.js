@@ -44,9 +44,12 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
   });
 
   const signup = (self) => async (req, res) => {
-    const url = `${req.protocol}://${req.get('host')}/api/${
-      self.config.API_VERSION
-    }/users/activate/`;
+    const url =
+      req.body.url ||
+      `${req.protocol}://${req.get('host')}/api/${
+        self.config.API_VERSION
+      }/users/activate/`;
+
     const user = await self.authService.signup(req.body, url);
 
     self.createSendToken(user, 201, req, res, false);
