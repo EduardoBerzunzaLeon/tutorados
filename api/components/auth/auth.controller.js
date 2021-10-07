@@ -76,10 +76,12 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     return res.status(200).json({ status: 'success' });
   };
 
-  const forgotPassword = (self) => async (req, res, next) => {
-    const url = `${req.protocol}://${req.get('host')}/api/${
-      self.config.API_VERSION
-    }/users/resetPassword/`;
+  const forgotPassword = (self) => async (req, res) => {
+    const url =
+      req.body.url ||
+      `${req.protocol}://${req.get('host')}/api/${
+        self.config.API_VERSION
+      }/users/resetPassword/`;
 
     const resetUrl = await self.authService.forgotPassword(req.body, url);
 
