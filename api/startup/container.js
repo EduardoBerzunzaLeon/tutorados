@@ -29,6 +29,7 @@ const {
   AppError,
   generateHashedToken,
   generateRandomString,
+  googleVerify,
 } = require('../utils/');
 
 // Middlewares
@@ -70,6 +71,7 @@ container
     getEnviroment: asFunction(getEnviroment).singleton(),
     generateHashedToken: asFunction(() => generateHashedToken).singleton(),
     generateRandomString: asFunction(() => generateRandomString).singleton(),
+    generateRandomString: asFunction(() => googleVerify).singleton(),
   })
   // middlewares
   .register({

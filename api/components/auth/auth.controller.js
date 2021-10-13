@@ -68,6 +68,11 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     self.createSendToken(user, 200, req, res);
   };
 
+  const googleSignIn = (self) => async (req, res) => {
+    const user = await self.authService.googleSignIn(req.body);
+    self.createSendToken(user, 200, req, res);
+  };
+
   const logout = (req, res) => {
     res.cookie('jwt', 'loggedout', {
       expires: new Date(Date.now() + 10 * 1000),
@@ -121,6 +126,7 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     resetPassword: self.catchAsync(resetPassword(self)),
     updatePassword: self.catchAsync(updatePassword(self)),
     renewToken: self.catchAsync(renewToken(self)),
+    googleSignIn: self.catchAsync(googleSignIn(self)),
   });
 
   Object.assign(self, canSignToken(self), canCreateSendToken(self));

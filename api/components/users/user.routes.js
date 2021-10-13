@@ -11,6 +11,8 @@ module.exports = function ({
 
   router.post('/signup', AuthController.signup);
   router.post('/login', AuthController.login);
+  router.post('/google', AuthController.googleSignIn);
+
   router.get('/logout', AuthController.logout);
   router.patch('/activate/:id', AuthController.activate);
 

@@ -3,4 +3,5 @@ module.exports = {
   catchAsync: require('./catchAsync'),
   generateHashedToken: require('./generateHashedToken'),
   generateRandomString: require('./generateRandomString'),
+  googleVerify: require('./googleVerify'),
 };

@@ -1,3 +1,5 @@
+const { googleVerify } = require('../../api/utils/googleVerify');
+
 class AuthService {
   constructor({
     EmailService,
@@ -78,6 +80,46 @@ class AuthService {
       throw this.createAppError('Credenciales incorrectas', 401);
 
     return user;
+  }
+
+  async googleSignIn({ idToken }) {
+    if (!idToken) throw this.createAppError('El ID TOKEN es requerido', 400);
+
+    try {
+      const { email, avatar, name } = await googleVerify(idToken);
+
+      const userExists = await this.userRepository.findOne({ email });
+
+      if (!userExists) {
+        const userCreated = await this.userRepository.create({
+          name,
+          email,
+          password: 'refrest-hash',
+          confirmPassword: 'refrest-hash',
+          gender: 'M',
+          avatar,
+          active: true,
+          role: 'user',
+          google: true,
+        });
+
+        if (!userCreated)
+          throw this.createAppError('No se pudo concluir su registro', 500);
+
+        return userCreated;
+      }
+
+      if (!userExists.active) {
+        throw this.createAppError(
+          'Hable con el administrador, usuario bloqueado.',
+          401
+        );
+      }
+
+      return userExists;
+    } catch (error) {
+      throw this.createAppError('El Token no se pudo verificar.', 400);
+    }
   }
 
   async forgotPassword({ email }, url) {
