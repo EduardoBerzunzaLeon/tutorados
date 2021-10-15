@@ -71,7 +71,7 @@ container
     getEnviroment: asFunction(getEnviroment).singleton(),
     generateHashedToken: asFunction(() => generateHashedToken).singleton(),
     generateRandomString: asFunction(() => generateRandomString).singleton(),
-    generateRandomString: asFunction(() => googleVerify).singleton(),
+    googleVerify: asFunction(googleVerify).singleton(),
   })
   // middlewares
   .register({

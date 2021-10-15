@@ -1,16 +1,16 @@
-const { googleVerify } = require('../../api/utils/googleVerify');
-
 class AuthService {
   constructor({
     EmailService,
     UserRepository,
     createAppError,
     generateHashedToken,
+    googleVerify,
   }) {
     this.emailService = EmailService;
     this.userRepository = UserRepository;
     this.createAppError = createAppError;
     this.generateHashedToken = generateHashedToken;
+    this.googleVerify = googleVerify;
   }
 
   async signup({ name, email, password, confirmPassword, gender }, url) {
@@ -82,11 +82,11 @@ class AuthService {
     return user;
   }
 
-  async googleSignIn({ idToken }) {
-    if (!idToken) throw this.createAppError('El ID TOKEN es requerido', 400);
+  async googleSignIn({ tokenId }) {
+    if (!tokenId) throw this.createAppError('El ID TOKEN es requerido', 400);
 
     try {
-      const { email, avatar, name } = await googleVerify(idToken);
+      const { email, avatar, name } = await this.googleVerify(tokenId);
 
       const userExists = await this.userRepository.findOne({ email });
 
@@ -116,8 +116,21 @@ class AuthService {
         );
       }
 
-      return userExists;
+      const userUpdated = await this.userRepository.updateById(userExists.id, {
+        avatar,
+        name,
+        google: true,
+      });
+
+      if (!userUpdated)
+        throw this.createAppError(
+          'No se pudo vincular sus datos de Google',
+          500
+        );
+
+      return userUpdated;
     } catch (error) {
+      console.log(error);
       throw this.createAppError('El Token no se pudo verificar.', 400);
     }
   }

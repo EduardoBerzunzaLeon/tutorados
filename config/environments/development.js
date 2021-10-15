@@ -19,4 +19,7 @@ module.exports = {
     JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
     JWT_COOKIE_EXPIRES_IN: process.env.JWT_COOKIE_EXPIRES_IN,
   },
+  GOOGLE: {
+    CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  },
 };
