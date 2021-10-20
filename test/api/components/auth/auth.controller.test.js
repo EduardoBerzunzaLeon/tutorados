@@ -275,6 +275,7 @@ describe('Auth API', () => {
       const res = await request(app)
         .post('/api/v1/users/me/password')
         .set({ Authorization: `Bearer ${tokenNotExists}` })
+
         .send({
           password: newPassword,
           confirmPassword: newPassword,
