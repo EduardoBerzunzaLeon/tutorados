@@ -13,8 +13,6 @@ class Database {
         useCreateIndex: true,
         useFindAndModify: false,
       });
-
-      console.log('DB Online');
     } catch (error) {
       throw new Error('Error a la hora de inicializar la BD');
     }

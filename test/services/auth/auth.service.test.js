@@ -207,7 +207,7 @@ describe('Auth Service', () => {
   });
 
   describe('Update Password Service', () => {
-    it("Should return an error, id didn't send", async () => {
+    it('Should return an error, the id was not sent', async () => {
       let errorVerify;
       const incorrectPassword = '1231234';
       try {
@@ -223,7 +223,7 @@ describe('Auth Service', () => {
       assert.typeOf(errorVerify, 'Error');
       assert.include(
         errorVerify.message,
-        `Cast to ObjectId failed for value "${incorrectPassword}" at path "_id" for model "User"`
+        `Cast to ObjectId failed for value "${incorrectPassword}" (type string) at path "_id" for model "User"`
       );
     });
 

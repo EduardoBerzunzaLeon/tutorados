@@ -71,14 +71,12 @@ describe('Auth API', () => {
         JWT_SECRET
       );
 
-      const {
-        data: { role, active },
-      } = res.body;
+      const { status } = res.body;
 
       expect(res).to.have.status(201);
+      expect(status).to.equal('success');
+      assert.property(res.body, 'token');
       assert.isAbove(exp, iat, 'Expires is greater than date now');
-      expect(role).to.equal('user');
-      expect(active).to.equal(false);
     });
   });
 
@@ -283,10 +281,8 @@ describe('Auth API', () => {
           currentPassword: admin.password,
         });
 
-      expect(res).to.have.status(401);
-      expect(res.body.error.message).to.equal(
-        'El usuario que pertenece a este token ya no existe.'
-      );
+      expect(res).to.have.status(404);
+      expect(res.body.error.message).to.equal('Usuario no encontrado.');
     });
     // Current password and password Send are different
     it('Should return 401, recent password change ', async () => {

@@ -18,12 +18,6 @@ const { UserController, UserDTO, userRoutes } = require('../components/users');
 const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
 
-// Utils
-// const catchAsync = require('../utils/catchAsync');
-// const AppError = require('../utils/appError');
-// const generateHashedToken = require('../utils/generateHashedToken');
-// const generateRandomString = require('../utils/generateRandomString');
-
 const {
   catchAsync,
   AppError,

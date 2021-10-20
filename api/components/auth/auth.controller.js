@@ -105,7 +105,6 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
   };
 
   const resetPassword = (self) => async (req, res) => {
-    console.log('reset password controller');
     const user = await self.authService.resetPassword(
       req.params.token,
       req.body
