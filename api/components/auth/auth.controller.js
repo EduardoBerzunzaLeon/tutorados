@@ -73,6 +73,11 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     self.createSendToken(user, 200, req, res);
   };
 
+  const facebookSignIn = (self) => async (req, res) => {
+    const user = await self.authService.facebookSignIn(req.body);
+    self.createSendToken(user, 200, req, res);
+  };
+
   const logout = (req, res) => {
     res.cookie('jwt', 'loggedout', {
       expires: new Date(Date.now() + 10 * 1000),
@@ -127,6 +132,7 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     updatePassword: self.catchAsync(updatePassword(self)),
     renewToken: self.catchAsync(renewToken(self)),
     googleSignIn: self.catchAsync(googleSignIn(self)),
+    facebookSignIn: self.catchAsync(facebookSignIn(self)),
   });
 
   Object.assign(self, canSignToken(self), canCreateSendToken(self));

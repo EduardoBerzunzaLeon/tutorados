@@ -5,12 +5,14 @@ class AuthService {
     createAppError,
     generateHashedToken,
     googleVerify,
+    facebookVerify,
   }) {
     this.emailService = EmailService;
     this.userRepository = UserRepository;
     this.createAppError = createAppError;
     this.generateHashedToken = generateHashedToken;
     this.googleVerify = googleVerify;
+    this.facebookVerify = facebookVerify;
   }
 
   async signup({ name, email, password, confirmPassword, gender }, url) {
@@ -94,8 +96,8 @@ class AuthService {
         const userCreated = await this.userRepository.create({
           name,
           email,
-          password: 'refrest-hash',
-          confirmPassword: 'refrest-hash',
+          password: 'google-code',
+          confirmPassword: 'google-code',
           gender: 'M',
           avatar,
           active: true,
@@ -120,6 +122,7 @@ class AuthService {
         avatar,
         name,
         google: true,
+        facebook: false,
       });
 
       if (!userUpdated)
@@ -130,7 +133,59 @@ class AuthService {
 
       return userUpdated;
     } catch (error) {
-      console.log(error);
+      throw this.createAppError('El Token no se pudo verificar.', 400);
+    }
+  }
+
+  async facebookSignIn({ tokenId }) {
+    if (!tokenId) throw this.createAppError('El ID TOKEN es requerido', 400);
+
+    try {
+      const { email, avatar, name } = await this.facebookVerify(tokenId);
+
+      const userExists = await this.userRepository.findOne({ email });
+
+      if (!userExists) {
+        const userCreated = await this.userRepository.create({
+          name,
+          email,
+          password: 'facebook-code',
+          confirmPassword: 'facebook-code',
+          gender: 'M',
+          avatar,
+          active: true,
+          role: 'user',
+          facebook: true,
+        });
+
+        if (!userCreated)
+          throw this.createAppError('No se pudo concluir su registro', 500);
+
+        return userCreated;
+      }
+
+      if (!userExists.active) {
+        throw this.createAppError(
+          'Hable con el administrador, usuario bloqueado.',
+          401
+        );
+      }
+
+      const userUpdated = await this.userRepository.updateById(userExists.id, {
+        avatar,
+        name,
+        facebook: true,
+        google: false,
+      });
+
+      if (!userUpdated)
+        throw this.createAppError(
+          'No se pudo vincular sus datos de Google',
+          500
+        );
+
+      return userUpdated;
+    } catch (error) {
       throw this.createAppError('El Token no se pudo verificar.', 400);
     }
   }

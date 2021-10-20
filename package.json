@@ -39,6 +39,7 @@
     "mongoose": "5.13.11",
     "multer": "1.4.2",
     "nodemailer": "^6.5.0",
+    "sauth-token": "0.0.5",
     "validator": "^13.6.0",
     "xss-clean": "0.1.1"
   }

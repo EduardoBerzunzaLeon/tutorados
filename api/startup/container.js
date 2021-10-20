@@ -30,6 +30,7 @@ const {
   generateHashedToken,
   generateRandomString,
   googleVerify,
+  facebookVerify,
 } = require('../utils/');
 
 // Middlewares
@@ -72,6 +73,7 @@ container
     generateHashedToken: asFunction(() => generateHashedToken).singleton(),
     generateRandomString: asFunction(() => generateRandomString).singleton(),
     googleVerify: asFunction(googleVerify).singleton(),
+    facebookVerify: asFunction(facebookVerify).singleton(),
   })
   // middlewares
   .register({

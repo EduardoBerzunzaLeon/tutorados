@@ -77,6 +77,10 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  facebook: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 UserSchema.pre('save', async function (next) {

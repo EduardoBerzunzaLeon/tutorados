@@ -4,4 +4,5 @@ module.exports = {
   generateHashedToken: require('./generateHashedToken'),
   generateRandomString: require('./generateRandomString'),
   googleVerify: require('./googleVerify'),
+  facebookVerify: require('./facebookVerify'),
 };
