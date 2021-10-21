@@ -7,7 +7,7 @@ const UserService = container.resolve('UserService');
 
 const { initialize, data } = require('../../initialization/user');
 const {
-  data: { credentials },
+  data: { credentials, tokens },
 } = require('../../initialization/auth');
 
 describe('Auth Service', () => {
@@ -110,8 +110,83 @@ describe('Auth Service', () => {
     });
   });
 
+  describe('Google Signin Service', () => {
+    it('Should return an error 400, token id is required', async () => {
+      let errorVerify;
+      try {
+        await AuthService.googleSignIn({});
+      } catch (error) {
+        errorVerify = error;
+      }
+      assert.typeOf(errorVerify, 'Error');
+      assert.equal(errorVerify.message, 'El ID TOKEN es requerido');
+      assert.equal(errorVerify.statusCode, 400);
+    });
+
+    it('Should return an error 400, expired token', async () => {
+      let errorVerify;
+      try {
+        await AuthService.googleSignIn({ tokenId: tokens.googleToken });
+      } catch (error) {
+        errorVerify = error;
+      }
+      assert.typeOf(errorVerify, 'Error');
+      assert.equal(errorVerify.message, 'El Token no se pudo verificar.');
+      assert.equal(errorVerify.statusCode, 400);
+    });
+
+    it('Should return 400, incorrect token', async () => {
+      let errorVerify;
+      try {
+        await AuthService.googleSignIn({ tokenId: 'incorrectToken' });
+      } catch (error) {
+        errorVerify = error;
+      }
+      assert.typeOf(errorVerify, 'Error');
+      assert.equal(errorVerify.message, 'El Token no se pudo verificar.');
+      assert.equal(errorVerify.statusCode, 400);
+    });
+  });
+
+  describe('Facebook Signin Service', () => {
+    it('Should return an error 400, token id is required', async () => {
+      let errorVerify;
+      try {
+        await AuthService.facebookSignIn({});
+      } catch (error) {
+        errorVerify = error;
+      }
+      assert.typeOf(errorVerify, 'Error');
+      assert.equal(errorVerify.message, 'El ID TOKEN es requerido');
+      assert.equal(errorVerify.statusCode, 400);
+    });
+
+    it('Should return an error 400, expired token', async () => {
+      let errorVerify;
+      try {
+        await AuthService.facebookSignIn({ tokenId: tokens.facebookToken });
+      } catch (error) {
+        errorVerify = error;
+      }
+      assert.typeOf(errorVerify, 'Error');
+      assert.equal(errorVerify.message, 'El Token no se pudo verificar.');
+      assert.equal(errorVerify.statusCode, 400);
+    });
+
+    it('Should return 400, incorrect token', async () => {
+      let errorVerify;
+      try {
+        await AuthService.facebookSignIn({ tokenId: 'incorrectToken' });
+      } catch (error) {
+        errorVerify = error;
+      }
+      assert.typeOf(errorVerify, 'Error');
+      assert.equal(errorVerify.message, 'El Token no se pudo verificar.');
+      assert.equal(errorVerify.statusCode, 400);
+    });
+  });
+
   describe('Forgot Password Service', () => {
-    // forgotpassword
     it("Should return an error, email doesn't send", async () => {
       let errorVerify;
 
@@ -157,7 +232,7 @@ describe('Auth Service', () => {
       assert.include(urlReset, urlTest);
     });
   });
-  // resetpassword
+
   describe('Reset Password Service', () => {
     //
     it('Should return an error without sent token', async () => {

@@ -10,6 +10,7 @@ const { app } = container.resolve('App');
 const UserRepository = container.resolve('UserRepository');
 const {
   SECURITY: { JWT_SECRET },
+  PATH_ENDPOINT,
 } = container.resolve('config');
 
 const {
@@ -24,6 +25,7 @@ const request = chai.request;
 describe('Auth API', () => {
   const { admin, user, newUser } = authData.credentials;
   const errorEmail = 'notexistemail@gmail.com';
+  const urlEndpoint = `${PATH_ENDPOINT}/users`;
   let tokenAdmin;
   let userSaved;
 
@@ -44,7 +46,7 @@ describe('Auth API', () => {
       delete userWithPassword.password;
       userWithPassword.email = 'thisisnotacorrectemail';
       const res = await request(app)
-        .post('/api/v1/users/signup')
+        .post(`${urlEndpoint}/signup`)
         .send(userWithPassword);
 
       expect(res).to.have.status(400);
@@ -55,7 +57,7 @@ describe('Auth API', () => {
 
     it('Should return 401 for user already exists', async () => {
       const res = await request(app)
-        .post('/api/v1/users/signup')
+        .post(`${urlEndpoint}/signup`)
         .set('content-type', 'application/x-www-form-urlencoded')
         .send(userData[0]);
       expect(res).to.have.status(401);
@@ -63,7 +65,7 @@ describe('Auth API', () => {
 
     it('Should return 201, create the user with active false and role user for default', async () => {
       const res = await request(app)
-        .post('/api/v1/users/signup')
+        .post(`${urlEndpoint}/signup`)
         .send(authData.userSignup);
 
       const { iat, exp } = await promisify(jwt.verify)(
@@ -80,9 +82,57 @@ describe('Auth API', () => {
     });
   });
 
+  describe('Google Signin Enpoint', () => {
+    it('Should return 400, token id is required', async () => {
+      const res = await request(app).post(`${urlEndpoint}/google`);
+      expect(res).to.have.status(400);
+      expect(res.body.error.message).to.equal('El ID TOKEN es requerido');
+    });
+
+    it('Should return 400, expired token', async () => {
+      const res = await request(app).post(`${urlEndpoint}/google`).send({
+        tokenId: authData.tokens.googleToken,
+      });
+      expect(res).to.have.status(400);
+      expect(res.body.error.message).to.equal('El Token no se pudo verificar.');
+    });
+
+    it('Should return 400, incorrect token', async () => {
+      const res = await request(app)
+        .post(`${urlEndpoint}/google`)
+        .send({ tokenId: 'incorrectToken' });
+      expect(res).to.have.status(400);
+      expect(res.body.error.message).to.equal('El Token no se pudo verificar.');
+    });
+  });
+
+  describe('Facebook Signin Enpoint', () => {
+    it('Should return 400, token id is required', async () => {
+      const res = await request(app).post(`${urlEndpoint}/facebook`);
+      expect(res).to.have.status(400);
+      expect(res.body.error.message).to.equal('El ID TOKEN es requerido');
+    });
+
+    it('Should return 400, expired token', async () => {
+      const res = await request(app).post(`${urlEndpoint}/facebook`).send({
+        tokenId: authData.tokens.facebookToken,
+      });
+      expect(res).to.have.status(400);
+      expect(res.body.error.message).to.equal('El Token no se pudo verificar.');
+    });
+
+    it('Should return 400, incorrect token', async () => {
+      const res = await request(app)
+        .post(`${urlEndpoint}/facebook`)
+        .send({ tokenId: 'incorrectToken' });
+      expect(res).to.have.status(400);
+      expect(res.body.error.message).to.equal('El Token no se pudo verificar.');
+    });
+  });
+
   describe('Activate Enpoint', () => {
     it('Should return 401 without authetication', async () => {
-      const res = await request(app).patch('/api/v1/users/activate/');
+      const res = await request(app).patch(`${urlEndpoint}/activate`);
 
       expect(res).to.have.status(401);
       expect(res.body.error.message).to.equal('Favor de iniciar sesión.');
@@ -90,7 +140,7 @@ describe('Auth API', () => {
 
     it('Should return 401 with a incorrect ID', async () => {
       const res = await request(app)
-        .patch('/api/v1/users/activate/null')
+        .patch(`${urlEndpoint}/activate/null`)
         .set({ Authorization: `Bearer ${userSaved.token}` });
 
       expect(res).to.have.status(400);
@@ -99,7 +149,7 @@ describe('Auth API', () => {
 
     it('Should return 401 with a ID expired', async () => {
       const res = await request(app)
-        .patch('/api/v1/users/activate/60b5231415feb740184088fd')
+        .patch(`${urlEndpoint}/activate/60b5231415feb740184088fd`)
         .set({ Authorization: `Bearer ${userSaved.token}` });
 
       expect(res).to.have.status(400);
@@ -110,7 +160,7 @@ describe('Auth API', () => {
 
     it('Should return 200, all correct', async () => {
       const res = await request(app)
-        .patch(`/api/v1/users/activate/${userSaved.data.id}`)
+        .patch(`${urlEndpoint}/activate/${userSaved.data.id}`)
         .set({ Authorization: `Bearer ${userSaved.token}` });
 
       expect(res).to.have.status(200);
@@ -119,7 +169,7 @@ describe('Auth API', () => {
 
   describe('Login endpoint', () => {
     it('Should return 400, not provided email and password', async () => {
-      const res = await request(app).post('/api/v1/users/login');
+      const res = await request(app).post(`${urlEndpoint}/login`);
 
       expect(res).to.have.status(400);
       expect(res.body.error.message).to.equal(
@@ -128,7 +178,7 @@ describe('Auth API', () => {
     });
 
     it('Should return 401, email correct but user not active', async () => {
-      const res = await request(app).post('/api/v1/users/login').send(newUser);
+      const res = await request(app).post(`${urlEndpoint}/login`).send(newUser);
 
       expect(res).to.have.status(401);
       expect(res.body.error.message).to.equal('Credenciales incorrectas');
@@ -136,8 +186,9 @@ describe('Auth API', () => {
 
     it('Should return 401 email incorrect', async () => {
       const res = await request(app)
-        .post('/api/v1/users/login')
+        .post(`${urlEndpoint}/login`)
         .send({ email: errorEmail, password: '123456' });
+
       expect(res).to.have.status(401);
       expect(res.body.error.message).to.equal('Credenciales incorrectas');
     });
@@ -148,14 +199,14 @@ describe('Auth API', () => {
         password: 'incorrectPassword',
       };
       const res = await request(app)
-        .post('/api/v1/users/login')
+        .post(`${urlEndpoint}/login`)
         .send(adminIncorrect);
       expect(res).to.have.status(401);
       expect(res.body.error.message).to.equal('Credenciales incorrectas');
     });
 
     it('Should return 200, success case', async () => {
-      const res = await request(app).post('/api/v1/users/login').send(admin);
+      const res = await request(app).post(`${urlEndpoint}/login`).send(admin);
 
       expect(res).to.have.status(200);
       assert.property(res.body, 'token');
@@ -165,21 +216,21 @@ describe('Auth API', () => {
 
   describe('Logout Enpoint', () => {
     it('Should return 200, success case', async () => {
-      const res = await request(app).get('/api/v1/users/logout');
+      const res = await request(app).get(`${urlEndpoint}/logout`);
       expect(res).to.have.status(200);
     });
   });
 
   describe('ForgotPassword Endpoint', () => {
     it('Should return 400, not send email', async () => {
-      const res = await request(app).post('/api/v1/users/forgotPassword');
+      const res = await request(app).post(`${urlEndpoint}/forgotPassword`);
       expect(res).to.have.status(400);
       expect(res.body.error.message).to.equal('Correo es requerido');
     });
 
     it('Should return 404, when de email not exists en database', async () => {
       const res = await request(app)
-        .post('/api/v1/users/forgotPassword')
+        .post(`${urlEndpoint}/forgotPassword`)
         .send({ email: errorEmail });
 
       expect(res).to.have.status(404);
@@ -187,11 +238,13 @@ describe('Auth API', () => {
     });
 
     it('Should return 200, success case', async () => {
-      await request(app).post('/api/v1/users/signup').send(authData.userSignup);
+      await request(app)
+        .post(`${urlEndpoint}/signup`)
+        .send(authData.userSignup);
 
       const { email } = authData.userSignup;
       const res = await request(app)
-        .post('/api/v1/users/forgotPassword')
+        .post(`${urlEndpoint}/forgotPassword`)
         .send({ email });
 
       expect(res).to.have.status(200);
@@ -204,7 +257,7 @@ describe('Auth API', () => {
 
     before(async () => {
       const { body } = await request(app)
-        .post('/api/v1/users/forgotPassword')
+        .post(`${urlEndpoint}/forgotPassword`)
         .send({ email: user.email });
 
       const { resetUrl } = body.data;
@@ -213,7 +266,7 @@ describe('Auth API', () => {
 
     it('Should return 500, token non-existent user', async () => {
       const res = await request(app)
-        .patch('/api/v1/users/resetPassword/12345')
+        .patch(`${urlEndpoint}/resetPassword/12345`)
         .send({ password: '1234', confirmPassword: '1234' });
 
       expect(res).to.have.status(500);
@@ -222,7 +275,7 @@ describe('Auth API', () => {
 
     it('Should return 400, Not equals password and confirmPassword', async () => {
       const res = await request(app)
-        .patch(`/api/v1/users/resetPassword/${tokenPassword}`)
+        .patch(`${urlEndpoint}/resetPassword/${tokenPassword}`)
         .send({ password: '1234', confirmPassword: '12345' });
 
       expect(res).to.have.status(400);
@@ -231,7 +284,7 @@ describe('Auth API', () => {
 
     it('Should return 200, set passwordResetToken and passwordResetExpires to undefined ', async () => {
       const res = await request(app)
-        .patch(`/api/v1/users/resetPassword/${tokenPassword}`)
+        .patch(`${urlEndpoint}/resetPassword/${tokenPassword}`)
         .send({ password: '12345678', confirmPassword: '12345678' });
 
       expect(res).to.have.status(200);
@@ -247,7 +300,7 @@ describe('Auth API', () => {
     it('Should return 401, Invalid token', async () => {
       const fakeToken = `${tokenAdmin}2`;
       const res = await request(app)
-        .post('/api/v1/users/me/password')
+        .post(`${urlEndpoint}/me/password`)
         .set({ Authorization: `Bearer ${fakeToken}` })
         .send({
           password: newPassword,
@@ -265,7 +318,7 @@ describe('Auth API', () => {
       await UserRepository.deleteOne({ email: authData.userSignup.email });
 
       const resSignUp = await request(app)
-        .post('/api/v1/users/signup')
+        .post(`${urlEndpoint}/signup`)
         .send(authData.userSignup);
 
       await UserRepository.deleteOne({ email: authData.userSignup.email });
@@ -273,7 +326,7 @@ describe('Auth API', () => {
       const tokenNotExists = resSignUp.body.token;
 
       const res = await request(app)
-        .post('/api/v1/users/me/password')
+        .post(`${urlEndpoint}/me/password`)
         .set({ Authorization: `Bearer ${tokenNotExists}` })
 
         .send({
@@ -288,7 +341,7 @@ describe('Auth API', () => {
     // Current password and password Send are different
     it('Should return 401, recent password change ', async () => {
       const res = await request(app)
-        .post('/api/v1/users/me/password')
+        .post(`${urlEndpoint}/me/password`)
         .set({ Authorization: `Bearer ${userSaved.token}` })
         .send({
           password: newPassword,
@@ -304,7 +357,7 @@ describe('Auth API', () => {
 
     it('Should return 400, send currentPassword incorrect', async () => {
       const res = await request(app)
-        .post('/api/v1/users/me/password')
+        .post(`${urlEndpoint}/me/password`)
         .set({ Authorization: `Bearer ${tokenAdmin}` })
         .send({
           password: newPassword,
@@ -318,7 +371,7 @@ describe('Auth API', () => {
     // success case, overhaul user that include the new token.
     it('Should return 200, success', async () => {
       const res = await request(app)
-        .post('/api/v1/users/me/password')
+        .post(`${urlEndpoint}/me/password`)
         .set({ Authorization: `Bearer ${tokenAdmin}` })
         .send({
           password: newPassword,
