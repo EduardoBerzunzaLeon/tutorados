@@ -179,9 +179,8 @@ describe('Auth API', () => {
 
     it('Should return 401, email correct but user not active', async () => {
       const res = await request(app).post(`${urlEndpoint}/login`).send(newUser);
-
       expect(res).to.have.status(401);
-      expect(res.body.error.message).to.equal('Credenciales incorrectas');
+      expect(res.body.error.message).to.equal('El correo aun no ha sido activado');
     });
 
     it('Should return 401 email incorrect', async () => {
@@ -214,6 +213,7 @@ describe('Auth API', () => {
     });
   });
 
+  // TODO: Implements test in sendEmailVerify method
   describe('Logout Enpoint', () => {
     it('Should return 200, success case', async () => {
       const res = await request(app).get(`${urlEndpoint}/logout`);

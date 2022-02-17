@@ -46,6 +46,24 @@ class AuthService {
     }
   }
 
+  async sendEmailVerify({ email }, url) {
+    const userExists = await this.userRepository.findOne({ email, active: false });
+    
+    if (!userExists) throw this.createAppError('Su cuenta ya se activo o no se encuentra el correo solicitado.', 400);
+    const urlWithId = `${url}${userExists._id}`;
+
+    try {
+      await this.emailService.createEmail(userExists).sendWelcome(urlWithId);
+      return userExists;
+    } catch (error) {
+      throw this.createAppError(
+        'Ocurrio un error al enviar el correo. Intentelo más tarde.',
+        500
+      );
+    }
+  }
+
+
   async activate({ id }) {
     if (!id) throw this.createAppError('El id es requerido', 401);
     const userUpdated = await this.userRepository.updateById(id, {
@@ -66,6 +84,13 @@ class AuthService {
         400
       );
 
+    const userInactive = await this.userRepository.findOne({
+      email,
+      active: false,
+    });
+
+    if (userInactive) throw this.createAppError('El correo aun no ha sido activado', 401);
+    
     const user = await this.userRepository.findOne({
       email,
       active: true,
@@ -192,11 +217,8 @@ class AuthService {
 
   async forgotPassword({ email }, url) {
     if (!email) throw this.createAppError('Correo es requerido', 400);
-
     const user = await this.userRepository.findOne({ email });
-
     if (!user) throw this.createAppError('Correo no existente', 404);
-
     const resetToken = user.createPasswordResetToken();
     const resetURL = `${url}${resetToken}`;
     await this.userRepository.save(user, {

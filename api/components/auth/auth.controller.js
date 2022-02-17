@@ -103,6 +103,24 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
       },
     });
   };
+  
+  const sendEmailVerify = (self) => async (req, res) => {
+    const url =
+      req.body.url ||
+      `${req.protocol}://${req.get('host')}/api/${
+        self.config.API_VERSION
+      }/users/resetPassword/`;
+
+    const resetUrl = await self.authService.sendEmailVerify(req.body, url);
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Token enviado a su correo.',
+      data: {
+        resetUrl,
+      },
+    });
+  };
 
   const resetPassword = (self) => async (req, res) => {
     const user = await self.authService.resetPassword(
@@ -127,6 +145,7 @@ module.exports = ({ config, UserDTO, AuthService, catchAsync }) => {
     signup: self.catchAsync(signup(self)),
     activate: self.catchAsync(activate(self)),
     forgotPassword: self.catchAsync(forgotPassword(self)),
+    sendEmailVerify: self.catchAsync(sendEmailVerify(self)),
     resetPassword: self.catchAsync(resetPassword(self)),
     updatePassword: self.catchAsync(updatePassword(self)),
     renewToken: self.catchAsync(renewToken(self)),

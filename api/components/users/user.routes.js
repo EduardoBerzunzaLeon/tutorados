@@ -19,7 +19,8 @@ module.exports = function ({
 
   router.post('/forgotPassword', AuthController.forgotPassword);
   router.patch('/resetPassword/:token', AuthController.resetPassword);
-
+  
+  router.post('/sendEmailVerify', AuthController.sendEmailVerify);
   router.use(AuthMiddleware.protect);
 
   router.post('/me/password', AuthController.updatePassword);
