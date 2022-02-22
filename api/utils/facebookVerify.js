@@ -8,12 +8,13 @@ function facebookVerify() {
       },
     });
 
-    const { email, picture, first_name, last_name } = await sAuth
+    const data = await sAuth
       .driver('facebook')
       .getUserByToken(token);
 
+    const { id, picture, first_name, last_name } = data;
     const userEntity = {
-      email,
+      email: `${id}@facebookgenerated.com`,
       avatar: picture,
       name: {
         first: first_name,

@@ -167,7 +167,8 @@ class AuthService {
 
     try {
       const { email, avatar, name } = await this.facebookVerify(tokenId);
-
+      console.log(tokenId);
+      console.log(email);
       const userExists = await this.userRepository.findOne({ email });
 
       if (!userExists) {
@@ -211,6 +212,7 @@ class AuthService {
 
       return userUpdated;
     } catch (error) {
+      // console.log(error);
       throw this.createAppError('El Token no se pudo verificar.', 400);
     }
   }
