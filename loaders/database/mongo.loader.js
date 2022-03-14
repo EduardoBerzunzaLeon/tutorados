@@ -14,6 +14,7 @@ class Database {
         useFindAndModify: false,
       });
     } catch (error) {
+      console.log(error);
       throw new Error('Error a la hora de inicializar la BD');
     }
   }

@@ -11,6 +11,7 @@ class UserDTO {
     email: resource?.email,
     active: resource?.active,
     role: resource?.role,
+    avatar: resource?.avatar
   });
 
   multiple = (resources, authUser) => {

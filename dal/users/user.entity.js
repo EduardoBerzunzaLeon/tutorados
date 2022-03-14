@@ -68,6 +68,10 @@ const UserSchema = new Schema({
     type: Boolean,
     default: true,
   },
+  blocked: {
+    type: Boolean,
+    default: false,
+  },
   gender: {
     type: String,
     enum: validGenders,

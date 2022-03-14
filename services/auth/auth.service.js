@@ -68,6 +68,7 @@ class AuthService {
     if (!id) throw this.createAppError('El id es requerido', 401);
     const userUpdated = await this.userRepository.updateById(id, {
       active: true,
+      blocked: true
     });
 
     if (!userUpdated) {
@@ -94,6 +95,7 @@ class AuthService {
     const user = await this.userRepository.findOne({
       email,
       active: true,
+      blocked: false
     });
 
     if (!user) throw this.createAppError('Credenciales incorrectas', 401);
