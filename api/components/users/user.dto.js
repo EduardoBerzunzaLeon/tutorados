@@ -10,6 +10,7 @@ class UserDTO {
     gender: resource?.gender,
     email: resource?.email,
     active: resource?.active,
+    blocked: resource?.blocked,
     role: resource?.role,
     avatar: resource?.avatar
   });

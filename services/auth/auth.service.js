@@ -27,6 +27,7 @@ class AuthService {
       confirmPassword,
       gender,
       active: false,
+      blocked: false,
       role: 'user',
     });
 
