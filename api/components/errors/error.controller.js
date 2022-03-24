@@ -13,7 +13,7 @@ class ErrorController {
   };
 
   handleCastErrorDB = ({ path, value }) => {
-    const msg = `Invalid ${path}: ${value}`;
+    const msg = `${path} invalido: ${value}`;
     return this.createAppError(msg, 400);
   };
 
@@ -29,7 +29,6 @@ class ErrorController {
     );
 
     const message = errorsPrepare.join('. ');
-
     return this.createAppError(message, 400);
   };
 
@@ -80,16 +79,16 @@ class ErrorController {
     const error = this.cloneError(err);
 
     if (error.name === 'NotFoundResourceError')
-      return this.handleErrorNotFound(originalUrl);
+    return this.handleErrorNotFound(originalUrl);
     if (error.stack?.startsWith('CastError'))
-      return this.handleCastErrorDB(error);
+    return this.handleCastErrorDB(error);
     if (error.stack.startsWith('ValidationError'))
-      return this.handleValidationErrorDB(error);
+    return this.handleValidationErrorDB(error);
     if (error.name === 'JsonWebTokenError') return this.handleJWTError();
     if (error.name === 'TokenExpiredError') return this.handleJWTExpiredError();
     if (error?.code === 11000) return this.handleDuplicateFieldsDB(error);
     if (error.name === 'MulterError') return this.handleMulterError(error);
-
+    
     error.statusCode = error.statusCode || 500;
     error.status = error.status || 'error';
     error.isOperational = error.isOperational || true;

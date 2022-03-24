@@ -1,7 +1,8 @@
 class UserService {
-  constructor({ UserRepository, FileService }) {
+  constructor({ UserRepository, FileService, createAppError }) {
     this.userRepository = UserRepository;
     this.fileService = FileService;
+    this.createAppError = createAppError;
   }
 
   async getUsers(query) {
@@ -9,7 +10,24 @@ class UserService {
   }
 
   async findById(id) {
-    return await this.userRepository.findById(id);
+
+    if(!id) {
+      throw this.createAppError(
+        'El ID es obligatorio',
+        400
+      );
+    }
+
+    const user = await this.userRepository.findById(id);
+
+    if(!user) {
+      throw this.createAppError(
+        'ID incorrecto',
+        404
+      );
+    }
+
+    return user;
   }
 
   async findActiveUser(_id) {
@@ -29,6 +47,18 @@ class UserService {
       'avatar'
     );
     return imageSavedInDB;
+  }
+
+  async updateById(id, { name, gender }) {
+
+    if (!name || !gender) throw this.createAppError('Todos los campos son obligatorios', 402);
+
+    const userUpdated = await this.userRepository.updateById(id, { name, gender });
+
+    if (!userUpdated)
+      throw this.createAppError('No se pudo actualizar los datos', 400);
+
+    return userUpdated;
   }
 }
 

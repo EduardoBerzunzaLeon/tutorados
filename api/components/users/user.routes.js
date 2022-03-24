@@ -23,17 +23,19 @@ module.exports = function ({
   router.post('/sendEmailVerify', AuthController.sendEmailVerify);
   router.use(AuthMiddleware.protect);
 
-  router.post('/me/password', AuthController.updatePassword);
   router.post('/renew', AuthController.renewToken);
-  // router.use(AuthMiddleware.restrictTo('admin'));
-
-  router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
-  // router.get('/', UserController.getUsers);
+  router.post('/me/password', AuthController.updatePassword);
   router.patch(
     '/avatar',
     UploadSingleFile(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i, '2000', 'avatar'),
     UserController.updateAvatar
-  );
+    );
+    
+
+  router.get('/:id', UserController.getUserById);
+  router.put('/:id', UserController.updateUser);
+
+  router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
 
   return router;
 };

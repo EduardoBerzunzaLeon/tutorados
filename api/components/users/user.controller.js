@@ -22,6 +22,29 @@ module.exports = ({
       data: usersSend,
     });
   };
+  
+  const getUserById = (self) => async (req, res) => {
+    const { id } = req.params;
+    
+    const user = await self.userService.findById(id);
+    const userSend =  self.userDTO.single(user, null);
+    return res.status(200).json({ 
+      status: 'success',
+      data: userSend
+    })
+  }
+  
+  
+  const updateUser = (self) => async (req, res) => {
+    const { id } = req.params;
+    const user = await self.userService.updateById(id, req.body);
+    const userSend = self.userDTO.single(user, null);
+
+    return res.status(200).json({
+      status: 'success',
+      data: userSend,
+    });
+  };
 
   const updateAvatar = (self) => async (req, res) => {
     const { file, user } = req;
@@ -37,7 +60,9 @@ module.exports = ({
 
   const methods = (self) => ({
     getUsers: self.catchAsync(getUsers(self)),
+    getUserById: self.catchAsync(getUserById(self)),
     updateAvatar: self.catchAsync(updateAvatar(self)),
+    updateUser: self.catchAsync(updateUser(self)),
   });
 
   return methods(self);
