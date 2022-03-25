@@ -24,7 +24,8 @@ module.exports = function ({
   router.use(AuthMiddleware.protect);
 
   router.post('/renew', AuthController.renewToken);
-  router.post('/me/password', AuthController.updatePassword);
+  router.patch('/me/password', AuthController.updatePassword);
+  
   router.patch(
     '/avatar',
     UploadSingleFile(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i, '2000', 'avatar'),
@@ -33,7 +34,7 @@ module.exports = function ({
     
 
   router.get('/:id', UserController.getUserById);
-  router.put('/:id', UserController.updateUser);
+  router.patch('/:id', UserController.updateUser);
 
   router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
 
