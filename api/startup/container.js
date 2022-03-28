@@ -17,6 +17,7 @@ const getEnviroment = require('../utils/getEnviroment');
 const { UserController, UserDTO, userRoutes } = require('../components/users');
 const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
+const { FileController, fileRoutes } = require('../components/files');
 
 const {
   catchAsync,
@@ -86,7 +87,11 @@ container
     UserService: asClass(UserService).singleton(),
     UserRepository: asClass(UserRepository).singleton(),
     UserEntity: asValue(UserEntity),
-    // FIXME: Move later
+  })
+  // Files
+  .register({
+    FileController: asFunction(FileController).singleton(),
+    fileRoutes: asFunction(fileRoutes).singleton(),
     FileService: asClass(FileService).singleton(),
   })
   .register({

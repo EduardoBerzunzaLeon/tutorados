@@ -57,6 +57,9 @@ class ErrorController {
     return this.createAppError(message, 400);
   };
 
+  handleErrorMongo = () => 
+    this.createAppError('Error en el servidor, favor de intentarlo más tarde', 500);
+
   handleJWTError = () =>
     this.createAppError('Invalid token. Please log in again!', 401);
 
@@ -88,6 +91,7 @@ class ErrorController {
     if (error.name === 'TokenExpiredError') return this.handleJWTExpiredError();
     if (error?.code === 11000) return this.handleDuplicateFieldsDB(error);
     if (error.name === 'MulterError') return this.handleMulterError(error);
+    if (error.stack?.startsWith('MongooseError')) return this.handleErrorMongo();
     
     error.statusCode = error.statusCode || 500;
     error.status = error.status || 'error';

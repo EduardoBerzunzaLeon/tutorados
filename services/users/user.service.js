@@ -40,13 +40,12 @@ class UserService {
     const image = await uploadFile.bind(this.fileService, file)();
 
     // Save Image in DataBase
-    const imageSavedInDB = await this.fileService.saveInDB(
+    return await this.fileService.saveInDB(
       id,
       this.userRepository,
       image,
       'avatar'
     );
-    return imageSavedInDB;
   }
 
   async updateById(id, { name, gender }) {

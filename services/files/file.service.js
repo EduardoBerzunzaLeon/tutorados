@@ -7,6 +7,7 @@ class FileService {
     this.createAppError = createAppError;
     this.generateRandomString = generateRandomString;
     this.PATH_FILE_UPLOAD = config.PATH_FILE_UPLOAD;
+    this.PATH_STATIC_FILES = config.PATH_STATIC_FILES;
   }
 
   async deleteFile(path) {
@@ -107,6 +108,21 @@ class FileService {
       await this.uploadRealFile(file.path, fileUpload.urlComplete);
       return fileUpload;
     };
+  }
+
+  async getImage(imgName, folder = 'img') {
+    if(imgName.startsWith('http')) {
+      return imgName;
+    }
+    const url = path.resolve(`${this.PATH_FILE_UPLOAD}${folder}`);
+    const urlComplete = path.resolve(`${url}/${imgName}`);
+
+    try {
+      await access(urlComplete, constants.R_OK);
+      return urlComplete
+    } catch (error) {
+      return path.resolve(`${this.PATH_FILE_UPLOAD}img/noimage.png`);
+    }
   }
 
   async clearDir(dir) {

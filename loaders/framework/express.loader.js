@@ -1,3 +1,5 @@
+const path = require('path');
+
 const express = require('express');
 const cors = require('cors');
 const logger = require('morgan');
@@ -35,12 +37,14 @@ class App {
     // Error Handlers
     this.errorHandlers();
   }
-
+  
   middlewares() {
     // Basic Settings
+    
     this.app.use(
       logger('dev', { skip: (req, res) => this.enviroment === 'test' })
-    );
+      );
+    
     this.app.use(express.json({ limit: '10kb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '10kb' }));
     this.app.use(cookieParser());

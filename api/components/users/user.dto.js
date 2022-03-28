@@ -1,5 +1,8 @@
 class UserDTO {
+
+  getCompleteURLAvatar = (avatar) => `${process.env.PATH_STATIC_FILES}${avatar}`
   // TODO: Implementar el authUser
+
   single = (resource, authUser) => ({
     id: resource._id,
     name: {
@@ -12,7 +15,7 @@ class UserDTO {
     active: resource?.active,
     blocked: resource?.blocked,
     role: resource?.role,
-    avatar: resource?.avatar
+    avatar: this.getCompleteURLAvatar(resource?.avatar)
   });
 
   multiple = (resources, authUser) => {
