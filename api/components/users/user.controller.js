@@ -14,11 +14,12 @@ module.exports = ({
   };
 
   const getUsers = (self) => async (req, res) => {
-    const users = await self.userService.getUsers(req.query);
+    const [ total, users ] = await self.userService.getUsers(req.query);
     const usersSend = self.userDTO.multiple(users, null);
 
     return res.status(200).json({
       status: 'success',
+      total,
       data: usersSend,
     });
   };

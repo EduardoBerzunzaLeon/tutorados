@@ -1,6 +1,8 @@
 class UserDTO {
 
-  getCompleteURLAvatar = (avatar) => `${process.env.PATH_STATIC_FILES}${avatar}`
+  getCompleteURLAvatar = (avatar) => (avatar.startsWith('http')) 
+    ? avatar 
+    : `${process.env.PATH_STATIC_FILES}${avatar}`;
   // TODO: Implementar el authUser
 
   single = (resource, authUser) => ({

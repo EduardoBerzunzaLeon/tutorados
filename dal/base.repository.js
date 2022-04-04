@@ -5,14 +5,17 @@ class BaseRepository {
     this.entity = entity;
   }
 
-  findAll(queryParams = {}) {
+  async findAll(queryParams = {}) {
     const features = new APIFeaturesMongo(queryParams, this.entity.find())
       .filter()
       .sort()
       .limitFields()
       .paginate();
 
-    return features.query;
+      return await Promise.all([
+        this.entity.countDocuments(),
+        features.query
+      ]);
   }
 
   findById(id, popOptions) {

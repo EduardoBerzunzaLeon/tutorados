@@ -6,7 +6,7 @@ class APIFeaturesMongo {
 
   filter() {
     const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'sortOrder'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // 1B) Advanced filtering
@@ -22,8 +22,15 @@ class APIFeaturesMongo {
 
   sort() {
     if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(',').join(' ');
-      this.query = this.query.sort(sortBy);
+      const sortBy = this.queryString.sort.split(',');
+      
+      const result = (this.queryString.sortOrder) 
+        ? sortBy.reduce((prev, current) => (Object.keys(prev).length === 0 && Object.getPrototypeOf(prev) === Object.prototype)
+          ? { [current]: this.queryString.sortOrder }
+          : {...prev, [current]: 1}, {})
+        : sortBy.join(' ');
+      
+      this.query = this.query.sort(result);
     } else {
       this.query = this.query.sort('-createdAt');
     }

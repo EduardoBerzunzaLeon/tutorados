@@ -48,11 +48,11 @@ class UserService {
     );
   }
 
-  async updateById(id, { name, gender }) {
+  async updateById(id, { name, email, gender}) {
 
     if (!name || !gender) throw this.createAppError('Todos los campos son obligatorios', 402);
 
-    const userUpdated = await this.userRepository.updateById(id, { name, gender });
+    const userUpdated = await this.userRepository.updateById(id, { name, email, gender });
 
     if (!userUpdated)
       throw this.createAppError('No se pudo actualizar los datos', 400);
