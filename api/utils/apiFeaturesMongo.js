@@ -8,13 +8,14 @@ class APIFeaturesMongo {
     const queryObj = { ...this.queryString };
     const excludedFields = ['page', 'sort', 'limit', 'fields', 'sortOrder'];
     excludedFields.forEach((el) => delete queryObj[el]);
-
+    
     // 1B) Advanced filtering
     const queryStr = JSON.stringify(queryObj).replace(
       /\b(gte|gt|lte|lt|regex)\b/g,
       (match) => `$${match}`
-    );
-
+      ).replace('_', '.');
+      
+    
     this.query = this.query.find(JSON.parse(queryStr));
 
     return this;
