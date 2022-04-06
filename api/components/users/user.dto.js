@@ -1,5 +1,8 @@
 class UserDTO {
 
+  constructor({ features }) {
+    this.ucwords = features;
+  }
   getCompleteURLAvatar = (avatar) => (avatar.startsWith('http')) 
     ? avatar 
     : `${process.env.PATH_STATIC_FILES}${avatar}`;
@@ -8,7 +11,7 @@ class UserDTO {
   single = (resource, authUser) => ({
     id: resource._id,
     name: {
-      first: resource.name.first,
+      first: this.ucwords(resource.name.first),
       last: resource.name.last,
     },
     fullname: `${resource.name.first} ${resource.name.last}`,

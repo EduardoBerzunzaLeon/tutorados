@@ -5,4 +5,5 @@ module.exports = {
   generateRandomString: require('./generateRandomString'),
   googleVerify: require('./googleVerify'),
   facebookVerify: require('./facebookVerify'),
+  features: require('./features'),
 };

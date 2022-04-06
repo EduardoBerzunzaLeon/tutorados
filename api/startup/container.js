@@ -26,6 +26,7 @@ const {
   generateRandomString,
   googleVerify,
   facebookVerify,
+  features,
 } = require('../utils/');
 
 // Middlewares
@@ -69,6 +70,7 @@ container
     generateRandomString: asFunction(() => generateRandomString).singleton(),
     googleVerify: asFunction(googleVerify).singleton(),
     facebookVerify: asFunction(facebookVerify).singleton(),
+    features: asFunction(() => features).singleton(),
   })
   // middlewares
   .register({

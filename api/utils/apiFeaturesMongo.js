@@ -7,21 +7,21 @@ class APIFeaturesMongo {
 
   filter() {
     const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'fields', 'sortOrder'];
-    excludedFields.forEach((el) => delete queryObj[el]);
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'sortOrder', 'global'];
+    excludedFields.forEach((el) => {
+      if(el === 'global' && queryObj[el]) {
+        queryObj['$text'] = {$search : queryObj[el]?.regex ?? ''};
+      }
+      delete queryObj[el];
+    });
     
     // 1B) Advanced filtering
     const queryStr = JSON.stringify(queryObj).replace(
-      /\b(gte|gt|lte|lt|regex|global)\b/g,
-      (match) => {
-        // TODO FINISHE THIS
-        if(match === 'regex' )
-      }
+      /\b(gte|gt|lte|lt|regex)\b/g,
+      (match) =>  `$${match}`
       )
       .replace('_', '.');
-      // {$text: {$search: searchString}}
-// `$${match}`
-      console.log(queryStr);
+
     this.queryFind = JSON.parse(queryStr);
     this.query = this.query.find(JSON.parse(queryStr));
       
