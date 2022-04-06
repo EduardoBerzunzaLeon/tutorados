@@ -17,6 +17,8 @@ module.exports = ({
     const [ total, users ] = await self.userService.getUsers(req.query);
     const usersSend = self.userDTO.multiple(users, null);
 
+    console.log(total);
+
     return res.status(200).json({
       status: 'success',
       total,

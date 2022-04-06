@@ -21,11 +21,13 @@ const UserSchema = new Schema({
       type: String,
       required: [true, 'El nombre es obligatorio'],
       trim: true,
+      lowercase: true,
     },
     last: {
       type: String,
       required: [true, 'El apellido es obligatorio'],
       trim: true,
+      lowercase: true,
     },
   },
   email: {
@@ -43,6 +45,7 @@ const UserSchema = new Schema({
   role: {
     type: String,
     enum: validRoles,
+    lowercase: true,
     required: [true, 'El rol es obligatorio'],
   },
   password: {
@@ -137,5 +140,5 @@ UserSchema.methods.createPasswordResetToken = function () {
 
 // UserSchema.plugin(uniqueValidator, { message: '{PATH} ya existe' });
 // UserSchema.plugin(mongoosePaginate);
-
+UserSchema.index( { "$**": "text" } );
 module.exports = model('User', UserSchema);

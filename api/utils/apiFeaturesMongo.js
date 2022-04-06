@@ -2,6 +2,7 @@ class APIFeaturesMongo {
   constructor(queryString, query) {
     this.queryString = queryString;
     this.query = query;
+    this.queryFind = null;
   }
 
   filter() {
@@ -11,13 +12,19 @@ class APIFeaturesMongo {
     
     // 1B) Advanced filtering
     const queryStr = JSON.stringify(queryObj).replace(
-      /\b(gte|gt|lte|lt|regex)\b/g,
-      (match) => `$${match}`
-      ).replace('_', '.');
-      
-    
+      /\b(gte|gt|lte|lt|regex|global)\b/g,
+      (match) => {
+        // TODO FINISHE THIS
+        if(match === 'regex' )
+      }
+      )
+      .replace('_', '.');
+      // {$text: {$search: searchString}}
+// `$${match}`
+      console.log(queryStr);
+    this.queryFind = JSON.parse(queryStr);
     this.query = this.query.find(JSON.parse(queryStr));
-
+      
     return this;
   }
 

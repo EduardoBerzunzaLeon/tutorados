@@ -3,7 +3,8 @@ module.exports = {
   API_VERSION: process.env.API_VERSION,
   PATH_TEMP: process.env.PATH_UPLOAD_TEMP,
   PATH_FILE_UPLOAD: 'public/uploads/',
-  PATH_AVATAR_UPLOAD: 'public/uploads/img/',PATH_STATIC_FILES: process.env.PATH_STATIC_FILES,
+  PATH_AVATAR_UPLOAD: 'public/uploads/img/',
+  PATH_STATIC_FILES: process.env.PATH_STATIC_FILES,
   DB: {
     URL: process.env.MONGODB_URI,
   },

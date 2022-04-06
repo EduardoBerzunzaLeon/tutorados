@@ -12,8 +12,9 @@ class BaseRepository {
       .limitFields()
       .paginate();
 
+      
       return await Promise.all([
-        this.entity.find(features.query).countDocuments(),
+        this.entity.find(features.queryFind).countDocuments(),
         features.query
       ]);
   }
