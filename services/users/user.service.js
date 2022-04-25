@@ -59,6 +59,34 @@ class UserService {
 
     return userUpdated;
   }
+
+  async updateUserByAdmin(id, { first, last, email, gender, role }, file) {
+
+
+    const name = { first, last };
+
+    console.log(file);
+    if (!name || !gender || !role || !gender || !email) throw this.createAppError('Todos los campos son obligatorios', 400);
+
+    if(file) {
+      const uploadFile = this.fileService.uploadFile();
+      const image = await uploadFile.bind(this.fileService, file)();
+  
+      await this.fileService.saveInDB(
+        id,
+        this.userRepository,
+        image,
+        'avatar'
+      );
+    }
+
+    const userUpdated = await this.userRepository.updateById(id, { name, email, gender, role });
+
+    if (!userUpdated)
+      throw this.createAppError('No se pudo actualizar los datos', 400);
+
+    return userUpdated;
+  }
 }
 
 module.exports = UserService;

@@ -81,6 +81,7 @@ class ErrorController {
   getSpecificHandleError = (err, { originalUrl }) => {
     const error = this.cloneError(err);
 
+    console.log(error);
     if (error.name === 'NotFoundResourceError')
     return this.handleErrorNotFound(originalUrl);
     if (error.stack?.startsWith('CastError'))

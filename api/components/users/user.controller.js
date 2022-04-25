@@ -61,11 +61,24 @@ module.exports = ({
     });
   };
 
+  const updateUserByAdmin = (self) => async (req, res) => {
+    const { id } = req.params;
+    const { file } = req;
+    const user = await self.userService.updateUserByAdmin(id, req.body, file);
+    const userSend = self.userDTO.single(user, null);
+
+    return res.status(200).json({
+      status: 'success',
+      data: userSend,
+    });
+  };
+
   const methods = (self) => ({
     getUsers: self.catchAsync(getUsers(self)),
     getUserById: self.catchAsync(getUserById(self)),
     updateAvatar: self.catchAsync(updateAvatar(self)),
     updateUser: self.catchAsync(updateUser(self)),
+    updateUserByAdmin: self.catchAsync(updateUserByAdmin(self)),
   });
 
   return methods(self);

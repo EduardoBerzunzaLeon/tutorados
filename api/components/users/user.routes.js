@@ -37,6 +37,13 @@ module.exports = function ({
   router.patch('/:id', UserController.updateUser);
 
   router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
+  router.patch('/:id/admin', 
+  [
+    AuthMiddleware.restrictTo('admin'),
+    UploadSingleFile(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i, '2000', 'avatar'),
+  ],
+  UserController.updateUserByAdmin);
+  // router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
 
   return router;
 };
