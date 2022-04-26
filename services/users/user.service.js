@@ -5,6 +5,13 @@ class UserService {
     this.createAppError = createAppError;
   }
 
+
+  checkFields({ name, gender, role, blocked, email }) {
+    if (!name || !gender || !role || !blocked || !email) {
+      throw this.createAppError('Todos los campos son obligatorios', 400);
+    }
+  }
+
   async getUsers(query) {
     return await this.userRepository.findAll(query);
   }
@@ -60,13 +67,12 @@ class UserService {
     return userUpdated;
   }
 
-  async updateUserByAdmin(id, { first, last, email, gender, role }, file) {
+  async updateUserByAdmin(id, { first, last, email, gender, role, blocked }, file) {
 
 
     const name = { first, last };
 
-    console.log(file);
-    if (!name || !gender || !role || !gender || !email) throw this.createAppError('Todos los campos son obligatorios', 400);
+    this.checkFields({ name, gender, role, blocked, email });
 
     if(file) {
       const uploadFile = this.fileService.uploadFile();
@@ -80,13 +86,90 @@ class UserService {
       );
     }
 
-    const userUpdated = await this.userRepository.updateById(id, { name, email, gender, role });
+    const userUpdated = await this.userRepository.updateById(id, { name, email, gender, role, blocked });
 
     if (!userUpdated)
       throw this.createAppError('No se pudo actualizar los datos', 400);
 
     return userUpdated;
   }
+  
+  async createUserByAdmin({ first, last, email, gender, role, blocked }, file) {
+
+    const name = { first, last };
+
+    this.checkFields({ name, gender, role, blocked, email });
+
+    const userExists = await this.userRepository.findOne({ email });
+
+    if ( userExists ) throw this.createAppError('Usuario ya existe', 401);
+
+    const userCreated = await this.userRepository.create({
+      name,
+      email,
+      password: '123456789',
+      confirmPassword: '123456789',
+      gender,
+      active: true,
+      blocked,
+      role,
+    });
+
+    if (!userCreated)
+      throw this.createAppError('No se pudo concluir su registro', 500);
+
+
+    if(file) {
+      const uploadFile = this.fileService.uploadFile();
+      const image = await uploadFile.bind(this.fileService, file)();
+  
+      await this.fileService.saveInDB(
+        userCreated.id,
+        this.userRepository,
+        image,
+        'avatar'
+      );
+    }
+
+    return userCreated;
+  }
+
+
+  async updatePasswordByAdmin(id,{ password, confirmPassword }) {
+
+    if(!id || !password || !confirmPassword) {
+      throw this.createAppError('Todos los campos son obligatorios', 400);
+    }
+
+    const user = await this.userRepository.findById(id);
+
+    if (!user)
+      throw this.createAppError('No se encontro el usuario', 400);
+
+    user.password = password;
+    user.confirmPassword = confirmPassword;
+
+    await this.userRepository.save(user);
+
+    return user;
+  }  
+
+
+  async changeBlockedByAdmin(id, { blocked }) {
+
+    if(!id || typeof blocked !== 'boolean') {
+      throw this.createAppError('Todos los campos son obligatorios', 400);      
+    }
+
+    const user = await this.userRepository.updateById(id, { blocked });
+
+    if (!user)
+      throw this.createAppError('No se pudo actualizar los datos', 400);
+
+    return user;
+
+  }
+
 }
 
 module.exports = UserService;

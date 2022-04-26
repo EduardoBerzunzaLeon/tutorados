@@ -43,6 +43,17 @@ module.exports = function ({
     UploadSingleFile(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i, '2000', 'avatar'),
   ],
   UserController.updateUserByAdmin);
+
+  
+  router.post('/', 
+  [
+    AuthMiddleware.restrictTo('admin'),
+    UploadSingleFile(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i, '2000', 'avatar'),
+  ],
+  UserController.createUserByAdmin);
+
+  router.patch('/:id/password', AuthMiddleware.restrictTo('admin'), UserController.updatePasswordByAdmin);
+  router.patch('/:id/blocked', AuthMiddleware.restrictTo('admin'), UserController.changeBlockedByAdmin);
   // router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
 
   return router;
