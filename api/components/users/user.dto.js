@@ -12,7 +12,7 @@ class UserDTO {
     id: resource._id,
     name: {
       first: this.ucwords(resource.name.first),
-      last: resource.name.last,
+      last: this.ucwords(resource.name.last),
     },
     fullname: `${resource.name.first} ${resource.name.last}`,
     gender: resource?.gender,
