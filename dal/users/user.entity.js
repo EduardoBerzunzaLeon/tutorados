@@ -90,7 +90,7 @@ const UserSchema = new Schema({
   },
 });
 
-UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function(next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next();
 
@@ -101,7 +101,7 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function(next) {
   if (!this.isModified('password') || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
   return next();

@@ -1,20 +1,24 @@
 const { createContainer, asValue, asClass, asFunction } = require('awilix');
 
-// loaders
+// * loaders
 const App = require('../../loaders/framework/express.loader');
 const Database = require('../../loaders/database/mongo.loader');
 
-// startup
+// * startup
 const Server = require('./server');
 const Startup = require('./Startup');
 const config = require('../../config/environments');
 const router = require('../router');
 
-// Helpers
+// * Helpers
 const getEnviroment = require('../utils/getEnviroment');
 
-// Application
+// * Application
 const { UserController, UserDTO, userRoutes } = require('../components/users');
+const { SubjectController, SubjectDTO, subjectRoutes } = require('../components/subjects');
+const { CourseController, CourseDTO, courseRoutes } = require('../components/courses');
+const { ProfessorController, ProfessorDTO, professorRoutes } = require('../components/professors');
+
 const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
 const { FileController, fileRoutes } = require('../components/files');
@@ -29,7 +33,7 @@ const {
   features,
 } = require('../utils/');
 
-// Middlewares
+// * Middlewares
 const {
   handlerErrorNotFoundResource,
   handlerErrors,
@@ -37,20 +41,26 @@ const {
   uploadSingleFile,
 } = require('../middlewares');
 
-// Services
+// * Services
 const UserService = require('../../services/users/user.service');
+const SubjectService = require('../../services/subjects/subject.service');
+const CourseService = require('../../services/courses/course.service');
+const ProfessorService = require('../../services/professors/professor.service');
 const AuthService = require('../../services/auth/auth.service');
 const FileService = require('../../services/files/file.service');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 
-// Data Access Layer
+// * Data Access Layer
 const { UserRepository, UserEntity } = require('../../dal/users');
+const { SubjectRepository, SubjectEntity } = require('../../dal/subjects');
+const { CourseRepository, CourseEntity } = require('../../dal/courses');
+const { ProfessorRepository, ProfessorEntity } = require('../../dal/professors');
 
 const container = createContainer();
 
 container
-  // Startup
+  // * Startup
   .register({
     App: asClass(App).singleton(),
     Database: asClass(Database).singleton(),
@@ -59,7 +69,7 @@ container
     config: asValue(config),
     router: asFunction(router).singleton(),
   })
-  // Utils
+  // * Utils
   .register({
     createAppError: asFunction(
       () => (message, statusCode) => new AppError(message, statusCode)
@@ -72,7 +82,7 @@ container
     facebookVerify: asFunction(facebookVerify).singleton(),
     features: asFunction(() => features).singleton(),
   })
-  // middlewares
+  // * middlewares
   .register({
     handlerErrorNotFoundResource: asFunction(
       () => handlerErrorNotFoundResource
@@ -81,7 +91,7 @@ container
     AuthMiddleware: asFunction(authMiddleware).singleton(),
     UploadSingleFile: asFunction(uploadSingleFile).singleton(),
   })
-  // Users
+  // * Users
   .register({
     UserController: asFunction(UserController).singleton(),
     userRoutes: asFunction(userRoutes).singleton(),
@@ -90,7 +100,34 @@ container
     UserRepository: asClass(UserRepository).singleton(),
     UserEntity: asValue(UserEntity),
   })
-  // Files
+  // * Subjects
+  .register({
+    SubjectController: asFunction(SubjectController).singleton(),
+    subjectRoutes: asFunction(subjectRoutes).singleton(),
+    SubjectDTO: asClass(SubjectDTO).singleton(),
+    SubjectService: asClass(SubjectService).singleton(),
+    SubjectRepository: asClass(SubjectRepository).singleton(),
+    SubjectEntity: asValue(SubjectEntity),
+  })
+  // * Courses
+  .register({
+    CourseController: asFunction(CourseController).singleton(),
+    courseRoutes: asFunction(courseRoutes).singleton(),
+    CourseDTO: asClass(CourseDTO).singleton(),
+    CourseService: asClass(CourseService).singleton(),
+    CourseRepository: asClass(CourseRepository).singleton(),
+    CourseEntity: asValue(CourseEntity),
+  })
+  // * Professors
+  .register({
+    ProfessorController: asFunction(ProfessorController).singleton(),
+    professorRoutes: asFunction(professorRoutes).singleton(),
+    ProfessorDTO: asClass(ProfessorDTO).singleton(),
+    ProfessorService: asClass(ProfessorService).singleton(),
+    ProfessorRepository: asClass(ProfessorRepository).singleton(),
+    ProfessorEntity: asValue(ProfessorEntity),
+  })
+  // * Files
   .register({
     FileController: asFunction(FileController).singleton(),
     fileRoutes: asFunction(fileRoutes).singleton(),

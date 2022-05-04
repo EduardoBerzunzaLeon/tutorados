@@ -12,7 +12,7 @@ class UserService {
     }
   }
 
-  async getUsers(query) {
+  async findUsers(query) {
     return await this.userRepository.findAll(query);
   }
 
@@ -46,7 +46,6 @@ class UserService {
     const uploadFile = this.fileService.uploadFile();
     const image = await uploadFile.bind(this.fileService, file)();
 
-    // Save Image in DataBase
     return await this.fileService.saveInDB(
       id,
       this.userRepository,
@@ -68,7 +67,6 @@ class UserService {
   }
 
   async updateUserByAdmin(id, { first, last, email, gender, role, blocked }, file) {
-
 
     const name = { first, last };
 
@@ -134,7 +132,6 @@ class UserService {
     return userCreated;
   }
 
-
   async updatePasswordByAdmin(id,{ password, confirmPassword }) {
 
     if(!id || !password || !confirmPassword) {
@@ -155,7 +152,7 @@ class UserService {
   }  
 
 
-  async changeBlockedByAdmin(id, { blocked }) {
+  async updateBlockedByAdmin(id, { blocked }) {
 
     if(!id || typeof blocked !== 'boolean') {
       throw this.createAppError('Todos los campos son obligatorios', 400);      

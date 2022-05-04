@@ -13,8 +13,8 @@ module.exports = ({
     catchAsync,
   };
 
-  const getUsers = (self) => async (req, res) => {
-    const [ total, users ] = await self.userService.getUsers(req.query);
+  const findUsers = (self) => async (req, res) => {
+    const [ total, users ] = await self.userService.findUsers(req.query);
     const usersSend = self.userDTO.multiple(users, null);
 
     return res.status(200).json({
@@ -24,7 +24,7 @@ module.exports = ({
     });
   };
   
-  const getUserById = (self) => async (req, res) => {
+  const findUserById = (self) => async (req, res) => {
     const { id } = req.params;
     
     const user = await self.userService.findById(id);
@@ -94,10 +94,10 @@ module.exports = ({
     });
   };
 
-  const changeBlockedByAdmin = (self) => async (req, res) => {
+  const updateBlockedByAdmin = (self) => async (req, res) => {
 
     const { id } = req.params;
-    const user = await self.userService.changeBlockedByAdmin(id, req.body);
+    const user = await self.userService.updateBlockedByAdmin(id, req.body);
     const userSend = self.userDTO.single(user, null);
 
     return res.status(200).json({
@@ -107,14 +107,14 @@ module.exports = ({
   };
 
   const methods = (self) => ({
-    getUsers: self.catchAsync(getUsers(self)),
-    getUserById: self.catchAsync(getUserById(self)),
+    findUsers: self.catchAsync(findUsers(self)),
+    findUserById: self.catchAsync(findUserById(self)),
     updateAvatar: self.catchAsync(updateAvatar(self)),
     updateUser: self.catchAsync(updateUser(self)),
     updateUserByAdmin: self.catchAsync(updateUserByAdmin(self)),
     createUserByAdmin: self.catchAsync(createUserByAdmin(self)),
     updatePasswordByAdmin: self.catchAsync(updatePasswordByAdmin(self)),
-    changeBlockedByAdmin: self.catchAsync(changeBlockedByAdmin(self)),
+    updateBlockedByAdmin: self.catchAsync(updateBlockedByAdmin(self)),
   });
 
   return methods(self);

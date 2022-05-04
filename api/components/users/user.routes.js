@@ -33,10 +33,10 @@ module.exports = function ({
     );
     
 
-  router.get('/:id', UserController.getUserById);
+  router.get('/:id', UserController.findUserById);
   router.patch('/:id', UserController.updateUser);
 
-  router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
+  router.get('/', AuthMiddleware.restrictTo('admin'), UserController.findUsers);
   router.patch('/:id/admin', 
   [
     AuthMiddleware.restrictTo('admin'),
@@ -53,7 +53,7 @@ module.exports = function ({
   UserController.createUserByAdmin);
 
   router.patch('/:id/password', AuthMiddleware.restrictTo('admin'), UserController.updatePasswordByAdmin);
-  router.patch('/:id/blocked', AuthMiddleware.restrictTo('admin'), UserController.changeBlockedByAdmin);
+  router.patch('/:id/blocked', AuthMiddleware.restrictTo('admin'), UserController.updateBlockedByAdmin);
   // router.get('/', AuthMiddleware.restrictTo('admin'), UserController.getUsers);
 
   return router;

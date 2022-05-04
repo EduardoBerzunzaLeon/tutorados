@@ -3,12 +3,12 @@ class UserDTO {
   constructor({ features }) {
     this.ucwords = features;
   }
+  
   getCompleteURLAvatar = (avatar) => (avatar.startsWith('http')) 
     ? avatar 
     : `${process.env.PATH_STATIC_FILES}${avatar}`;
-  // TODO: Implementar el authUser
 
-  single = (resource, authUser) => ({
+  single = (resource) => ({
     id: resource._id,
     name: {
       first: this.ucwords(resource.name.first),
@@ -23,8 +23,8 @@ class UserDTO {
     avatar: this.getCompleteURLAvatar(resource?.avatar)
   });
 
-  multiple = (resources, authUser) => {
-    return resources.map((resource) => this.single(resource, authUser));
+  multiple = (resources) => {
+    return resources.map((resource) => this.single(resource));
   };
 }
 
