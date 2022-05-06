@@ -61,13 +61,7 @@ class SubjectService  {
 
     }
 
-    async updateById(id, { 
-        name, 
-        semester, 
-        credit, 
-        consecutiveSubject,
-        deprecated
-    }) {
+    async updateById(id, subjectData) {
 
         const subject = await this.subjectRepository.findById(id);
 
@@ -75,18 +69,11 @@ class SubjectService  {
             throw this.createAppError('No se encontró la materia.', 404);
         }
 
-        const newSubject = {
-            name,
-            semester,
-            credit,
-            consecutiveSubject,
-            deprecated,
-            ...subject
-        };
+        Object.assign(subject, {...subjectData});
 
-        await this.subjectRepository.save(subject);
-
-        return newSubject;
+        const subjectSaved = await this.subjectRepository.save(subject);
+        
+        return subjectSaved;
     }
 
 }

@@ -13,9 +13,15 @@ module.exports = ({
       courseDTO: CourseDTO,
       catchAsync,
     };
-  
+ 
+    
+
     const findCourses = (self) => async (req, res) => {
-      const [ total, courses ] = await self.courseService.findCourses(req.query);
+
+      const filter =  req.params.professorId ? { professor:  req.params.professorId } : {};
+      const findOptions = Object.assign(req.query, {...filter});
+
+      const [ total, courses ] = await self.courseService.findCourses(findOptions);
       const coursesSend = self.courseDTO.multiple(courses, null);
   
       return res.status(200).json({
@@ -38,6 +44,9 @@ module.exports = ({
     
     const updateCourse = (self) => async (req, res) => {
       const { id } = req.params;
+
+      req.body.professor = req.body.professor || req.params?.professorId;
+
       const course = await self.courseService.updateById(id, req.body);
       const courseSend = self.courseDTO.single(course, null);
   
@@ -49,6 +58,9 @@ module.exports = ({
 
   
     const createCourse = (self) => async (req, res) => {
+
+      req.body.professor = req.body.professor || req.params?.professorId;
+
       const course = await self.courseService.create(req.body);
       const courseSend = self.courseDTO.single(course, null);
   
@@ -61,7 +73,7 @@ module.exports = ({
 
     const deleteCourse = (self) => async (req, res) => {
       const { id } = req.params;
-      await self.courseService.deleteCourse(id);
+      await self.courseService.deleteById(id);
       return res.status(204).json({
         status: 'success',
         data: null,

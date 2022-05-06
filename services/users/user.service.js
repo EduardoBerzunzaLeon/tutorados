@@ -121,12 +121,18 @@ class UserService {
       const uploadFile = this.fileService.uploadFile();
       const image = await uploadFile.bind(this.fileService, file)();
   
-      await this.fileService.saveInDB(
-        userCreated.id,
-        this.userRepository,
-        image,
-        'avatar'
-      );
+      try {
+        await this.fileService.saveInDB(
+          userCreated.id,
+          this.userRepository,
+          image,
+          'avatar'
+        );
+      } catch (error) {
+        await this.userRepository.deleteById(userCreated.id);
+        throw error;
+      }
+      
     }
 
     return userCreated;

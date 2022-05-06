@@ -42,9 +42,6 @@ class CourseService  {
         impartedAt, 
         professor, 
      }) {
-        // ? TODO: check if this is necessary or just with index in entity it's enought
-        // const courseExists = await this.courseRepository.findOne({ name, impartedAt, professor });
-        // if (courseExists) throw this.createAppError('El curso en la misma fecha ya existe', 401);
 
         const CourseCreated = await this.courseRepository.create({
             name,

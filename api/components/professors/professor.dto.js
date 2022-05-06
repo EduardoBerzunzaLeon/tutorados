@@ -6,7 +6,7 @@ class ProfessorDTO {
     
     getCompleteURLAvatar = (avatar) => (avatar.startsWith('http')) 
       ? avatar 
-      : `${process.env.PATH_STATIC_FILES}${avatar}`;
+      : `${process.env.PATH_STATIC_FILES}professors/${avatar}`;
   
     single = (resource) => ({
       id: resource._id,
@@ -21,7 +21,7 @@ class ProfessorDTO {
       createdAt: resource?.createdAt,
       subjects: resource?.subjects,
       avatar: this.getCompleteURLAvatar(resource?.avatar),
-      course: resource?.courses
+      courses: resource?.courses || []
     });
   
     multiple = (resources) => {

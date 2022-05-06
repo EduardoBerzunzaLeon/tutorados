@@ -61,7 +61,7 @@ module.exports = ({
   
     const deleteSubject = (self) => async (req, res) => {
         const { id } = req.params;
-        await self.subjectService.delete(id);
+        await self.subjectService.deleteById(id);
         return res.status(204).json({
             status: 'success',
             data: null

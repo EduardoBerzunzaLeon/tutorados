@@ -21,6 +21,8 @@ class BaseRepository {
 
   findById(id, popOptions) {
     let query = this.entity.findById(id);
+
+    console.log(popOptions);
     if (popOptions) query = query.populate(popOptions);
     return query;
   }

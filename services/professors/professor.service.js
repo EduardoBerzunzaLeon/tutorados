@@ -6,6 +6,11 @@ class ProfessorService  {
         this.createAppError = createAppError;
     }
 
+    checkFields({ name, gender, active, subjects, email }) {
+        if (!name || !gender || !active || !email || !subjects) {
+            throw this.createAppError('Todos los campos son obligatorios', 400);
+        }
+    }
 
     async findProfessors(query) {
         return await this.professorRepository.findAll(query);
@@ -21,7 +26,11 @@ class ProfessorService  {
         }
 
         const professor = await this.professorRepository.findById(id, { 
-            path: 'subject'
+            path: 'subjects',
+            select: '-__v'
+        }).populate({
+            path: 'courses',
+            select: '-__v'
         });
 
         if(!professor) {
@@ -46,15 +55,14 @@ class ProfessorService  {
     }
 
     async create({ 
-        first,
-        last,
+        name,
         email,
         gender,
         active,
         subjects
     }, file) {
 
-        const name = { first, last };
+        this.checkFields({ name, gender, active, subjects, email });
 
         const professorExists = await this.professorRepository.findOne({ email });
 
@@ -73,33 +81,37 @@ class ProfessorService  {
 
 
         if(file) {
-            const uploadFile = this.fileService.uploadFile('professors');
+            const uploadFile = this.fileService.uploadFile('img/professors');
             const image = await uploadFile.bind(this.fileService, file)();
 
-            await this.fileService.saveInDB(
-                professorCreated.id,
-                this.fileService,
-                image,
-                'avatar'
-            );
+            try {
+                await this.fileService.saveInDB(
+                    professorCreated.id,
+                    this.professorRepository,
+                    image,
+                    'avatar'
+                );
+            } catch (error) {
+                await this.professorRepository.deleteById(professorCreated.id);
+                throw error;
+            }
         }
 
         return professorCreated;
     }
 
     async updateById(id, {
-        first,
-        last,
+        name,
         email,
         gender,
         active,
         subjects
-    }) {
+    }, file) {
 
-        const name = { first, last };
+        this.checkFields({ name, gender, active, subjects, email });
 
         if(file) {
-            const uploadFile = this.fileService.uploadFile('professors');
+            const uploadFile = this.fileService.uploadFile('img/professors');
             const image = await uploadFile.bind(this.fileService, file)();
         
             await this.fileService.saveInDB(
@@ -119,7 +131,7 @@ class ProfessorService  {
         });
 
         if (!professorUpdated)
-        throw this.createAppError('No se pudo actualizar los datos', 400);
+            throw this.createAppError('No se pudo actualizar los datos', 400);
   
       return professorUpdated;
     }

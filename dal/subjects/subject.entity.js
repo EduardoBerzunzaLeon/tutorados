@@ -7,7 +7,7 @@ const SubjectSchema = new Schema({
         unique: true,
         trim: true,
         lowercase: true,
-        minlength: [8, 'El {PATH} debe ser mínimo de 8 carácteres'],
+        minlength: [5, 'El {PATH} debe ser mínimo de 5 carácteres'],
     },
     semester: {
         type: Number,
@@ -35,7 +35,8 @@ const SubjectSchema = new Schema({
 
 
 SubjectSchema.pre('save', function(next) {
-    if(!this.isModified('deprecated') || this.isNew) return next();
+    console.log('pre middleware')
+    if(!this.isModified('deprecated') || this.isNew || this.deprecated) return next();
     this.deprecatedAt = Date.now() - 1000;
     return next();
 });

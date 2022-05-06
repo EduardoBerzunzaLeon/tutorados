@@ -30,12 +30,16 @@ courseSchema.index({
 }, {unique: true});
 
 
-courseSchema.pre(/^find/, function(next) {
-    this.populate({
-        path: 'professor',
-        select: 'name.first name.last'
-    });
-    return next();
-});
+// courseSchema.pre(/^find/, function(next) {
+   
+//    if(this._conditions?.professor) return next();
+
+//     this.populate({
+//         path: 'professor',
+//         select: 'name.first name.last'
+//     });
+
+//     return next();
+// });
 
 module.exports = model('Course', courseSchema);

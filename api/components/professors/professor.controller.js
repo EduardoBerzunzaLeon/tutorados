@@ -51,6 +51,7 @@ module.exports = ({
   
     const createProfessor = (self) => async (req, res) => {
         const { file } = req;
+
         const professor = await self.professorService.create(req.body, file);
         const professorSend = self.professorDTO.single(professor, null);
 
@@ -62,7 +63,7 @@ module.exports = ({
 
     const deleteProfessor = (self) => async (req, res) => {
       const { id } = req.params;
-      await self.professorService.deleteProfessor(id);
+      await self.professorService.deleteById(id);
       return res.status(204).json({
         status: 'success',
         data: null,

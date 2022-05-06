@@ -6,7 +6,8 @@ module.exports = function({
 }) {
     const router = Router();
 
-    router.use(AuthMiddleware.restrictTo('admin'))
+    router.use(AuthMiddleware.protect);
+    router.use(AuthMiddleware.restrictTo('admin'));
     
     router.post('/', SubjectController.createSubject);
     router.patch('/:id', SubjectController.updateSubject);
@@ -14,5 +15,5 @@ module.exports = function({
     router.get('/', SubjectController.findSubjects);
     router.delete('/:id', SubjectController.deleteSubject );
     
-
+    return router;
 }
