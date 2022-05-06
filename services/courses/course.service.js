@@ -7,7 +7,7 @@ class CourseService  {
     }
 
 
-    async findCourses(query) {
+    async find(query) {
         return await this.courseRepository.findAll(query);
     }
 

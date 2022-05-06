@@ -1,34 +1,22 @@
 module.exports = ({
-    ProfessorService,
-    ProfessorDTO,
     catchAsync,
+    findDocs,
     FileService,
-    ProfessorRepository,
+    ProfessorDTO,
+    ProfessorService,
   }) => {
 
     const self = {
-      professorService: ProfessorService,
+      service: ProfessorService,
       fileService: FileService,
-      professorRepository: ProfessorRepository,
-      professorDTO: ProfessorDTO,
+      dto: ProfessorDTO,
       catchAsync,
-    };
-  
-    const findProfessors = (self) => async (req, res) => {
-      const [ total, professors ] = await self.professorService.findProfessors(req.query);
-      const professorsSend = self.professorDTO.multiple(professors, null);
-  
-      return res.status(200).json({
-        status: 'success',
-        total,
-        data: professorsSend,
-      });
     };
     
     const findProfessorById = (self) => async (req, res) => {
       const { id } = req.params;
-      const professor = await self.professorService.findById(id);
-      const professorSend =  self.professorDTO.single(professor, null);
+      const professor = await self.service.findById(id);
+      const professorSend =  self.dto.single(professor);
       
       return res.status(200).json({ 
         status: 'success',
@@ -39,8 +27,8 @@ module.exports = ({
     const updateProfessor = (self) => async (req, res) => {
       const { id } = req.params;
       const { file } = req;
-      const professor = await self.professorService.updateById(id, req.body, file);
-      const professorSend = self.professorDTO.single(professor, null);
+      const professor = await self.service.updateById(id, req.body, file);
+      const professorSend = self.dto.single(professor);
   
       return res.status(200).json({
         status: 'success',
@@ -52,8 +40,8 @@ module.exports = ({
     const createProfessor = (self) => async (req, res) => {
         const { file } = req;
 
-        const professor = await self.professorService.create(req.body, file);
-        const professorSend = self.professorDTO.single(professor, null);
+        const professor = await self.service.create(req.body, file);
+        const professorSend = self.dto.single(professor);
 
         return res.status(200).json({
             status: 'success',
@@ -63,7 +51,7 @@ module.exports = ({
 
     const deleteProfessor = (self) => async (req, res) => {
       const { id } = req.params;
-      await self.professorService.deleteById(id);
+      await self.service.deleteById(id);
       return res.status(204).json({
         status: 'success',
         data: null,
@@ -72,7 +60,7 @@ module.exports = ({
 
   
     const methods = (self) => ({
-        findProfessors: self.catchAsync(findProfessors(self)),
+        findProfessors: self.catchAsync(findDocs(self)),
         findProfessorById: self.catchAsync(findProfessorById(self)),
         updateProfessor: self.catchAsync(updateProfessor(self)),
         createProfessor: self.catchAsync(createProfessor(self)),

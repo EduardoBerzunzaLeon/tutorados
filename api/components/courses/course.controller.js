@@ -1,15 +1,13 @@
 module.exports = ({
-    CourseService,
-    CourseDTO,
     catchAsync,
+    CourseDTO,
+    CourseService,
     FileService,
-    CourseRepository,
   }) => {
 
     const self = {
       courseService: CourseService,
       fileService: FileService,
-      courseRepository: CourseRepository,
       courseDTO: CourseDTO,
       catchAsync,
     };
@@ -19,22 +17,22 @@ module.exports = ({
     const findCourses = (self) => async (req, res) => {
 
       const filter =  req.params.professorId ? { professor:  req.params.professorId } : {};
-      const findOptions = Object.assign(req.query, {...filter});
 
-      const [ total, courses ] = await self.courseService.findCourses(findOptions);
-      const coursesSend = self.courseDTO.multiple(courses, null);
-  
-      return res.status(200).json({
-        status: 'success',
-        total,
-        data: coursesSend,
+      const query = Object.assign(req.query, {...filter});
+
+      return self.factoryController.findDocs({
+        service: self.courseService,
+        dto: self.courseDTO,
+        query,
+        res
       });
+
     };
     
     const findCourseById = (self) => async (req, res) => {
       const { id } = req.params;
       const course = await self.courseService.findById(id);
-      const courseSend =  self.courseDTO.single(course, null);
+      const courseSend =  self.courseDTO.single(course);
       
       return res.status(200).json({ 
         status: 'success',
@@ -48,7 +46,7 @@ module.exports = ({
       req.body.professor = req.body.professor || req.params?.professorId;
 
       const course = await self.courseService.updateById(id, req.body);
-      const courseSend = self.courseDTO.single(course, null);
+      const courseSend = self.courseDTO.single(course);
   
       return res.status(200).json({
         status: 'success',
@@ -62,7 +60,7 @@ module.exports = ({
       req.body.professor = req.body.professor || req.params?.professorId;
 
       const course = await self.courseService.create(req.body);
-      const courseSend = self.courseDTO.single(course, null);
+      const courseSend = self.courseDTO.single(course);
   
       return res.status(200).json({
         status: 'success',

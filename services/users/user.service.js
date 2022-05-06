@@ -12,7 +12,7 @@ class UserService {
     }
   }
 
-  async findUsers(query) {
+  async find(query) {
     return await this.userRepository.findAll(query);
   }
 

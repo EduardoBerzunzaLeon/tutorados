@@ -7,7 +7,7 @@ class SubjectService  {
     }
 
 
-    async findSubjects(query) {
+    async find(query) {
         return await this.subjectRepository.findAll(query);
     }
 

@@ -19,6 +19,8 @@ const { SubjectController, SubjectDTO, subjectRoutes } = require('../components/
 const { CourseController, CourseDTO, courseRoutes } = require('../components/courses');
 const { ProfessorController, ProfessorDTO, professorRoutes } = require('../components/professors');
 
+const { findDocs } = require('../components/factory/factory.controller');
+
 const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
 const { FileController, fileRoutes } = require('../components/files');
@@ -90,6 +92,9 @@ container
     handlerErrors: asFunction(handlerErrors),
     AuthMiddleware: asFunction(authMiddleware).singleton(),
     UploadSingleFile: asFunction(uploadSingleFile).singleton(),
+  })
+  .register({
+    findDocs: asFunction(() => findDocs),
   })
   // * Users
   .register({

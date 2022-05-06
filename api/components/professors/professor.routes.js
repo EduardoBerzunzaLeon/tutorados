@@ -7,7 +7,6 @@ module.exports = function({
     courseRoutes
 }) {
     const router = Router();
-
     
     router.use(AuthMiddleware.protect);
     router.use(AuthMiddleware.restrictTo('admin'));

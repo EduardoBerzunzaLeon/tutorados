@@ -12,7 +12,7 @@ class ProfessorService  {
         }
     }
 
-    async findProfessors(query) {
+    async find(query) {
         return await this.professorRepository.findAll(query);
     }
 

@@ -15,8 +15,8 @@ module.exports = ({
     };
   
     const findSubjects = (self) => async (req, res) => {
-      const [ total, subjects ] = await self.subjectService.findSubjects(req.query);
-      const subjectsSend = self.subjectDTO.multiple(subjects, null);
+      const [ total, subjects ] = await self.subjectService.find(req.query);
+      const subjectsSend = self.subjectDTO.multiple(subjects);
   
       return res.status(200).json({
         status: 'success',
@@ -28,7 +28,7 @@ module.exports = ({
     const findSubjectById = (self) => async (req, res) => {
       const { id } = req.params;
       const subject = await self.subjectService.findById(id);
-      const subjectSend =  self.subjectDTO.single(subject, null);
+      const subjectSend =  self.subjectDTO.single(subject);
 
       return res.status(200).json({ 
         status: 'success',
@@ -39,7 +39,7 @@ module.exports = ({
     const updateSubject = (self) => async (req, res) => {
       const { id } = req.params;
       const subject = await self.subjectService.updateById(id, req.body);
-      const subjectSend = self.subjectDTO.single(subject, null);
+      const subjectSend = self.subjectDTO.single(subject);
   
       return res.status(200).json({
         status: 'success',
@@ -50,7 +50,7 @@ module.exports = ({
   
     const createSubject = (self) => async (req, res) => {
       const subject = await self.subjectService.create(req.body);
-      const subjectSend = self.subjectDTO.single(subject, null);
+      const subjectSend = self.subjectDTO.single(subject);
   
       return res.status(200).json({
         status: 'success',

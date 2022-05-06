@@ -14,8 +14,8 @@ module.exports = ({
   };
 
   const findUsers = (self) => async (req, res) => {
-    const [ total, users ] = await self.userService.findUsers(req.query);
-    const usersSend = self.userDTO.multiple(users, null);
+    const [ total, users ] = await self.userService.find(req.query);
+    const usersSend = self.userDTO.multiple(users);
 
     return res.status(200).json({
       status: 'success',
@@ -28,7 +28,7 @@ module.exports = ({
     const { id } = req.params;
     
     const user = await self.userService.findById(id);
-    const userSend =  self.userDTO.single(user, null);
+    const userSend =  self.userDTO.single(user);
     return res.status(200).json({ 
       status: 'success',
       data: userSend
@@ -39,7 +39,7 @@ module.exports = ({
   const updateUser = (self) => async (req, res) => {
     const { id } = req.params;
     const user = await self.userService.updateById(id, req.body);
-    const userSend = self.userDTO.single(user, null);
+    const userSend = self.userDTO.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -63,7 +63,7 @@ module.exports = ({
     const { id } = req.params;
     const { file } = req;
     const user = await self.userService.updateUserByAdmin(id, req.body, file);
-    const userSend = self.userDTO.single(user, null);
+    const userSend = self.userDTO.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -74,7 +74,7 @@ module.exports = ({
   const createUserByAdmin = (self) => async (req, res) => {
     const { file } = req;
     const user = await self.userService.createUserByAdmin(req.body, file);
-    const userSend = self.userDTO.single(user, null);
+    const userSend = self.userDTO.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -86,7 +86,7 @@ module.exports = ({
 
     const { id } = req.params;
     const user = await self.userService.updatePasswordByAdmin(id, req.body);
-    const userSend = self.userDTO.single(user, null);
+    const userSend = self.userDTO.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -98,7 +98,7 @@ module.exports = ({
 
     const { id } = req.params;
     const user = await self.userService.updateBlockedByAdmin(id, req.body);
-    const userSend = self.userDTO.single(user, null);
+    const userSend = self.userDTO.single(user);
 
     return res.status(200).json({
       status: 'success',
