@@ -12,7 +12,6 @@ module.exports = ({
       catchAsync,
     };
  
-    
 
     const findCourses = (self) => async (req, res) => {
 

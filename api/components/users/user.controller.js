@@ -1,34 +1,22 @@
 module.exports = ({
-  UserService,
-  UserDTO,
   catchAsync,
   FileService,
-  UserRepository,
+  findDocs,
+  UserDTO,
+  UserService,
 }) => {
   const self = {
-    userService: UserService,
+    service: UserService,
     fileService: FileService,
-    userRepository: UserRepository,
-    userDTO: UserDTO,
+    dto: UserDTO,
     catchAsync,
   };
 
-  const findUsers = (self) => async (req, res) => {
-    const [ total, users ] = await self.userService.find(req.query);
-    const usersSend = self.userDTO.multiple(users);
-
-    return res.status(200).json({
-      status: 'success',
-      total,
-      data: usersSend,
-    });
-  };
-  
   const findUserById = (self) => async (req, res) => {
     const { id } = req.params;
     
-    const user = await self.userService.findById(id);
-    const userSend =  self.userDTO.single(user);
+    const user = await self.service.findById(id);
+    const userSend =  self.dto.single(user);
     return res.status(200).json({ 
       status: 'success',
       data: userSend
@@ -38,8 +26,8 @@ module.exports = ({
   
   const updateUser = (self) => async (req, res) => {
     const { id } = req.params;
-    const user = await self.userService.updateById(id, req.body);
-    const userSend = self.userDTO.single(user);
+    const user = await self.service.updateById(id, req.body);
+    const userSend = self.dto.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -49,12 +37,12 @@ module.exports = ({
 
   const updateAvatar = (self) => async (req, res) => {
     const { file, user } = req;
-    const avatar = await self.userService.uploadAvatar(user._id, file);
+    const avatar = await self.service.uploadAvatar(user._id, file);
 
     return res.status(200).json({
       status: 'success',
       data: {
-        avatar: self.userDTO.getCompleteURLAvatar(avatar),
+        avatar: self.dto.getCompleteURLAvatar(avatar),
       },
     });
   };
@@ -62,8 +50,8 @@ module.exports = ({
   const updateUserByAdmin = (self) => async (req, res) => {
     const { id } = req.params;
     const { file } = req;
-    const user = await self.userService.updateUserByAdmin(id, req.body, file);
-    const userSend = self.userDTO.single(user);
+    const user = await self.service.updateUserByAdmin(id, req.body, file);
+    const userSend = self.dto.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -73,8 +61,8 @@ module.exports = ({
   
   const createUserByAdmin = (self) => async (req, res) => {
     const { file } = req;
-    const user = await self.userService.createUserByAdmin(req.body, file);
-    const userSend = self.userDTO.single(user);
+    const user = await self.service.createUserByAdmin(req.body, file);
+    const userSend = self.dto.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -85,8 +73,8 @@ module.exports = ({
   const updatePasswordByAdmin = (self) => async (req, res) => {
 
     const { id } = req.params;
-    const user = await self.userService.updatePasswordByAdmin(id, req.body);
-    const userSend = self.userDTO.single(user);
+    const user = await self.service.updatePasswordByAdmin(id, req.body);
+    const userSend = self.dto.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -97,8 +85,8 @@ module.exports = ({
   const updateBlockedByAdmin = (self) => async (req, res) => {
 
     const { id } = req.params;
-    const user = await self.userService.updateBlockedByAdmin(id, req.body);
-    const userSend = self.userDTO.single(user);
+    const user = await self.service.updateBlockedByAdmin(id, req.body);
+    const userSend = self.dto.single(user);
 
     return res.status(200).json({
       status: 'success',
@@ -107,7 +95,7 @@ module.exports = ({
   };
 
   const methods = (self) => ({
-    findUsers: self.catchAsync(findUsers(self)),
+    findUsers: self.catchAsync(findDocs(self)),
     findUserById: self.catchAsync(findUserById(self)),
     updateAvatar: self.catchAsync(updateAvatar(self)),
     updateUser: self.catchAsync(updateUser(self)),

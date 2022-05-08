@@ -19,7 +19,15 @@ const { SubjectController, SubjectDTO, subjectRoutes } = require('../components/
 const { CourseController, CourseDTO, courseRoutes } = require('../components/courses');
 const { ProfessorController, ProfessorDTO, professorRoutes } = require('../components/professors');
 
-const { findDocs } = require('../components/factory/factory.controller');
+const { 
+  findDocs, 
+  findById,
+  updateById,
+  updateWithFile,
+  create,
+  createWithFile,
+  deleteById
+} = require('../components/factory/factory.controller');
 
 const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
@@ -93,8 +101,15 @@ container
     AuthMiddleware: asFunction(authMiddleware).singleton(),
     UploadSingleFile: asFunction(uploadSingleFile).singleton(),
   })
+  // Factory Controller
   .register({
     findDocs: asFunction(() => findDocs),
+    findById: asFunction(() => findById),
+    updateById: asFunction(() => updateById),
+    updateWithFile: asFunction(() => updateWithFile),
+    create: asFunction(() => create),
+    createWithFile: asFunction(() => createWithFile),
+    deleteById: asFunction(() => deleteById),
   })
   // * Users
   .register({
