@@ -21,7 +21,7 @@
     }); 
   }
 
-  exports.update = (controller) =>  async (req, res) => {
+  exports.updateById = (controller) =>  async (req, res) => {
     const { id } = req.params;
     const doc = await controller.service.updateById(id, req.body);
     const docSend = controller.dto.single(doc);
@@ -66,7 +66,7 @@
     });
   }
 
-  exports.delete = (controller) => async (req, res) => {
+  exports.deleteById = (controller) => async (req, res) => {
     const { id } = req.params;
     await controller.service.deleteById(id);
     return res.status(204).json({
@@ -75,3 +75,4 @@
     });
   }
 
+s
