@@ -16,18 +16,19 @@ const getEnviroment = require('../utils/getEnviroment');
 // * Application
 const { UserController, UserDTO, userRoutes } = require('../components/users');
 const { SubjectController, SubjectDTO, subjectRoutes } = require('../components/subjects');
-const { CourseController, CourseDTO, courseRoutes } = require('../components/courses');
+const { CourseController, CourseDTO, courseMiddleware, courseRoutes } = require('../components/courses');
 const { ProfessorController, ProfessorDTO, professorRoutes } = require('../components/professors');
 
-const { 
-  findDocs, 
-  findById,
-  updateById,
-  updateWithFile,
-  create,
-  createWithFile,
-  deleteById
-} = require('../components/factory/factory.controller');
+// { 
+//   findDocs, 
+//   findById,
+//   updateById,
+//   updateWithFile,
+//   create,
+//   createWithFile,
+//   deleteById
+// }
+const FactoryController = require('../components/factory/factory.controller');
 
 const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
@@ -103,13 +104,7 @@ container
   })
   // Factory Controller
   .register({
-    findDocs: asFunction(() => findDocs),
-    findById: asFunction(() => findById),
-    updateById: asFunction(() => updateById),
-    updateWithFile: asFunction(() => updateWithFile),
-    create: asFunction(() => create),
-    createWithFile: asFunction(() => createWithFile),
-    deleteById: asFunction(() => deleteById),
+    FactoryController: asFunction(() => FactoryController),
   })
   // * Users
   .register({
@@ -133,6 +128,7 @@ container
   .register({
     CourseController: asFunction(CourseController).singleton(),
     courseRoutes: asFunction(courseRoutes).singleton(),
+    courseMiddleware: asFunction(courseMiddleware).singleton(),
     CourseDTO: asClass(CourseDTO).singleton(),
     CourseService: asClass(CourseService).singleton(),
     CourseRepository: asClass(CourseRepository).singleton(),

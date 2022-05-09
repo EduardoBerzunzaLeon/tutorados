@@ -92,7 +92,7 @@ class UserService {
     return userUpdated;
   }
   
-  async createUserByAdmin({ first, last, email, gender, role, blocked }, file) {
+  async create({ first, last, email, gender, role, blocked }, file) {
 
     const name = { first, last };
 

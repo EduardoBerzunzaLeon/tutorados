@@ -21,6 +21,19 @@
     }); 
   }
 
+  exports.updateByMethod = (controller, method) =>  async (req, res) => {
+
+    const { id } = req.params;
+    const doc = await method(id, req.body);
+    const docSend = controller.dto.single(doc);
+
+    return res.status(200).json({
+      status: 'success',
+      data: docSend,
+    });
+
+  }
+
   exports.updateById = (controller) =>  async (req, res) => {
     const { id } = req.params;
     const doc = await controller.service.updateById(id, req.body);
@@ -74,5 +87,3 @@
       data: null,
     });
   }
-
-s
