@@ -81,6 +81,8 @@ class ProfessorService  {
 
 
         if(file) {
+
+            console.log(file);
             const uploadFile = this.fileService.uploadFile('img/professors');
             const image = await uploadFile.bind(this.fileService, file)();
 

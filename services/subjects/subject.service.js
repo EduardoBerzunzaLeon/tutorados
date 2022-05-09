@@ -8,7 +8,10 @@ class SubjectService  {
 
 
     async find(query) {
-        return await this.subjectRepository.findAll(query);
+        return await this.subjectRepository.findAll(query, {
+            path: 'subjects',
+            select: '-__v'
+        });
     }
 
     async findById(id) {
@@ -20,8 +23,13 @@ class SubjectService  {
             );
         }
 
-        const subject = await this.subjectRepository.findById(id);
+        const subject = await this.subjectRepository.findById(id, {
+            path: 'subjects',
+            select: '-__v'
+        });
 
+        // FIXME: Populated subject
+        console.log(subject);
         if(!subject) {
             throw this.createAppError(
               'ID incorrecto',

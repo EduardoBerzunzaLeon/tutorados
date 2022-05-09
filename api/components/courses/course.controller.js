@@ -2,15 +2,13 @@ module.exports = ({
     catchAsync,
     CourseDTO,
     CourseService,
-    FactoryController,
-    FileService,
+    FactoryController
   }) => {
 
     const self = {
-      courseService: CourseService,
-      fileService: FileService,
-      courseDTO: CourseDTO,
       catchAsync,
+      dto: CourseDTO,
+      service: CourseService,
     };
   
     

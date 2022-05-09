@@ -69,7 +69,7 @@
 
   exports.createWithFile = (controller) => async (req, res) => {
     const { file } = req;
-
+    console.log(file);
     const doc = await controller.service.create(req.body, file);
     const docSend = controller.dto.single(doc);
 

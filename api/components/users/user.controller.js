@@ -40,7 +40,7 @@ module.exports = ({
  
 
   const methods = (self) => ({
-    createUserByAdmin: self.catchAsync(FactoryController.create(self)),
+    createUserByAdmin: self.catchAsync(FactoryController.createWithFile(self)),
     findUserById: self.catchAsync(FactoryController.findById(self)),
     findUsers: self.catchAsync(FactoryController.findDocs(self)),
     updateAvatar: self.catchAsync(updateAvatar(self)),
