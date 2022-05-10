@@ -5,7 +5,7 @@ class BaseRepository {
     this.entity = entity;
   }
 
-  async findAll(queryParams = {}, popOptions) {
+  findAll(queryParams = {}, popOptions) {
 
     const features = new APIFeaturesMongo(queryParams, this.entity.find())
       .filter()
@@ -16,10 +16,10 @@ class BaseRepository {
       
     if(popOptions) features.query = features.query.populate(popOptions);
 
-      return await Promise.all([
-        this.entity.find(features.queryFind).countDocuments(),
-        features.query
-      ]);
+      return [
+         this.entity.find(features.queryFind).countDocuments(),
+         features.query
+      ];
   }
 
   findById(id, popOptions) {

@@ -13,7 +13,7 @@ class ProfessorService  {
     }
 
     async find(query) {
-        return await this.professorRepository.findAll(query);
+        return await Promise.all(this.professorRepository.findAll(query));
     }
 
     async findById(id) {
@@ -27,7 +27,7 @@ class ProfessorService  {
 
         const professor = await this.professorRepository.findById(id, { 
             path: 'subjects',
-            select: '-__v'
+            select: 'name semester deprecated'
         }).populate({
             path: 'courses',
             select: '-__v'

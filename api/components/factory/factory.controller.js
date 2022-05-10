@@ -82,7 +82,7 @@
   exports.deleteById = (controller) => async (req, res) => {
     const { id } = req.params;
     await controller.service.deleteById(id);
-    return res.status(204).json({
+    return res.status(200).json({
       status: 'success',
       data: null,
     });

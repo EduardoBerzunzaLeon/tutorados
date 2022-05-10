@@ -8,7 +8,7 @@ class CourseService  {
 
 
     async find(query) {
-        return await this.courseRepository.findAll(query);
+        return await Promise.all(this.courseRepository.findAll(query));
     }
 
     async findById(id) {

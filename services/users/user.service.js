@@ -13,7 +13,7 @@ class UserService {
   }
 
   async find(query) {
-    return await this.userRepository.findAll(query);
+    return await Promise.all(this.userRepository.findAll(query));
   }
 
   async findById(id) {

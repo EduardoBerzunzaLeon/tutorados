@@ -12,6 +12,7 @@ class SubjectDTO {
       deprecated: resource?.deprecated,
       deprecatedAt: resource?.deprecatedAt,
       consecutiveSubject: resource?.consecutiveSubject,
+      previousSubject: resource?.previousSubject,
       credit: resource.credit,
     });
   

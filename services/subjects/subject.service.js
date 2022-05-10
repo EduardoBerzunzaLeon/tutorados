@@ -8,10 +8,7 @@ class SubjectService  {
     }
 
     async find(query) {
-        return await this.subjectRepository.findAll(query, {
-            path: 'subjects',
-            select: '-__v'
-        });
+        return await Promise.all(this.subjectRepository.findAll(query));
     }
 
     async findById(id) {
@@ -23,27 +20,42 @@ class SubjectService  {
             );
         }
 
-        const test = await this.subjectRepository.entity.aggregate([{ 
-            $match: { _id: Types.ObjectId(id) }
-         }, {
-             $lookup: {
-                 from: 'subject',
-                 foreignField: "_id",
-                 localField: "consecutiveSubject",
-                 as: "a"
-             }
-         }]);
-
-        console.log(test);
         
 
-        const subject = await this.subjectRepository.findById(id);
+        const [subject] = await this.subjectRepository.entity.aggregate([{ 
+            $match: { _id: Types.ObjectId(id) }
+         }, 
+         {
+            $lookup: {
+                from: 'subjects',
+                foreignField: "_id",
+                localField: "consecutiveSubject",
+                pipeline: [
+                   { $project: { name: 1, deprecated: 1, id: 1 } }
+                ],
+                as: "consecutiveSubject"
+            },
+        }, { $unwind: {
+            path: "$consecutiveSubject",
+            preserveNullAndEmptyArrays: true
+        }},
+        {
+            $lookup: {
+                from: 'subjects',
+                foreignField: "consecutiveSubject",
+                localField: "_id",
+                pipeline: [
+                    { $project: { name: 1, deprecated: 1 } }
+                 ],
+                as: "previousSubject"
+            },
+        }, 
+        { $unwind: {
+            path: "$previousSubject",
+            preserveNullAndEmptyArrays: true
+        }}]);
 
-        if(subject.consecutiveSubject) {
-            const consecutiveSubject = await this.subjectRepository.findById(subject.consecutiveSubject);
-            subject.consecutiveSubject = consecutiveSubject;
-        }
-
+        console.log(subject);
         if(!subject) {
             throw this.createAppError(
               'ID incorrecto',
@@ -52,7 +64,6 @@ class SubjectService  {
           }
       
         return subject;
-
     }
 
     async deleteById(id) {
