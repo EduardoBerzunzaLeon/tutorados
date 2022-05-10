@@ -1,11 +1,11 @@
+const { Types } = require('mongoose');
+
 class SubjectService  {
 
-    constructor({ SubjectRepository, FileService, createAppError }) {
+    constructor({ SubjectRepository, createAppError }) {
         this.subjectRepository = SubjectRepository;
-        this.fileService = FileService;
         this.createAppError = createAppError;
     }
-
 
     async find(query) {
         return await this.subjectRepository.findAll(query, {
@@ -23,13 +23,27 @@ class SubjectService  {
             );
         }
 
-        const subject = await this.subjectRepository.findById(id, {
-            path: 'subjects',
-            select: '-__v'
-        });
+        const test = await this.subjectRepository.entity.aggregate([{ 
+            $match: { _id: Types.ObjectId(id) }
+         }, {
+             $lookup: {
+                 from: 'subject',
+                 foreignField: "_id",
+                 localField: "consecutiveSubject",
+                 as: "a"
+             }
+         }]);
 
-        // FIXME: Populated subject
-        console.log(subject);
+        console.log(test);
+        
+
+        const subject = await this.subjectRepository.findById(id);
+
+        if(subject.consecutiveSubject) {
+            const consecutiveSubject = await this.subjectRepository.findById(subject.consecutiveSubject);
+            subject.consecutiveSubject = consecutiveSubject;
+        }
+
         if(!subject) {
             throw this.createAppError(
               'ID incorrecto',
