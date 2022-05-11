@@ -17,12 +17,14 @@ class APIFeaturesMongo {
     
     // 1B) Advanced filtering
     const queryStr = JSON.stringify(queryObj).replace(
-      /\b(gte|gt|lte|lt|regex)\b/g,
+      /\b(gte|gt|lte|lt|ne|regex)\b/g,
       (match) =>  `$${match}`
       )
-      .replace('_', '.');
+      .replace('/', '.');
 
+    
     this.queryFind = JSON.parse(queryStr);
+    console.log(this.queryFind);
     this.query = this.query.find(JSON.parse(queryStr));
       
     return this;
