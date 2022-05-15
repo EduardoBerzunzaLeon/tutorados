@@ -20,8 +20,6 @@ class SubjectService  {
             );
         }
 
-        
-
         const [subject] = await this.subjectRepository.entity.aggregate([{ 
             $match: { _id: Types.ObjectId(id) }
          }, 
@@ -29,33 +27,25 @@ class SubjectService  {
             $lookup: {
                 from: 'subjects',
                 foreignField: "_id",
-                localField: "consecutiveSubject",
+                localField: "requiredSubjects",
                 pipeline: [
                    { $project: { name: 1, deprecated: 1, id: 1 } }
                 ],
-                as: "consecutiveSubject"
+                as: "requiredSubjects"
             },
-        }, { $unwind: {
-            path: "$consecutiveSubject",
-            preserveNullAndEmptyArrays: true
-        }},
+        },
         {
             $lookup: {
                 from: 'subjects',
-                foreignField: "consecutiveSubject",
+                foreignField: "requiredSubjects",
                 localField: "_id",
                 pipeline: [
                     { $project: { name: 1, deprecated: 1 } }
                  ],
-                as: "previousSubject"
+                as: "correlativeSubjects"
             },
-        }, 
-        { $unwind: {
-            path: "$previousSubject",
-            preserveNullAndEmptyArrays: true
-        }}]);
+        }]);
 
-        console.log(subject);
         if(!subject) {
             throw this.createAppError(
               'ID incorrecto',
@@ -74,7 +64,10 @@ class SubjectService  {
         name, 
         semester, 
         credit, 
-        consecutiveSubject
+        requiredSubjects,
+        practicalHours,
+        theoreticalHours,
+        core
      }) {
 
         const subjectExists = await this.subjectRepository.findOne({ name });
@@ -84,7 +77,10 @@ class SubjectService  {
             name,
             semester,
             credit,
-            consecutiveSubject
+            requiredSubjects,
+            practicalHours,
+            theoreticalHours,
+            core
         });
 
         if(!subjectCreated) 

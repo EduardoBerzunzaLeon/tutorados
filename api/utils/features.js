@@ -1,1 +1,1 @@
-module.exports = (element) => element.replace(/(?<= )[^\s]|^./g, a=>a.toUpperCase());
+module.exports = (element) => element?.replace(/(?<= )[^\s]|^./g, a=>a.toUpperCase());

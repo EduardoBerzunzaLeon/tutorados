@@ -4,17 +4,24 @@ class SubjectDTO {
       this.ucwords = features;
     }
   
-    single = (resource) => ({
+    single = (resource) => {
+      const total = resource?.practicalHours + resource?.theoreticalHours;
+      const totalHours = isNaN(total) ? undefined : total;
+      return {
       id: resource._id,
       name: this.ucwords(resource.name),
       semester: resource.semester,
       createdAt: resource.createdAt,
       deprecated: resource?.deprecated,
       deprecatedAt: resource?.deprecatedAt,
-      consecutiveSubject: resource?.consecutiveSubject,
-      previousSubject: resource?.previousSubject,
-      credit: resource.credit,
-    });
+      requiredSubjects: resource?.requiredSubjects,
+      correlativeSubjects: resource?.correlativeSubjects,
+      credit: resource?.credit,
+      practicalHours: resource?.practicalHours,
+      theoreticalHours: resource?.theoreticalHours,
+      totalHours,
+      core: this.ucwords(resource?.core)
+    }};
   
     multiple = (resources) => {
       return resources.map((resource) => this.single(resource));
