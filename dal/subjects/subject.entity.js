@@ -68,6 +68,12 @@ SubjectSchema.pre('save', function(next) {
     return next();
 });
 
+// SubjectSchema.pre(/^findOneAndDelete/, function(next) {
+//     console.log(this.model.modelName);
+//     this.model('Subject').remove({requiredSubjects: this._id});
+//     next();
+// })
+
 
 
 

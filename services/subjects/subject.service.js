@@ -57,7 +57,14 @@ class SubjectService  {
     }
 
     async deleteById(id) {
-        return await this.subjectRepository.deleteById(id);
+        const deleted =  await this.subjectRepository.deleteById(id);
+        await this.subjectRepository.updateMany(
+            { requiredSubjects: Types.ObjectId(id) },
+            { $pull: {requiredSubjects:  Types.ObjectId(id)} },
+            { multi: true }
+        );
+
+        return deleted;
     }
 
     async create({ 
