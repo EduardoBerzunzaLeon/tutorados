@@ -112,6 +112,33 @@ class SubjectService  {
         return subjectSaved;
     }
 
+    async updateCorrelativeSubjects(id, {correlativeSubjects}) {
+        
+        const subject = await this.subjectRepository.findById(id);
+
+        if (!subject) {
+            throw this.createAppError('No se encontró la materia.', 404);
+        }
+
+        console.log(correlativeSubjects);
+        
+        const  objectIdList = correlativeSubjects.map((id) => Types.ObjectId(id));
+
+        const deleteSubjects = this.subjectRepository.updateMany(
+            { requiredSubjects: Types.ObjectId(id), '_id': { $nin: objectIdList } },
+            { $pull: {requiredSubjects:  Types.ObjectId(id)} },
+            { multi: true }
+        );
+
+        const addSubjects = await this.subjectRepository.updateMany({ '_id':  { $in: objectIdList}},
+        { $addToSet: {requiredSubjects:  Types.ObjectId(id)}},
+        { multi: true });
+   
+        await Promise.all([deleteSubjects, addSubjects]);
+
+        return subject;
+    }
+
 }
 
 module.exports = SubjectService;

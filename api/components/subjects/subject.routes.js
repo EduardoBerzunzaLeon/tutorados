@@ -11,6 +11,7 @@ module.exports = function({
     
     router.post('/', SubjectController.createSubject);
     router.patch('/:id', SubjectController.updateSubject);
+    router.patch('/:id/correlative', SubjectController.updateCorrelativeSubjects);
     router.get('/:id', SubjectController.findSubjectById);
     router.get('/', SubjectController.findSubjects);
     router.delete('/:id', SubjectController.deleteSubject );

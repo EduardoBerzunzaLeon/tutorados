@@ -44,8 +44,8 @@ module.exports = ({
     findUserById: self.catchAsync(FactoryController.findById(self)),
     findUsers: self.catchAsync(FactoryController.findDocs(self)),
     updateAvatar: self.catchAsync(updateAvatar(self)),
-    updateBlockedByAdmin: self.catchAsync(FactoryController.updateByMethod(self, self.service.updateBlockedByAdmin)),
-    updatePasswordByAdmin: self.catchAsync(FactoryController.updateByMethod(self, self.service.updatePasswordByAdmin)),
+    updateBlockedByAdmin: self.catchAsync(FactoryController.updateByMethod(self, self.service.updateBlockedByAdmin.bind(UserService))),
+    updatePasswordByAdmin: self.catchAsync(FactoryController.updateByMethod(self, self.service.updatePasswordByAdmin.bind(UserService))),
     updateUser: self.catchAsync(FactoryController.updateById(self)),
     updateUserByAdmin: self.catchAsync(updateUserByAdmin(self)),
   });

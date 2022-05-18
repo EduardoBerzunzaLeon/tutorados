@@ -17,6 +17,12 @@ module.exports = ({
         findSubjectById: self.catchAsync(FactoryController.findById(self)),
         findSubjects: self.catchAsync(FactoryController.findDocs(self)),
         updateSubject: self.catchAsync(FactoryController.updateById(self)),
+        updateCorrelativeSubjects: self.catchAsync(
+          FactoryController.updateByMethod(
+            self, 
+            self.service.updateCorrelativeSubjects.bind(SubjectService)
+          )
+        ),
     });
   
     return methods(self);
