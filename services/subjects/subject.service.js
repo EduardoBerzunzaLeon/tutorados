@@ -11,6 +11,86 @@ class SubjectService  {
         return await Promise.all(this.subjectRepository.findAll(query));
     }
 
+    async findForExcel() {
+
+        return await this.subjectRepository.entity.aggregate([
+         {
+            $lookup: {
+                from: 'subjects',
+                foreignField: "_id",
+                localField: "requiredSubjects",
+                pipeline: [
+                    { $match: { deprecated: false }},
+                    { $project: { name: 1,  _id: 0 } }
+                ],
+                as: "requiredSubjects"
+            },
+        },
+        {
+            $lookup: {
+                from: 'subjects',
+                foreignField: "requiredSubjects",
+                localField: "_id",
+                pipeline: [
+                    { $match: { deprecated: false }},
+                    { $project: { name: 1,  _id: 0  } }
+                 ],
+                as: "correlativeSubjects"
+            },
+        },
+        {
+            $project: {
+                _id: 1,
+                name: 1,
+                semester: 1,
+                deprecated: 1,
+                credit: 1,
+                practicalHours: 1,
+                theoreticalHours: 1,
+                core: 1,
+                correlativeSubjects: {
+                    $reduce: {
+                        input: "$correlativeSubjects.name",
+                        initialValue: "",
+                        in: {
+                            $concat: [
+                              "$$value",
+                              {
+                                $cond: {
+                                  if: { $eq: [ "$$value", "" ] },
+                                  then: "",
+                                  else: ", "
+                                }
+                              },
+                              "$$this"
+                            ]
+                          }
+                    }
+                },
+                requiredSubjects: {
+                    $reduce: {
+                        input: "$requiredSubjects.name",
+                        initialValue: "",
+                        in: {
+                            $concat: [
+                              "$$value",
+                              {
+                                $cond: {
+                                  if: { $eq: [ "$$value", "" ] },
+                                  then: "",
+                                  else: ", "
+                                }
+                              },
+                              "$$this"
+                            ]
+                          }
+                    }
+                }
+            }
+        }]);
+
+    }
+
     async findById(id) {
 
         if(!id) {
@@ -119,8 +199,6 @@ class SubjectService  {
         if (!subject) {
             throw this.createAppError('No se encontró la materia.', 404);
         }
-
-        console.log(correlativeSubjects);
         
         const  objectIdList = correlativeSubjects.map((id) => Types.ObjectId(id));
 
