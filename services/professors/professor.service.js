@@ -73,7 +73,8 @@ class ProfessorService  {
             email,
             gender,
             active,
-            subjects
+            subjects,
+            createdAt: Date.now()
         });
 
         if (!professorCreated)
@@ -103,12 +104,17 @@ class ProfessorService  {
     }
 
     async updateById(id, {
-        name,
+        first,
+        last,
         email,
         gender,
         active,
         subjects
     }, file) {
+
+        
+        const name = { first, last };
+        console.log({name, email, gender, active, subjects});
 
         this.checkFields({ name, gender, active, subjects, email });
 

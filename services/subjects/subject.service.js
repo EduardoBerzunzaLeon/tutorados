@@ -139,7 +139,15 @@ class SubjectService  {
     }
 
     async deleteById(id) {
+        // TODO: if the subject is the last one in professors entity ¡NOT DELETE!. 
+        // ! Do this before delete subject.
         const deleted =  await this.subjectRepository.deleteById(id);
+        
+        if(!deleted) 
+            throw this.createAppError('No se pudo eliminar el registro', 500);
+        
+        // TODO: Delete subject in professors entity.
+        
         await this.subjectRepository.updateMany(
             { requiredSubjects: Types.ObjectId(id) },
             { $pull: {requiredSubjects:  Types.ObjectId(id)} },
