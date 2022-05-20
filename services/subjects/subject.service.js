@@ -44,6 +44,8 @@ class SubjectService  {
                 name: 1,
                 semester: 1,
                 deprecated: 1,
+                deprecatedAt: 1,
+                createdAt: 1,
                 credit: 1,
                 practicalHours: 1,
                 theoreticalHours: 1,
