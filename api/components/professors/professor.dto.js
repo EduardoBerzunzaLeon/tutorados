@@ -20,12 +20,27 @@ class ProfessorDTO {
       active: resource?.active,
       createdAt: resource?.createdAt,
       subjects: resource?.subjects,
-      avatar: this.getCompleteURLAvatar(resource?.avatar),
+      avatar: resource?.avatar && this.getCompleteURLAvatar(resource?.avatar),
       courses: resource?.courses || []
     });
   
+    singleExcel = (professor) => ({
+      id: professor._id,
+      name: `${this.ucwords(professor.name.first)} ${this.ucwords(professor.name.last)}`,
+      email: professor?.email,
+      gender: professor?.gender,
+      active: professor.active ? 'Activo' : 'Inactivo',
+      createdAt: professor?.createdAt,
+      subjects: professor?.subjects,
+      courses: professor?.courses || ''
+    })
+
     multiple = (resources) => {
       return resources.map((resource) => this.single(resource));
+    };
+    
+    multipleExcel = (resources) => {
+      return resources.map((resource) => this.singleExcel(resource));
     };
   }
   

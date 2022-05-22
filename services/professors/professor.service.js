@@ -44,6 +44,97 @@ class ProfessorService  {
 
     }
 
+    async findForExcel() {
+
+        console.log('excel')
+        const professors = await this.professorRepository.entity.aggregate([{
+            $lookup: {
+                from: 'subjects',
+                foreignField: "_id",
+                localField: "subjects",
+                pipeline: [
+                    { $match: { deprecated: false }},
+                    { $project: { name: 1,  _id: 0 } }
+                ],
+                as: "subjects"
+            },
+        },
+        {
+            $lookup: {
+                from: 'courses',
+                foreignField: "professor",
+                localField: "_id",
+                pipeline: [
+                    { $project: { name: 1,  _id: 0 } }
+                ],
+                as: "courses"
+            },
+        },{
+            $project: {
+                _id: 1,
+                name: 1,
+                email: 1,
+                gender: {
+                    $cond:  {
+                        if: { $gte: [ "$gender", 'M' ] },
+                        then: 'Hombre',
+                        else: 'Mujer'
+                    }
+                },
+                active: 1,
+                createdAt: 1,
+                subjects: {
+                    $reduce: {
+                        input: "$subjects.name",
+                        initialValue: "",
+                        in: {
+                            $concat: [
+                              "$$value",
+                              {
+                                $cond: {
+                                  if: { $eq: [ "$$value", "" ] },
+                                  then: "",
+                                  else: ", "
+                                }
+                              },
+                              "$$this"
+                            ]
+                          }
+                    }
+                },
+                courses: {
+                    $reduce: {
+                        input: "$courses.name",
+                        initialValue: "",
+                        in: {
+                            $concat: [
+                              "$$value",
+                              {
+                                $cond: {
+                                  if: { $eq: [ "$$value", "" ] },
+                                  then: "",
+                                  else: ", "
+                                }
+                              },
+                              "$$this"
+                            ]
+                          }
+                    }
+                }
+            }
+        }])
+
+        if(!professors) {
+            throw this.createAppError(
+              'No se encontraron maestros',
+              404
+            );
+          }
+      
+        return professors;
+
+    }
+
     async deleteById(id) {
         const professorDeleted = await this.professorRepository.deleteById(id);
 
@@ -53,15 +144,17 @@ class ProfessorService  {
 
         return professorDeleted;
     }
-
+ 
     async create({ 
-        name,
+        first,
+        last,
         email,
         gender,
         active,
         subjects
     }, file) {
 
+        const name = { first, last };
         this.checkFields({ name, gender, active, subjects, email });
 
         const professorExists = await this.professorRepository.findOne({ email });
@@ -118,6 +211,7 @@ class ProfessorService  {
 
         this.checkFields({ name, gender, active, subjects, email });
 
+        console.log(file)
         if(file) {
             const uploadFile = this.fileService.uploadFile('img/professors');
             const image = await uploadFile.bind(this.fileService, file)();
@@ -143,6 +237,22 @@ class ProfessorService  {
   
       return professorUpdated;
     }
+
+    async setActive(id, { active }) {
+
+        if(!id || typeof active !== 'boolean') {
+          throw this.createAppError('Todos los campos son obligatorios', 400);      
+        }
+    
+        const professor = await this.professorRepository.updateById(id, { active });
+    
+        if (!professor)
+          throw this.createAppError('No se pudo actualizar los datos', 400);
+    
+        return professor;
+    
+      }
+    
 
 }
 

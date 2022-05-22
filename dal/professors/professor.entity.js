@@ -50,7 +50,7 @@ const professorSchema = new Schema({
     subjects: [
         {
           type: Schema.ObjectId,
-          ref: 'Subject'
+          ref: 'Subject' 
         }
     ]
 }, {

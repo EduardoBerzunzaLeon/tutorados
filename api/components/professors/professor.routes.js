@@ -20,9 +20,13 @@ module.exports = function({
     UploadSingleFile(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i, '2000', 'avatar'),
     ProfessorController.updateProfessor);
 
+    router.get('/excel', ProfessorController.findProfessorsForExcel);
     router.get('/:id', ProfessorController.findProfessorById);
     router.get('/', ProfessorController.findProfessors);
+
     router.delete('/:id', ProfessorController.deleteProfessor );
+
+    router.patch('/:id/active', ProfessorController.setActive);
 
     return router;
 }
