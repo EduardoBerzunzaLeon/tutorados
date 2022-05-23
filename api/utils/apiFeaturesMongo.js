@@ -10,14 +10,25 @@ class APIFeaturesMongo {
     const excludedFields = ['page', 'sort', 'limit', 'fields', 'sortOrder', 'global'];
     excludedFields.forEach((el) => {
       if(el === 'global' && queryObj[el]) {
-        queryObj['$text'] = {$search : queryObj[el]?.regex ?? ''};
+        queryObj['$text'] = { $search : queryObj[el]?.regex ?? '' };
       }
       delete queryObj[el];
     });
+
+    // convert between into gte and lte
+    Object.keys(queryObj).forEach((el) => {
+      if(queryObj[el]?.hasOwnProperty('between') ) {
+        const [ gte, lte ] = queryObj[el].between.split(',');
+        queryObj[el] = {
+          gte,
+          lte
+        }
+      }
+    });
     
-    // 1B) Advanced filtering
+
     const queryStr = JSON.stringify(queryObj).replace(
-      /\b(gte|gt|lte|lt|ne|regex)\b/g,
+      /\b(gte|gt|lte|lt|ne|regex|between)\b/g,
       (match) =>  `$${match}`
       )
       .replace('/', '.');
