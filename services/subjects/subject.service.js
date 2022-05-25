@@ -2,8 +2,9 @@ const { Types } = require('mongoose');
 
 class SubjectService  {
 
-    constructor({ SubjectRepository, createAppError }) {
+    constructor({ SubjectRepository, ProfessorRepository, createAppError }) {
         this.subjectRepository = SubjectRepository;
+        this.professorRepository = ProfessorRepository;
         this.createAppError = createAppError;
     }
 
@@ -139,22 +140,36 @@ class SubjectService  {
     }
 
     async deleteById(id) {
-        // TODO: if the subject is the last one in professors entity ¡NOT DELETE!. 
-        // ! Do this before delete subject.
+        
+        const idMongo = Types.ObjectId(id);
+
+        const professor = await this.professorRepository.findOne({ subjects: idMongo, active: true });
+
+        if(professor?.subjects.length === 1 ){
+            throw this.createAppError(`Es la unica materia del profesor ${professor.name.first} ${professor.name.last}, favor de desvincularlo del tutor primero`, 500);
+        }
+
         const deleted =  await this.subjectRepository.deleteById(id);
         
         if(!deleted) 
             throw this.createAppError('No se pudo eliminar el registro', 500);
         
-        // TODO: Delete subject in professors entity.
         
-        await this.subjectRepository.updateMany(
-            { requiredSubjects: Types.ObjectId(id) },
-            { $pull: {requiredSubjects:  Types.ObjectId(id)} },
+        const deleteSubjectInProfessors =  this.professorRepository.updateMany(
+            { subjects: idMongo },
+            { $pull: { subjects:  idMongo } },
+            { multi: true }
+        );
+        
+        const deleteRequiredInSubjects = this.subjectRepository.updateMany(
+            { requiredSubjects: idMongo },
+            { $pull: {requiredSubjects:  idMongo} },
             { multi: true }
         );
 
-        return deleted;
+        await Promise.all([deleteSubjectInProfessors, deleteRequiredInSubjects]);
+
+        return professor;
     }
 
     async create({ 
