@@ -19,7 +19,7 @@ class UserDTO {
     email: resource?.email,
     active: resource?.active,
     blocked: resource?.blocked,
-    role: resource?.role,
+    roles: resource?.roles,
     avatar: this.getCompleteURLAvatar(resource?.avatar)
   });
 

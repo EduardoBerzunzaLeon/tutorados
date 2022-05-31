@@ -6,8 +6,8 @@ class UserService {
   }
 
 
-  checkFields({ name, gender, role, blocked, email }) {
-    if (!name || !gender || !role || !blocked || !email) {
+  checkFields({ name, gender, roles, blocked, email }) {
+    if (!name || !gender || !roles || !blocked || !email) {
       throw this.createAppError('Todos los campos son obligatorios', 400);
     }
   }
@@ -66,11 +66,11 @@ class UserService {
     return userUpdated;
   }
 
-  async updateUserByAdmin(id, { first, last, email, gender, role, blocked }, file) {
+  async updateUserByAdmin(id, { first, last, email, gender, roles, blocked }, file) {
 
     const name = { first, last };
 
-    this.checkFields({ name, gender, role, blocked, email });
+    this.checkFields({ name, gender, roles, blocked, email });
 
     if(file) {
       const uploadFile = this.fileService.uploadFile();
@@ -84,7 +84,7 @@ class UserService {
       );
     }
 
-    const userUpdated = await this.userRepository.updateById(id, { name, email, gender, role, blocked });
+    const userUpdated = await this.userRepository.updateById(id, { name, email, gender, roles, blocked });
 
     if (!userUpdated)
       throw this.createAppError('No se pudo actualizar los datos', 400);
@@ -92,11 +92,11 @@ class UserService {
     return userUpdated;
   }
   
-  async create({ first, last, email, gender, role, blocked }, file) {
+  async create({ first, last, email, gender, roles, blocked }, file) {
 
     const name = { first, last };
 
-    this.checkFields({ name, gender, role, blocked, email });
+    this.checkFields({ name, gender, roles, blocked, email });
 
     const userExists = await this.userRepository.findOne({ email });
 
@@ -110,7 +110,7 @@ class UserService {
       gender,
       active: true,
       blocked,
-      role,
+      roles,
     });
 
     if (!userCreated)

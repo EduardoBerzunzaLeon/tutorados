@@ -28,7 +28,7 @@ class AuthService {
       gender,
       active: false,
       blocked: false,
-      role: 'user',
+      roles: ['reader'],
     });
 
     if (!userCreated)
@@ -129,7 +129,7 @@ class AuthService {
           gender: 'M',
           avatar,
           active: true,
-          role: 'user',
+          roles: ['reader'],
           google: true,
         });
 
@@ -181,7 +181,7 @@ class AuthService {
           gender: 'M',
           avatar,
           active: true,
-          role: 'user',
+          roles: ['reader'],
           facebook: true,
         });
 

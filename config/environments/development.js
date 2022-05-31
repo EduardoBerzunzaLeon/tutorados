@@ -1,3 +1,6 @@
+const PERMISSIONS_LIST = require("../authorization/permissions");
+const ROLES_LIST = require("../authorization/roles");
+
 module.exports = {
   PORT: process.env.PORT,
   API_VERSION: process.env.API_VERSION,
@@ -26,4 +29,6 @@ module.exports = {
   FACEBOOK: {
     CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
   },
+  ROLES_LIST: ROLES_LIST,
+  PERMISSIONS_LIST: PERMISSIONS_LIST 
 };

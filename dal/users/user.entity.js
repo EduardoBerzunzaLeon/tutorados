@@ -1,9 +1,15 @@
+
+
 const crypto = require('crypto');
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 
 const generateHashedToken = require('../../api/utils/generateHashedToken');
+const ROLES_LIST = require('../../config/authorization/roles');
+
+const allowedRoles = Object.values(ROLES_LIST);
+
 
 const validGenders = {
   values: ['M', 'F'],
@@ -11,7 +17,7 @@ const validGenders = {
 };
 
 const validRoles = {
-  values: ['admin', 'user'],
+  values: allowedRoles,
   message: '{VALUE} no es un role válido',
 };
 
@@ -42,12 +48,12 @@ const UserSchema = new Schema({
     type: String,
     default: 'default.jpg',
   },
-  role: {
+  roles: [{
     type: String,
     enum: validRoles,
     lowercase: true,
     required: [true, 'El rol es obligatorio'],
-  },
+  }],
   password: {
     type: String,
     required: [true, 'La contraseña es obligatoria'],

@@ -91,13 +91,26 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
   };
 
   const restrictTo =
-    (...roles) =>
+    (roles) =>
     (req, res, next) => {
-      if (!roles.includes(req.user.role)) {
+      const allowedRoles = [...roles];
+      const { roles: userRoles } = req.user;
+      if(!userRoles) {
         return next(
           self.createAppError(
             'No tienes permiso para realizar esta acción.',
-            403
+            401
+          )
+        );
+      }
+
+      const hasAllowedRole = userRoles.map(role => allowedRoles.includes(role)).find(val => val === true);
+      
+      if (!hasAllowedRole) {
+        return next(
+          self.createAppError(
+            'No tienes permiso para realizar esta acción.',
+            401
           )
         );
       }
