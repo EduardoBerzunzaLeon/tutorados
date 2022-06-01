@@ -95,6 +95,7 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
     (req, res, next) => {
       const allowedRoles = [...roles];
       const { roles: userRoles } = req.user;
+      
       if(!userRoles) {
         return next(
           self.createAppError(
@@ -103,8 +104,9 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
           )
         );
       }
-
       const hasAllowedRole = userRoles.map(role => allowedRoles.includes(role)).find(val => val === true);
+      
+      console.log({userRoles, allowedRoles, hasAllowedRole});
       
       if (!hasAllowedRole) {
         return next(

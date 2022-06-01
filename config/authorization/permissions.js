@@ -1,4 +1,4 @@
-const { Admin, Professor, Reader, Student, Mentor } = require("./roles")
+const { Admin, Professor, Reader, Student, Mentor } = require("./roles");
 
 
 const USER_PERMISSIONS = {
