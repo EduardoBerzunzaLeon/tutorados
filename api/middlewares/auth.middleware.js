@@ -106,8 +106,6 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
       }
       const hasAllowedRole = userRoles.map(role => allowedRoles.includes(role)).find(val => val === true);
       
-      console.log({userRoles, allowedRoles, hasAllowedRole});
-      
       if (!hasAllowedRole) {
         return next(
           self.createAppError(

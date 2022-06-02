@@ -6,7 +6,7 @@ class ProfessorDTO {
     
     getCompleteURLAvatar = (avatar) => (avatar.startsWith('http')) 
       ? avatar 
-      : `${process.env.PATH_STATIC_FILES}professors/${avatar}`;
+      : `${process.env.PATH_STATIC_FILES}${avatar}`;
   
     single = (resource) => ({
       id: resource._id,

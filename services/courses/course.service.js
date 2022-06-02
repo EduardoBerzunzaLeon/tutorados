@@ -1,14 +1,20 @@
 class CourseService  {
 
-    constructor({ CourseRepository, FileService, createAppError }) {
+    constructor({ CourseRepository, ProfessorRepository, FileService, createAppError }) {
         this.courseRepository = CourseRepository;
+        this.professorRepository = ProfessorRepository;
         this.fileService = FileService;
         this.createAppError = createAppError;
     }
 
 
     async find(query) {
-        return await Promise.all(this.courseRepository.findAll(query));
+        let sanitizedQuery = query;
+        if(query.professor) {
+            const professor = await this.professorRepository.findOne({ user: query.professor });
+            sanitizedQuery = {...query, professor};
+        }
+        return await Promise.all(this.courseRepository.findAll(sanitizedQuery));
     }
 
     async findById(id) {
@@ -40,13 +46,18 @@ class CourseService  {
     async create({ 
         name, 
         impartedAt, 
-        professor, 
+        user, 
      }) {
+
+        const professor = await this.professorRepository.findOne({ user });
+
+        if(!professor) 
+            throw this.createAppError('No se encontro el professor', 500);
 
         const CourseCreated = await this.courseRepository.create({
             name,
             impartedAt,
-            professor,
+            professor: professor.id,
         });
 
         if(!CourseCreated) 
@@ -59,13 +70,17 @@ class CourseService  {
     async updateById(id, { 
         name, 
         impartedAt, 
-        professor, 
+        user, 
     }) {
+        const professor = await this.professorRepository.findOne({ user });
+
+        if(!professor) 
+            throw this.createAppError('No se encontro el profesor', 500);
 
         const courseUpdated = await this.courseRepository.updateById(id, { 
             name, 
             impartedAt,
-            professor
+            professor: professor.id
         });
 
         if (!courseUpdated)

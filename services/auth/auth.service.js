@@ -213,7 +213,6 @@ class AuthService {
 
       return userUpdated;
     } catch (error) {
-      // console.log(error);
       throw this.createAppError('El Token no se pudo verificar.', 400);
     }
   }

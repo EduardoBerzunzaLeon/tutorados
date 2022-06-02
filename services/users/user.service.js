@@ -1,22 +1,25 @@
 class UserService {
-  constructor({ UserRepository, FileService, createAppError }) {
+  constructor({ UserRepository, ProfessorService, FileService, createAppError }) {
+    this.professorService = ProfessorService;
     this.userRepository = UserRepository;
     this.fileService = FileService;
     this.createAppError = createAppError;
   }
 
 
-  checkFields({ name, gender, roles, blocked, email }) {
-    if (!name || !gender || !roles || !blocked || !email) {
+  checkFields({ name, gender, roles, email }) {
+    if (!name || !gender || !roles || !email) {
       throw this.createAppError('Todos los campos son obligatorios', 400);
     }
   }
 
   async find(query) {
+    console.log('entro');
     return await Promise.all(this.userRepository.findAll(query));
   }
 
   async findById(id) {
+
 
     if(!id) {
       throw this.createAppError(
@@ -70,7 +73,7 @@ class UserService {
 
     const name = { first, last };
 
-    this.checkFields({ name, gender, roles, blocked, email });
+    this.checkFields({ name, gender, roles,  email });
 
     if(file) {
       const uploadFile = this.fileService.uploadFile();
@@ -92,14 +95,13 @@ class UserService {
     return userUpdated;
   }
   
-  async create({ first, last, email, gender, roles, blocked }, file) {
+  async create({ first, last, email, gender, roles, blocked, subjects }, file) {
 
     const name = { first, last };
 
-    this.checkFields({ name, gender, roles, blocked, email });
+    this.checkFields({ name, gender, roles,  email });
 
     const userExists = await this.userRepository.findOne({ email });
-
     if ( userExists ) throw this.createAppError('Usuario ya existe', 401);
 
     const userCreated = await this.userRepository.create({
@@ -120,7 +122,6 @@ class UserService {
     if(file) {
       const uploadFile = this.fileService.uploadFile();
       const image = await uploadFile.bind(this.fileService, file)();
-  
       try {
         await this.fileService.saveInDB(
           userCreated.id,
@@ -132,7 +133,15 @@ class UserService {
         await this.userRepository.deleteById(userCreated.id);
         throw error;
       }
-      
+    }
+
+    if(roles.includes('professor')) {
+      try {
+        await this.professorService.create({userId: userCreated.id, subjects: subjects ?? []});
+      } catch (error) {
+        await this.userRepository.deleteById(userCreated.id);
+        throw error;
+      }
     }
 
     return userCreated;
@@ -171,6 +180,36 @@ class UserService {
 
     return user;
 
+  }
+
+
+  async updateUserProfessor(id, { first, last, email, active, gender, subjects }, file) {
+
+    if(!first || !last || !email || !gender || !active) {
+      throw this.createAppError('Todos los campos son obligatorios', 400);
+    }
+
+    const data = { name: { first, last }, email, gender, active };
+
+    if(file) {
+      const uploadFile = this.fileService.uploadFile();
+      const image = await uploadFile.bind(this.fileService, file)();
+  
+      await this.fileService.saveInDB(
+        id,
+        this.userRepository,
+        image,
+        'avatar'
+      );
+    }
+
+    const userUpdated = await this.userRepository.updateById(id, data);
+
+    if (!userUpdated)
+      throw this.createAppError('No se pudo actualizar los datos', 400);
+
+    await this.professorService.updateById(userUpdated.id, { subjects });
+    return userUpdated;
   }
 
 }

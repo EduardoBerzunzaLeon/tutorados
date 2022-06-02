@@ -1,7 +1,17 @@
+const { Types } = require('mongoose');
+
+
+
+
+
+
+
+
 class ProfessorService  {
 
-    constructor({ ProfessorRepository, FileService, createAppError }) {
+    constructor({ ProfessorRepository, UserRepository, FileService, createAppError }) {
         this.professorRepository = ProfessorRepository;
+        this.userRepository = UserRepository;
         this.fileService = FileService;
         this.createAppError = createAppError;
     }
@@ -13,7 +23,8 @@ class ProfessorService  {
     }
 
     async find(query) {
-        return await Promise.all(this.professorRepository.findAll(query));
+        const professorQuery = {...query,  roles: 'professor'};
+        return await Promise.all(this.userRepository.findAll(professorQuery));
     }
 
     async findById(id) {
@@ -25,13 +36,17 @@ class ProfessorService  {
             );
         }
 
-        const professor = await this.professorRepository.findById(id, { 
+        const professor = await this.professorRepository.findOne({user: Types.ObjectId(id)}, { 
             path: 'subjects',
             select: 'name semester deprecated'
         }).populate({
             path: 'courses',
             select: '-__v'
+        }).populate({
+            path: 'user',
+            select: '-__v'
         });
+
 
         if(!professor) {
             throw this.createAppError(
@@ -40,89 +55,106 @@ class ProfessorService  {
             );
           }
       
-        return professor;
+        const { user, subjects, courses } = professor;
+        const returned = {...user._doc, subjects, courses};
+
+        return returned;
 
     }
 
     async findForExcel() {
-
-        console.log('excel')
-        const professors = await this.professorRepository.entity.aggregate([{
-            $lookup: {
-                from: 'subjects',
-                foreignField: "_id",
-                localField: "subjects",
-                pipeline: [
-                    { $match: { deprecated: false }},
-                    { $project: { name: 1,  _id: 0 } }
-                ],
-                as: "subjects"
-            },
-        },
-        {
-            $lookup: {
-                from: 'courses',
-                foreignField: "professor",
-                localField: "_id",
-                pipeline: [
-                    { $project: { name: 1,  _id: 0 } }
-                ],
-                as: "courses"
-            },
-        },{
-            $project: {
-                _id: 1,
-                name: 1,
-                email: 1,
-                gender: {
-                    $cond:  {
-                        if: { $gte: [ "$gender", 'M' ] },
-                        then: 'Hombre',
-                        else: 'Mujer'
-                    }
+    
+        const professors = await this.userRepository.entity.aggregate([
+            {$match: { roles: 'professor' }},
+            {
+                $lookup: {
+                    from: 'professors',
+                    foreignField: "user",
+                    localField: "_id",
+                    pipeline: [
+                        { $project: { subjects: 1,  _id: 1 } }
+                    ],
+                    as: "professor"
                 },
-                active: 1,
-                createdAt: 1,
-                subjects: {
-                    $reduce: {
-                        input: "$subjects.name",
-                        initialValue: "",
-                        in: {
-                            $concat: [
-                              "$$value",
-                              {
-                                $cond: {
-                                  if: { $eq: [ "$$value", "" ] },
-                                  then: "",
-                                  else: ", "
-                                }
-                              },
-                              "$$this"
-                            ]
-                          }
-                    }
+            },
+            {
+                $lookup: {
+                    from: 'subjects',
+                    foreignField: "professor.subjects",
+                    localField: "subjects",
+                    pipeline: [
+                        { $match: { deprecated: false }},
+                        { $project: { name: 1,  _id: 0 } }
+                    ],
+                    as: "subjects"
                 },
-                courses: {
-                    $reduce: {
-                        input: "$courses.name",
-                        initialValue: "",
-                        in: {
-                            $concat: [
-                              "$$value",
-                              {
-                                $cond: {
-                                  if: { $eq: [ "$$value", "" ] },
-                                  then: "",
-                                  else: ", "
-                                }
-                              },
-                              "$$this"
-                            ]
-                          }
+            },
+            {
+                $lookup: {
+                    from: 'courses',
+                    foreignField: "professor",
+                    localField: "professor._id",
+                    pipeline: [
+                        { $project: { name: 1,  _id: 0 } }
+                    ],
+                    as: "courses"
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    email: 1,
+                    gender: {
+                        $cond:  {
+                            if: { $gte: [ "$gender", 'M' ] },
+                            then: 'Hombre',
+                            else: 'Mujer'
+                        }
+                    },
+                    active: 1,
+                    createdAt: 1,
+                    subjects: {
+                        $reduce: {
+                            input: "$subjects.name",
+                            initialValue: "",
+                            in: {
+                                $concat: [
+                                  "$$value",
+                                  {
+                                    $cond: {
+                                      if: { $eq: [ "$$value", "" ] },
+                                      then: "",
+                                      else: ", "
+                                    }
+                                  },
+                                  "$$this"
+                                ]
+                              }
+                        }
+                    },
+                    courses: {
+                        $reduce: {
+                            input: "$courses.name",
+                            initialValue: "",
+                            in: {
+                                $concat: [
+                                  "$$value",
+                                  {
+                                    $cond: {
+                                      if: { $eq: [ "$$value", "" ] },
+                                      then: "",
+                                      else: ", "
+                                    }
+                                  },
+                                  "$$this"
+                                ]
+                              }
+                        }
                     }
                 }
             }
-        }])
+        ]);
 
         if(!professors) {
             throw this.createAppError(
@@ -135,102 +167,37 @@ class ProfessorService  {
 
     }
 
+
     async deleteById(id) {
         const professorDeleted = await this.professorRepository.deleteById(id);
 
-        if(professorDeleted?.avatar) {
-            await this.fileService.deleteFile(professorDeleted.avatar);
-        }
-
+        if(!professorDeleted) 
+            throw this.createAppError('No se pudo eliminar el profesor', 500);
+        
         return professorDeleted;
     }
  
-    async create({ 
-        first,
-        last,
-        email,
-        gender,
-        active,
-        subjects
-    }, file) {
 
-        const name = { first, last };
-        this.checkFields({ name, gender, active, subjects, email });
+    async create({ userId, subjects }) {
 
-        const professorExists = await this.professorRepository.findOne({ email });
-
-        if ( professorExists ) throw this.createAppError('El profesor ya existe', 404);
+        if(!userId || !subjects) 
+            throw this.createAppError('El usuario y materias son obligatorios', 500);
 
         const professorCreated = await this.professorRepository.create({
-            name,
-            email,
-            gender,
-            active,
+            user: userId,
             subjects,
-            createdAt: Date.now()
         });
 
         if (!professorCreated)
             throw this.createAppError('No se pudo concluir su registro', 500);
 
-
-        if(file) {
-
-            console.log(file);
-            const uploadFile = this.fileService.uploadFile('img/professors');
-            const image = await uploadFile.bind(this.fileService, file)();
-
-            try {
-                await this.fileService.saveInDB(
-                    professorCreated.id,
-                    this.professorRepository,
-                    image,
-                    'avatar'
-                );
-            } catch (error) {
-                await this.professorRepository.deleteById(professorCreated.id);
-                throw error;
-            }
-        }
-
         return professorCreated;
     }
 
-    async updateById(id, {
-        first,
-        last,
-        email,
-        gender,
-        active,
-        subjects
-    }, file) {
 
-        
-        const name = { first, last };
-        console.log({name, email, gender, active, subjects});
+    async updateById(userId, { subjects }) {
 
-        this.checkFields({ name, gender, active, subjects, email });
-
-        console.log(file)
-        if(file) {
-            const uploadFile = this.fileService.uploadFile('img/professors');
-            const image = await uploadFile.bind(this.fileService, file)();
-        
-            await this.fileService.saveInDB(
-                id,
-                this.professorRepository,
-                image,
-                'avatar'
-            );
-        }
-
-        const professorUpdated = await this.professorRepository.updateById(id, {
-            name,
-            email,
-            gender,
-            active,
-            subjects
-        });
+        const professorUpdated = await this.professorRepository.updateOne({user: userId}, { subjects });
 
         if (!professorUpdated)
             throw this.createAppError('No se pudo actualizar los datos', 400);
@@ -244,14 +211,14 @@ class ProfessorService  {
           throw this.createAppError('Todos los campos son obligatorios', 400);      
         }
     
-        const professor = await this.professorRepository.updateById(id, { active });
+        const professor = await this.userRepository.updateById(id, { active });
     
         if (!professor)
           throw this.createAppError('No se pudo actualizar los datos', 400);
     
         return professor;
     
-      }
+    }
     
 
 }

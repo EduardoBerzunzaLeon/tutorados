@@ -35,7 +35,6 @@ class APIFeaturesMongo {
 
     
     this.queryFind = JSON.parse(queryStr);
-    console.log(this.queryFind);
     this.query = this.query.find(JSON.parse(queryStr));
       
     return this;

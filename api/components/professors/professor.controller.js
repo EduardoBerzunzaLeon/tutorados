@@ -4,6 +4,7 @@ module.exports = ({
     FileService,
     ProfessorDTO,
     ProfessorService,
+    UserService,
   }) => {
 
     const self = {
@@ -11,6 +12,7 @@ module.exports = ({
       dto: ProfessorDTO,
       fileService: FileService,
       service: ProfessorService,
+      userService: UserService,
     };
 
     const findProfessorsForExcel = (self) =>  async (req, res) => {
@@ -23,14 +25,25 @@ module.exports = ({
       });
     }
 
+    const createProfessor = (self) => async (req, res) => {
+      const { file } = req;
+      const body = {...req.body, roles: ['professor'], blocked: false};
+      const doc = await self.userService.create(body, file);
+      const docSend = self.dto.single(doc);
 
+      return res.status(200).json({
+        status: 'success',
+        data: docSend,
+      });
+    }
+    
       
     const methods = (self) => ({
-        createProfessor: self.catchAsync(FactoryController.createWithFile(self)),
+        createProfessor: self.catchAsync(createProfessor(self)),
         deleteProfessor: self.catchAsync(FactoryController.deleteById(self)),
         findProfessorById: self.catchAsync(FactoryController.findById(self)),
         findProfessors: self.catchAsync(FactoryController.findDocs(self)),
-        updateProfessor: self.catchAsync(FactoryController.updateWithFile(self)),
+        updateProfessor: self.catchAsync(FactoryController.updateByMethod(self, self.userService.updateUserProfessor.bind(UserService))),
         findProfessorsForExcel: self.catchAsync(findProfessorsForExcel(self)),
         setActive: self.catchAsync(FactoryController.updateByMethod(self, self.service.setActive.bind(ProfessorService))),
     });

@@ -47,6 +47,10 @@ class BaseRepository {
   updateMany(query, options, more) {
     return this.entity.updateMany(query, options, more);
   }
+  
+  updateOne(query, update, options) {
+    return this.entity.updateOne(query, update, options);
+  }
 
   deleteById(id) {
     return this.entity.findByIdAndDelete(id);
