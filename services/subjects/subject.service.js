@@ -143,17 +143,23 @@ class SubjectService  {
         
         const idMongo = Types.ObjectId(id);
 
-        const professor = await this.professorRepository.findOne({ subjects: idMongo, active: true });
+        const [, professors] = await Promise.all(this.professorRepository.findAll({ subjects: idMongo }, {
+            path: 'user',
+            select: '-__v'
+        }));
 
-        if(professor?.subjects.length === 1 ){
-            throw this.createAppError(`Es la unica materia del profesor ${professor.name.first} ${professor.name.last}, favor de desvincularlo del tutor primero`, 500);
+        const professorAtRisk = professors.find(({subjects, user}) => subjects.length === 1 && user.active );
+
+        if(professorAtRisk){
+            throw this.createAppError(
+                `Es la unica materia del profesor ${professorAtRisk.user.name.first} ${professorAtRisk.user.name.last}, favor de desvincularlo del tutor primero`,
+                 500);
         }
 
         const deleted =  await this.subjectRepository.deleteById(id);
         
         if(!deleted) 
             throw this.createAppError('No se pudo eliminar el registro', 500);
-        
         
         const deleteSubjectInProfessors =  this.professorRepository.updateMany(
             { subjects: idMongo },
@@ -169,7 +175,7 @@ class SubjectService  {
 
         await Promise.all([deleteSubjectInProfessors, deleteRequiredInSubjects]);
 
-        return professor;
+        return professors;
     }
 
     async create({ 
