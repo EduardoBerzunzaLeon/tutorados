@@ -1,12 +1,5 @@
 const { Types } = require('mongoose');
 
-
-
-
-
-
-
-
 class ProfessorService  {
 
     constructor({ ProfessorRepository, UserRepository, FileService, createAppError }) {
@@ -65,7 +58,7 @@ class ProfessorService  {
     async findForExcel() {
     
         const professors = await this.userRepository.entity.aggregate([
-            {$match: { roles: 'professor' }},
+            { $match: { roles: 'professor' } },
             {
                 $lookup: {
                     from: 'professors',

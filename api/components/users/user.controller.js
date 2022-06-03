@@ -16,7 +16,7 @@ module.exports = ({
   
   const updateAvatar = (self) => async (req, res) => {
     const { file, user } = req;
-    const avatar = await self.service.uploadAvatar(user._id, file);
+    const avatar = await self.service.uploadAvatar(file, user._id);
 
     return res.status(200).json({
       status: 'success',

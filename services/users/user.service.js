@@ -14,12 +14,10 @@ class UserService {
   }
 
   async find(query) {
-    console.log('entro');
     return await Promise.all(this.userRepository.findAll(query));
   }
 
   async findById(id) {
-
 
     if(!id) {
       throw this.createAppError(
@@ -43,18 +41,25 @@ class UserService {
   async findActiveUser(_id) {
     return await this.userRepository.findOne({ _id, active: true });
   }
-
-  async uploadAvatar(id, file) {
-    // Move the temp file to images folder
-    const uploadFile = this.fileService.uploadFile();
-    const image = await uploadFile.bind(this.fileService, file)();
-
-    return await this.fileService.saveInDB(
-      id,
-      this.userRepository,
-      image,
-      'avatar'
-    );
+  
+  async uploadAvatar(file, id, canDelete = false) {
+    if(file) {
+      const uploadFile = this.fileService.uploadFile();
+      const image = await uploadFile.bind(this.fileService, file)();
+      try {
+       return await this.fileService.saveInDB(
+          id,
+          this.userRepository,
+          image,
+          'avatar'
+        );
+      } catch (error) {
+        if(canDelete) {
+          await this.userRepository.deleteById(userCreated.id);
+        }
+        throw error;
+      }
+    }
   }
 
   async updateById(id, { name, email, gender}) {
@@ -72,20 +77,9 @@ class UserService {
   async updateUserByAdmin(id, { first, last, email, gender, roles, blocked }, file) {
 
     const name = { first, last };
-
     this.checkFields({ name, gender, roles,  email });
 
-    if(file) {
-      const uploadFile = this.fileService.uploadFile();
-      const image = await uploadFile.bind(this.fileService, file)();
-  
-      await this.fileService.saveInDB(
-        id,
-        this.userRepository,
-        image,
-        'avatar'
-      );
-    }
+    await this.uploadAvatar(file, id);
 
     const userUpdated = await this.userRepository.updateById(id, { name, email, gender, roles, blocked });
 
@@ -94,6 +88,7 @@ class UserService {
 
     return userUpdated;
   }
+
   
   async create({ first, last, email, gender, roles, blocked, subjects }, file) {
 
@@ -118,22 +113,7 @@ class UserService {
     if (!userCreated)
       throw this.createAppError('No se pudo concluir su registro', 500);
 
-
-    if(file) {
-      const uploadFile = this.fileService.uploadFile();
-      const image = await uploadFile.bind(this.fileService, file)();
-      try {
-        await this.fileService.saveInDB(
-          userCreated.id,
-          this.userRepository,
-          image,
-          'avatar'
-        );
-      } catch (error) {
-        await this.userRepository.deleteById(userCreated.id);
-        throw error;
-      }
-    }
+    await this.uploadAvatar(file, userCreated.id, true);
 
     if(roles.includes('professor')) {
       try {
@@ -191,17 +171,7 @@ class UserService {
 
     const data = { name: { first, last }, email, gender, active };
 
-    if(file) {
-      const uploadFile = this.fileService.uploadFile();
-      const image = await uploadFile.bind(this.fileService, file)();
-  
-      await this.fileService.saveInDB(
-        id,
-        this.userRepository,
-        image,
-        'avatar'
-      );
-    }
+    await this.uploadAvatar(file, id, false);
 
     const userUpdated = await this.userRepository.updateById(id, data);
 
