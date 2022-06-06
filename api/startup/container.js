@@ -68,6 +68,10 @@ const { SubjectRepository, SubjectEntity } = require('../../dal/subjects');
 const { CourseRepository, CourseEntity } = require('../../dal/courses');
 const { ProfessorRepository, ProfessorEntity } = require('../../dal/professors');
 
+const { AcademicCareerRepository, AcademicCareerEntity } = require('../../dal/academicCareer');
+const { StudentRepository, StudentEntity } = require('../../dal/students');
+const { SubjectHistoryRepository, SubjectHistoryEntity } = require('../../dal/subjectHistory');
+
 const container = createContainer();
 
 container
@@ -142,6 +146,21 @@ container
     ProfessorService: asClass(ProfessorService).singleton(),
     ProfessorRepository: asClass(ProfessorRepository).singleton(),
     ProfessorEntity: asValue(ProfessorEntity),
+  })
+  // * Academic Career
+  .register({
+    AcademicCareerRepository: asClass(AcademicCareerRepository).singleton(),
+    AcademicCareerEntity: asValue(AcademicCareerEntity),
+  })
+  // * Student
+  .register({
+    StudentRepository: asClass(StudentRepository).singleton(),
+    StudentEntity: asValue(StudentEntity),
+  })
+  // * Subject History
+  .register({
+    SubjectHistoryRepository: asClass(SubjectHistoryRepository).singleton(),
+    SubjectHistoryEntity: asValue(SubjectHistoryEntity),
   })
   // * Files
   .register({
