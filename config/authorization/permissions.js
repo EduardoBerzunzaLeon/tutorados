@@ -15,6 +15,13 @@ const PROFESSOR_PERMISSIONS = {
     create_professors: [Admin],
 }
 
+const STUDENT_PERMISSIONS = {
+    get_students:  [Admin, Reader],
+    delete_students: [Admin],
+    update_students: [Admin],
+    create_students: [Admin],
+}
+
 const SUBJECT_PERMISSIONS = {
     get_subjects:  [Admin, Reader, Professor],
     delete_subjects: [Admin],
@@ -32,6 +39,7 @@ const COURSE_PERMISSIONS = {
 const PERMISSIONS_LIST = {
     user: USER_PERMISSIONS,
     professor: PROFESSOR_PERMISSIONS,
+    student: STUDENT_PERMISSIONS,
     subject: SUBJECT_PERMISSIONS,
     course: COURSE_PERMISSIONS
 }

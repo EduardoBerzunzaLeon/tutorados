@@ -46,7 +46,7 @@ const AcademicCareerSchema = new Schema({
                 type: Schema.ObjectId,
                 ref: 'Subject',
             }
-        ]
+        ] 
     ]
 });
 

@@ -18,6 +18,7 @@ const { UserController, UserDTO, userRoutes } = require('../components/users');
 const { SubjectController, SubjectDTO, subjectRoutes } = require('../components/subjects');
 const { CourseController, CourseDTO, courseMiddleware, courseRoutes } = require('../components/courses');
 const { ProfessorController, ProfessorDTO, professorRoutes } = require('../components/professors');
+const { StudentController, StudentDTO, studentRoutes } = require('../components/students');
 
 // { 
 //   findDocs, 
@@ -57,6 +58,7 @@ const UserService = require('../../services/users/user.service');
 const SubjectService = require('../../services/subjects/subject.service');
 const CourseService = require('../../services/courses/course.service');
 const ProfessorService = require('../../services/professors/professor.service');
+const StudentService = require('../../services/students/student.service');
 const AuthService = require('../../services/auth/auth.service');
 const FileService = require('../../services/files/file.service');
 
@@ -154,6 +156,10 @@ container
   })
   // * Student
   .register({
+    StudentController: asFunction(StudentController).singleton(),
+    studentRoutes: asFunction(studentRoutes).singleton(),
+    StudentDTO: asClass(StudentDTO).singleton(),
+    StudentService: asClass(StudentService).singleton(),
     StudentRepository: asClass(StudentRepository).singleton(),
     StudentEntity: asValue(StudentEntity),
   })
