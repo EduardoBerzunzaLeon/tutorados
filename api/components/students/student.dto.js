@@ -24,7 +24,8 @@ class StudentDTO {
 
 
     multiple = (resources) => {
-      return resources.map((resource) => this.single(resource));
+      // return resources.map((resource) => this.single(resource));
+      return resources;
     };
     
   }

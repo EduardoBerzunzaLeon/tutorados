@@ -31,7 +31,7 @@ class APIFeaturesMongo {
       /\b(gte|gt|lte|lt|ne|regex|between)\b/g,
       (match) =>  `$${match}`
       )
-      .replace('-', '.');
+      .replaceAll('-', '.');
 
     
     this.queryFind = JSON.parse(queryStr);
