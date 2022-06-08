@@ -5,6 +5,11 @@ const validStatus = {
     message: '{VALUE} no es un estatus válido'
 };
 
+const validAtRisk = {
+    values: ['no', 'ultimo intento', 'unica materia', 'no termina'],
+    message: '{VALUE} no es un estatus válido'
+};
+
 
 const StudentSchema = new Schema({
     user: {
@@ -36,7 +41,7 @@ const StudentSchema = new Schema({
         trim: true,
         required: [ true, 'La matricula es obligatoria' ]
     },
-    currentSemeter: {
+    currentSemester: {
         type: Number,
         required: [ true, 'El semestre actual es obligatorio' ],
         min: 1,
@@ -53,7 +58,14 @@ const StudentSchema = new Schema({
             type: Date,
             default: Date.now(),
         }
-    }]
+    }],
+    atRisk: {
+        type: String,
+        enum: validAtRisk,
+        lowercase: true,
+        trim: true,
+        default: 'no'
+    }
 });
 
 

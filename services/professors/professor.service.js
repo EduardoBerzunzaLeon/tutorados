@@ -16,6 +16,7 @@ class ProfessorService  {
     }
 
     async find(query) {
+        console.log(query);
         const professorQuery = {...query,  roles: 'professor'};
         return await Promise.all(this.userRepository.findAll(professorQuery));
     }

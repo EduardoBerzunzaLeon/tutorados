@@ -31,7 +31,7 @@ class APIFeaturesMongo {
       /\b(gte|gt|lte|lt|ne|regex|between)\b/g,
       (match) =>  `$${match}`
       )
-      .replace('/', '.');
+      .replace('-', '.');
 
     
     this.queryFind = JSON.parse(queryStr);
@@ -50,6 +50,7 @@ class APIFeaturesMongo {
           : {...prev, [current]: 1}, {})
         : sortBy.join(' ');
       
+        console.log(result);
       this.query = this.query.sort(result);
     } else {
       this.query = this.query.sort('-createdAt');
