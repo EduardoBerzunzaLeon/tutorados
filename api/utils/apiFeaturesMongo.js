@@ -50,7 +50,6 @@ class APIFeaturesMongo {
           : {...prev, [current]: 1}, {})
         : sortBy.join(' ');
       
-        console.log(result);
       this.query = this.query.sort(result);
     } else {
       this.query = this.query.sort('-createdAt');

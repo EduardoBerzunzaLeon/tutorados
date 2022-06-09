@@ -1,4 +1,5 @@
 const APIFeaturesMongo = require('../api/utils/apiFeaturesMongo');
+const APIFeaturesAggregationMongo = require('../api/utils/apiFeaturesAggregationMongo');
 
 class BaseRepository {
   constructor(entity) {
@@ -21,6 +22,21 @@ class BaseRepository {
          features.query
       ];
   }
+  
+  async findAggregation(agregation, params = {}, globalFields = undefined ) {
+
+    const aggregationWithFeatures = new APIFeaturesAggregationMongo(params, agregation, globalFields)
+      .filter()
+      .filterGlobal()
+      .sort()
+      .paginate()
+      .aggregation;
+
+    const doc = await this.entity.aggregate(aggregationWithFeatures);
+    const [ { metadata, data } ] = doc;
+    return [ metadata[0].total, data ];
+  }
+
 
   findById(id, popOptions) {
     let query = this.entity.findById(id);
