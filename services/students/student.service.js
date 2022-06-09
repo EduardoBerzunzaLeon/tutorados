@@ -58,7 +58,7 @@ class StudentService  {
                 localField: "user",
                 pipeline: [
                     { $match: { roles: 'student' }},
-                    { $project: { name: 1, gender: 1,  _id: 1 } }
+                    { $project: { name: 1, gender: 1,  _id: 1, avatar: 1 } }
                 ],
                 as: "userData"
             },
@@ -71,7 +71,7 @@ class StudentService  {
                 localField: "lastProfessor.professor",
                 pipeline: [
                     { $match: { roles: 'professor' }},
-                    { $project: { name: 1,  _id: 1 } }
+                    { $project: { name: 1,  _id: 1, avatar: 1 } }
                 ],
                 as: "professor"
             }},{ $unwind: "$professor" },
@@ -81,6 +81,7 @@ class StudentService  {
                     _id: 0,
                     userId: "$userData._id",
                     name: "$userData.name",
+                    avatar: "$userData.avatar",
                     enrollment: 1,
                     currentSemester: 1,
                     gender: "$userData.gender",

@@ -10,6 +10,7 @@ class ApiFeaturesAggregationMongo {
         const queryObj = { ...this.params };
         const excludedFields = ['page', 'sort', 'limit', 'fields', 'sortOrder', 'global'];
 
+        
         excludedFields.forEach((el) => {
             delete queryObj[el];
           });
@@ -31,14 +32,19 @@ class ApiFeaturesAggregationMongo {
             .replaceAll('-', '.');
 
         const queryFind =  JSON.parse(queryStr);
+
         
-        
+        this.globalFields.forEach(({field, type}) => {
+            if(type === 'number' && !isNaN(queryFind[field])) {
+                queryFind[field] = Number(queryFind[field]);
+            }
+        });
+
         if(Object.keys(queryFind).length > 0) {
             this.aggregation.push({
                 $match: {...queryFind}
             }); 
         }
-
 
         return this;
     }
