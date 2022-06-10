@@ -17,7 +17,12 @@ const courseSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Professor',
         required: [true, 'El profesor es obligatorio'],
-    }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now(),
+        select: false
+    },
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },

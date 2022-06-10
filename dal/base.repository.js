@@ -14,9 +14,9 @@ class BaseRepository {
       .limitFields()
       .paginate();
 
+      if(popOptions) features.query = features.query.populate(popOptions);
       
-    if(popOptions) features.query = features.query.populate(popOptions);
-
+      console.log(features.query);
       return [
          this.entity.find(features.queryFind).countDocuments(),
          features.query

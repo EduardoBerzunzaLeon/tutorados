@@ -65,7 +65,12 @@ const StudentSchema = new Schema({
         lowercase: true,
         trim: true,
         default: 'no'
-    }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now(),
+        select: false
+    },
 });
 
 

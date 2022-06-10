@@ -5,6 +5,11 @@ const professorSchema = new Schema({
       type: Schema.ObjectId,
       ref: 'User',
     },
+  createdAt: {
+      type: Date,
+      default: Date.now(),
+      select: false
+  },
   subjects: [
         {
           type: Schema.ObjectId,

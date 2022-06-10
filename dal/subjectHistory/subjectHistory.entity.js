@@ -15,6 +15,11 @@ const SubjectHistorySchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Subject',
     },
+    createdAt: {
+        type: Date,
+        default: Date.now(),
+        select: false
+    },
     phase: [
         {
             phaseStatus: {

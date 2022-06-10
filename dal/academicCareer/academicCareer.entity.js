@@ -35,6 +35,7 @@ const AcademicCareerSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now(),
+        select: false,
     },
     creatorUser: {
         type: Schema.ObjectId,
