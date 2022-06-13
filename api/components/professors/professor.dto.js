@@ -33,6 +33,12 @@ class ProfessorDTO {
       createdAt: professor?.createdAt,
       subjects: professor?.subjects,
       courses: professor?.courses || ''
+    });
+
+    singleFullName = (professor) => ({
+      id: professor._id,
+      fullName: professor.fullName,
+      avatar: professor?.avatar && this.getCompleteURLAvatar(professor?.avatar),
     })
 
     multiple = (resources) => {
@@ -41,6 +47,10 @@ class ProfessorDTO {
     
     multipleExcel = (resources) => {
       return resources.map((resource) => this.singleExcel(resource));
+    };
+    
+    multipleFullName = (resources) => {
+      return resources.map((resource) => this.singleFullName(resource));
     };
   }
   

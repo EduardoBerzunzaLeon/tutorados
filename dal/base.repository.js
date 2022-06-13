@@ -16,7 +16,7 @@ class BaseRepository {
 
       if(popOptions) features.query = features.query.populate(popOptions);
       
-      console.log(features.query);
+      console.log({base: features.queryFind});
       return [
          this.entity.find(features.queryFind).countDocuments(),
          features.query

@@ -33,6 +33,7 @@ module.exports = function({
     router.get('/excel', restrictTo(get_professors), ProfessorController.findProfessorsForExcel);
     router.get('/:id', restrictTo(create_professors), ProfessorController.findProfessorById);
     router.get('/', restrictTo(get_professors), ProfessorController.findProfessors);
+    router.get('/fullName/:fullName', restrictTo(get_professors), ProfessorController.findByFullName);
 
     router.delete('/:id', restrictTo(delete_professors), ProfessorController.deleteProfessor );
 

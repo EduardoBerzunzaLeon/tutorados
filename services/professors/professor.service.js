@@ -16,9 +16,28 @@ class ProfessorService  {
     }
 
     async find(query) {
-        console.log(query);
         const professorQuery = {...query,  roles: 'professor'};
         return await Promise.all(this.userRepository.findAll(professorQuery));
+    }
+
+    async findByFullName(fullName) {
+        
+        const aggregation = [
+            {
+                $addFields: { fullName: { $concat: ["$name.first", " ", "$name.last"] }}
+            },{
+                $match: { fullName: { $regex: fullName, $options: "i"} }
+            }, {
+                $project: {
+                    fullName: 1,
+                    avatar: 1
+                }
+            }];
+
+
+        const data = await this.userRepository.findAggregation(aggregation);
+        return data;
+   
     }
 
     async findById(id) {

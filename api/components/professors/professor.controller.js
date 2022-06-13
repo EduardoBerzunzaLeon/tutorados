@@ -25,6 +25,17 @@ module.exports = ({
       });
     }
 
+    const findByFullName = (self) =>  async (req, res) => {
+      const [ total, docs ]  = await self.service.findByFullName(req.params.fullName);
+      const docsSend = self.dto.multipleFullName(docs);
+  
+      return res.status(200).json({
+        status: 'success',
+        total,
+        data: docsSend,
+      });
+    }
+
     const createProfessor = (self) => async (req, res) => {
       const { file } = req;
       const body = {...req.body, roles: ['professor'], blocked: false};
@@ -45,6 +56,7 @@ module.exports = ({
         findProfessors: self.catchAsync(FactoryController.findDocs(self)),
         updateProfessor: self.catchAsync(FactoryController.updateByMethod(self, self.userService.updateUserProfessor.bind(UserService))),
         findProfessorsForExcel: self.catchAsync(findProfessorsForExcel(self)),
+        findByFullName: self.catchAsync(findByFullName(self)),
         setActive: self.catchAsync(FactoryController.updateByMethod(self, self.service.setActive.bind(ProfessorService))),
     });
   

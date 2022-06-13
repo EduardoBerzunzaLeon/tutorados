@@ -33,12 +33,13 @@ class ApiFeaturesAggregationMongo {
 
         const queryFind =  JSON.parse(queryStr);
 
-        
-        this.globalFields.forEach(({field, type}) => {
-            if(type === 'number' && !isNaN(queryFind[field])) {
-                queryFind[field] = Number(queryFind[field]);
-            }
-        });
+        if(this.globalFields && this.globalFields.length > 0) {
+            this.globalFields.forEach(({field, type}) => {
+                if(type === 'number' && !isNaN(queryFind[field])) {
+                    queryFind[field] = Number(queryFind[field]);
+                }
+            });
+        }
 
         if(Object.keys(queryFind).length > 0) {
             this.aggregation.push({
