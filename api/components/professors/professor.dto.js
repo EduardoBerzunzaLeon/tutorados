@@ -37,7 +37,7 @@ class ProfessorDTO {
 
     singleFullName = (professor) => ({
       id: professor._id,
-      fullName: professor.fullName,
+      fullname: professor.fullName,
       avatar: professor?.avatar && this.getCompleteURLAvatar(professor?.avatar),
     })
 
