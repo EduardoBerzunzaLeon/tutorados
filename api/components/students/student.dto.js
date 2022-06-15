@@ -16,7 +16,7 @@ class StudentDTO {
       },
       fullname: `${resource.name.first} ${resource.name.last}`,
       gender: resource?.gender,
-      professor: {
+      professor:  {
         id: resource.professor?._id,
         name: resource.professor?.name,
         avatar: resource.professor?.avatar && this.getCompleteURLAvatar(resource.professor.avatar)

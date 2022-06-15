@@ -1,6 +1,6 @@
 class StudentService  {
 
-    constructor({ StudentRepository, UserRepository, createAppError }) {
+    constructor({ StudentRepository,  UserRepository, createAppError }) {
         this.studentRepository = StudentRepository;
         this.userRepository = UserRepository;
         this.createAppError = createAppError;
@@ -70,11 +70,11 @@ class StudentService  {
                 foreignField: "_id",
                 localField: "lastProfessor.professor",
                 pipeline: [
-                    { $match: { roles: 'professor' }},
                     { $project: { name: 1,  _id: 1, avatar: 1 } }
                 ],
                 as: "professor"
-            }},{ $unwind: "$professor" },
+            }},
+            { $unwind: "$professor" },
            {
                $project: {
                     id: "$_id",
@@ -89,24 +89,45 @@ class StudentService  {
                     status: {
                         $last: "$statusHistory"
                     },
-                    professor: '$professor'
+                    professor: "$professor"
                 }
            }];
 
-        return await this.studentRepository.findAggregation(aggregation, query, globalFields);
+        const data =  await this.studentRepository.findAggregation(aggregation, query, globalFields);
+
+           console.log(data[1][0].professor[0]);
+
+        return data;
 
     }
 
-    async create({ userId, professor, enrollment, currentSemester, status}) {
+    
+    async create({ userId, studentData }) {
 
-        const professorsHistory = [{ professor }];
-        const statusHistory = [{ status }];
- 
+        if(!userId) 
+            throw this.createAppError('El usuario es obligatorios', 500);
+
+        const studentInfo = studentData ?? { 
+            enrollment: 'AAAAAA', 
+            currentSemester: 1,
+            classroom: 'A',
+            professor: '608064aa1d7963091081ab5d',
+            comments: 'El maestro es la asginacion por defecto'
+        };
+
+        const professorsHistory = [{ 
+            professor: studentInfo.professor, 
+            comments: studentInfo.comments || ''
+        }];
+
+        const statusHistory = [{ status: 'regular' }];
+    
         const data = {
             user: userId,
             professorsHistory,
-            enrollment,
-            currentSemester,
+            enrollment: studentInfo.enrollment,
+            currentSemester: studentInfo.currentSemester,
+            classroom: studentInfo.classroom,
             statusHistory
         };
 
@@ -114,13 +135,10 @@ class StudentService  {
 
         if (!studentCreated)
             throw this.createAppError('No se pudo crear el detalle del alumno', 500);
-
-        // ! DELETE THIS
-
-        const user = await this.userRepository.findById(userId);
         
-        return user;
+        return studentCreated;
     }
+
     
 
 }

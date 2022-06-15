@@ -1,6 +1,7 @@
 class UserService {
-  constructor({ UserRepository, ProfessorService, FileService, createAppError }) {
+  constructor({ UserRepository, ProfessorService, StudentService,  FileService, createAppError }) {
     this.professorService = ProfessorService;
+    this.studentService = StudentService;
     this.userRepository = UserRepository;
     this.fileService = FileService;
     this.createAppError = createAppError;
@@ -90,7 +91,7 @@ class UserService {
   }
 
   
-  async create({ first, last, email, gender, roles, blocked, subjects }, file) {
+  async create({ first, last, email, gender, roles, blocked, subjects, studentData }, file) {
 
     const name = { first, last };
 
@@ -123,6 +124,18 @@ class UserService {
         throw error;
       }
     }
+
+    if(roles.includes('student')) {
+      try {
+
+        await this.studentService.create({ 
+          userId: userCreated.id, studentData: studentData });
+      } catch (error) {
+        await this.userRepository.deleteById(userCreated.id);
+        throw error;
+      }
+    }
+
 
     return userCreated;
   }

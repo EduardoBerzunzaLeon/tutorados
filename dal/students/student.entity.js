@@ -10,6 +10,11 @@ const validAtRisk = {
     message: '{VALUE} no es un estatus válido'
 };
 
+const validClassrooms = {
+    values: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    message: '{VALUE} no es un salón válido'
+}
+
 
 const StudentSchema = new Schema({
     user: {
@@ -59,6 +64,16 @@ const StudentSchema = new Schema({
             default: Date.now(),
         }
     }],
+    classroom: {
+        type: String,
+        default: 'A',
+        enum: validClassrooms,
+        maxLength: 1,
+        minLength: 1,
+        required: [true, 'El grupo es obligatorio'],
+        trim: true,
+        uppercase: true,
+    },
     atRisk: {
         type: String,
         enum: validAtRisk,
