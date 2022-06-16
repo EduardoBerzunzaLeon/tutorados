@@ -18,7 +18,6 @@ module.exports = ({
       const { file } = req;
       const body = {...req.body, roles: ['student'], blocked: false };
 
-      console.log(body);
       const doc = await self.userService.create(body, file);
       const docSend = self.dto.single(doc);
 
