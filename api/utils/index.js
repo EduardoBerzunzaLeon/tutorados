@@ -6,4 +6,5 @@ module.exports = {
   googleVerify: require('./googleVerify'),
   facebookVerify: require('./facebookVerify'),
   features: require('./features'),
+  regex: require('./regex'),
 };

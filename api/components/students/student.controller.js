@@ -30,6 +30,12 @@ module.exports = ({
     const methods = (self) => ({
         findStudents: self.catchAsync(FactoryController.findDocs(self)),
         createStudent: self.catchAsync(createStudent(self)),
+        updateStudent: self.catchAsync(
+          FactoryController.updateByMethod(
+            self, 
+            self.userService.updateUserStudent.bind(UserService)
+          )
+        ),
     });
   
     return methods(self);

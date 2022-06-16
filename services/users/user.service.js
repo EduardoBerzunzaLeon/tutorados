@@ -1,5 +1,11 @@
 class UserService {
-  constructor({ UserRepository, ProfessorService, StudentService,  FileService, createAppError }) {
+  constructor({ 
+    UserRepository, 
+    ProfessorService, 
+    StudentService,  
+    FileService, 
+    createAppError 
+  }) {
     this.professorService = ProfessorService;
     this.studentService = StudentService;
     this.userRepository = UserRepository;
@@ -194,6 +200,27 @@ class UserService {
     await this.professorService.updateById(userUpdated.id, { subjects });
     return userUpdated;
   }
+
+  async updateUserStudent(id, { first, last, email, active, gender, studentData }, file) {
+
+    if(!first || !last || !email || !gender || !active) {
+      throw this.createAppError('Todos los campos son obligatorios', 400);
+    }
+
+    const data = { name: { first, last }, email, gender, active };
+
+    await this.uploadAvatar(file, id, false);
+
+    const userUpdated = await this.userRepository.updateById(id, data);
+
+    if (!userUpdated)
+      throw this.createAppError('No se pudo actualizar los datos personales', 400);
+
+    await this.studentService.updateById(userUpdated.id, studentData );
+    return userUpdated;
+
+  }
+
 
 }
 

@@ -24,6 +24,9 @@ class ProfessorService  {
         
         const aggregation = [
             {
+                $match: { roles: 'professor' }
+            },
+            {
                 $addFields: { fullName: { $concat: ["$name.first", " ", "$name.last"] }}
             },{
                 $match: { fullName: { $regex: fullName, $options: "i"} }
@@ -36,6 +39,8 @@ class ProfessorService  {
 
 
         const data = await this.userRepository.findAggregation(aggregation);
+
+        console.log(data);
         return data;
    
     }

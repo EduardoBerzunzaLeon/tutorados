@@ -23,6 +23,10 @@ class StudentService  {
                 type: 'string',
             },
             {
+                field: 'classroom',
+                type: 'string',
+            },
+            {
                 field: 'gender',
                 type: 'string',
             },
@@ -58,7 +62,7 @@ class StudentService  {
                 localField: "user",
                 pipeline: [
                     { $match: { roles: 'student' }},
-                    { $project: { name: 1, gender: 1,  _id: 1, avatar: 1 } }
+                    { $project: { name: 1, gender: 1, email: 1, active: 1, _id: 1, avatar: 1 } }
                 ],
                 as: "userData"
             },
@@ -77,12 +81,15 @@ class StudentService  {
             { $unwind: "$professor" },
            {
                $project: {
-                    id: "$_id",
+                    id: "$userData._id",
                     _id: 0,
-                    userId: "$userData._id",
+                    studentId: "$_id",
                     name: "$userData.name",
                     avatar: "$userData.avatar",
+                    active: "$userData.active",
+                    email: "$userData.email",
                     enrollment: 1,
+                    classroom: 1,
                     currentSemester: 1,
                     gender: "$userData.gender",
                     atRisk: 1,
@@ -94,8 +101,6 @@ class StudentService  {
            }];
 
         const data =  await this.studentRepository.findAggregation(aggregation, query, globalFields);
-
-           console.log(data[1][0].professor[0]);
 
         return data;
 
@@ -139,7 +144,23 @@ class StudentService  {
         return studentCreated;
     }
 
-    
+    async updateById(userId,  { enrollment, currentSemester, classroom } ) {
+
+        if(!enrollment || !currentSemester || !classroom) {
+            throw this.createAppError('Todos los campos escolares son obligatorios', 400);
+          }
+
+        const studentUpdated = await this.studentRepository.updateOne({ user: userId }, { 
+            enrollment,
+            currentSemester,
+            classroom
+         });
+
+        if (!studentUpdated)
+            throw this.createAppError('No se pudo actualizar los datos escolares', 400);
+  
+      return studentUpdated;
+    }
 
 }
 

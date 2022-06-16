@@ -15,6 +15,8 @@ class StudentDTO {
         last: this.ucwords(resource.name.last),
       },
       fullname: `${resource.name.first} ${resource.name.last}`,
+      email: resource?.email,
+      active: resource?.active,
       gender: resource?.gender,
       professor:  {
         id: resource.professor?._id,
@@ -24,8 +26,9 @@ class StudentDTO {
       atRisk: resource?.atRisk,
       enrollment: resource?.enrollment,
       status: resource?.status,
-      userId: resource?.userId,
+      studentId: resource?.studentId,
       currentSemester: resource?.currentSemester,
+      classroom: resource?.classroom,
       avatar: resource?.avatar && this.getCompleteURLAvatar(resource?.avatar),
     });
 

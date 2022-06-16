@@ -43,6 +43,7 @@ const {
   googleVerify,
   facebookVerify,
   features,
+  regex,
 } = require('../utils/');
 
 // * Middlewares
@@ -98,6 +99,7 @@ container
     googleVerify: asFunction(googleVerify).singleton(),
     facebookVerify: asFunction(facebookVerify).singleton(),
     features: asFunction(() => features).singleton(),
+    regex: asValue(regex),
   })
   // * middlewares
   .register({
