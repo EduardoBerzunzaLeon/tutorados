@@ -1,3 +1,5 @@
+const { Types } = require('mongoose');
+
 class StudentService  {
 
     constructor({ StudentRepository,  UserRepository, createAppError }) {
@@ -8,7 +10,6 @@ class StudentService  {
 
 
     async find(query) {
-
         const globalFields = [
             {
                 field: 'name.first',
@@ -103,10 +104,50 @@ class StudentService  {
         const data =  await this.studentRepository.findAggregation(aggregation, query, globalFields);
 
         return data;
-
     }
 
-    
+    async findProfessorsHistory(userId) {
+
+        const aggregation = [
+            {
+              '$match': {
+                'user': Types.ObjectId(userId)
+              }
+            }, {
+              '$unwind': {
+                'path': '$professorsHistory'
+              }
+            }, {
+              '$lookup': {
+                'from': 'users', 
+                'localField': 'professorsHistory.professor', 
+                'foreignField': '_id', 
+                pipeline: [
+                    { $project: { name: 1, _id: 1, avatar: 1 } }
+                ],
+                'as': 'professorsHistory.professor'
+              }
+            }, {
+              '$unwind': {
+                'path': '$professorsHistory.professor'
+              }
+            }, {
+              '$group': {
+                '_id': '$_id', 
+                'professorsHistory': {
+                  '$push': '$professorsHistory'
+                }
+              }
+            }
+          ];
+
+        const [, data] = await this.studentRepository.findAggregation(aggregation);
+
+        const [ newData ] = data;
+        return newData;
+    }
+
+
     async create({ userId, studentData }) {
 
         if(!userId) 

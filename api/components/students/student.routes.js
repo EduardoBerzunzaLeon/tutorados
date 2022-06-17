@@ -19,6 +19,7 @@ module.exports = function({
     router.use(protect);
     
     router.get('/', restrictTo(get_students), StudentController.findStudents);
+    router.get('/:id/professors', restrictTo(get_students), StudentController.findProfessorsHistory);
     
     router.post(
         '/', 

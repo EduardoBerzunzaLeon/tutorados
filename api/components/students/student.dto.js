@@ -33,9 +33,15 @@ class StudentDTO {
     });
 
 
+    singleProfessorsHistory = (student) => ({
+      id: student?._id,
+      professorsHistory: student?.professorsHistory
+    });
+
     multiple = (resources) => {
       return resources.map((resource) => this.single(resource));
     };
+    
     
   }
   
