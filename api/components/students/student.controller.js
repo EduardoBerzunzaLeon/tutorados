@@ -36,12 +36,35 @@ module.exports = ({
         status: 'success',
         data
       }); 
-    }  
+    }
+    
+    const addNewProfessor = (self) => async (req, res) => {
+      const { id } = req.params;
+      const doc = await  self.service.addNewProfessor(id, req.body);
+      const data =  self.dto.single(doc);
+  
+      return res.status(200).json({ 
+        status: 'success',
+        data
+      }); 
+    }
+    
+    const deleteProfessorInHistory = (self) => async (req, res) => {
+      const { id, professorId } = req.params;
+      await self.service.deleteProfessorInHistory(id, professorId);
+  
+      return res.status(204).json({ 
+        status: 'success',
+      }); 
+    }
+
 
     const methods = (self) => ({
         findStudents: self.catchAsync(FactoryController.findDocs(self)),
         findProfessorsHistory: self.catchAsync(findProfessorsHistory(self)),
         createStudent: self.catchAsync(createStudent(self)),
+        addNewProfessor: self.catchAsync(addNewProfessor(self)),
+        deleteProfessorInHistory: self.catchAsync(deleteProfessorInHistory(self)),
         updateStudent: self.catchAsync(
           FactoryController.updateByMethod(
             self, 

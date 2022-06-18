@@ -235,12 +235,13 @@ class SubjectService  {
 
         const deleteSubjects = this.subjectRepository.updateMany(
             { requiredSubjects: Types.ObjectId(id), '_id': { $nin: objectIdList } },
-            { $pull: {requiredSubjects:  Types.ObjectId(id)} },
+            { $pull: { requiredSubjects:  Types.ObjectId(id) } },
             { multi: true }
         );
 
-        const addSubjects = await this.subjectRepository.updateMany({ '_id':  { $in: objectIdList}},
-        { $addToSet: {requiredSubjects:  Types.ObjectId(id)}},
+        const addSubjects = await this.subjectRepository.updateMany(
+        { '_id':  { $in: objectIdList}},
+        { $addToSet: { requiredSubjects:  Types.ObjectId(id) }},
         { multi: true });
    
         await Promise.all([deleteSubjects, addSubjects]);

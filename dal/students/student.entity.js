@@ -30,13 +30,14 @@ const StudentSchema = new Schema({
             type: Date,
             default: Date.now()
         },
-        modifiedAt: {
+        dischargeAt: {
             type: Date,
         },
         comments: {
             type: String,
             trim: true,
             lowercase: true,
+            default: '',
         },
     }],
     enrollment: {
