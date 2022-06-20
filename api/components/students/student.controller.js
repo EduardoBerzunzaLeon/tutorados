@@ -40,7 +40,7 @@ module.exports = ({
     
     const addNewProfessor = (self) => async (req, res) => {
       const { id } = req.params;
-      await  self.service.addNewProfessor(id, req.body);;
+      await  self.service.addNewProfessor(id, req.body);
   
       return res.status(201).json({ 
         status: 'success',

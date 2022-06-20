@@ -33,9 +33,24 @@ class StudentDTO {
     });
 
 
+    setProfessorInHistory = (professor) => ({
+      createdAt: professor.createdAt,
+      id: professor._id,
+      professor: {
+        id: professor.professor._id,
+        avatar: professor.professor?.avatar && this.getCompleteURLAvatar(professor.professor?.avatar),
+        name: {
+          first: this.ucwords(professor.professor.name.first),
+          last: this.ucwords(professor.professor.name.last),
+        }
+      },
+      comments: professor.comments,
+      dischargeAt: professor?.dischargeAt
+    })
+
     singleProfessorsHistory = (student) => ({
       id: student?._id,
-      professorsHistory: student?.professorsHistory
+      professorsHistory: student?.professorsHistory.map(this.setProfessorInHistory)
     });
 
     multiple = (resources) => {

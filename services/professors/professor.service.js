@@ -38,10 +38,7 @@ class ProfessorService  {
             }];
 
 
-        const data = await this.userRepository.findAggregation(aggregation);
-
-        console.log(data);
-        return data;
+        return await this.userRepository.findAggregation(aggregation);
    
     }
 
