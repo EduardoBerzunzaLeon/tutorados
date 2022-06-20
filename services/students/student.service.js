@@ -203,59 +203,64 @@ class StudentService  {
       return studentUpdated;
     }
 
-    async addNewProfessor(userId, { currentProfessorId, newProfessorId, createdAt, comments  } ) {
+    async addNewProfessor(userId, { currentProfessorHistoryId, newProfessorId, createdAt, comments  } ) {
 
-        if(!currentProfessorId) {
+        if(!currentProfessorHistoryId) {
             throw this.createAppError('El tutor actual es requerido', 400);
         }
         
-        const currentProfessorIdMongo = Types.ObjectId(currentProfessorId);
+        const currentProfessorHistoryIdMongo = Types.ObjectId(currentProfessorHistoryId);
         const newProfessorIdMongo = Types.ObjectId(newProfessorId);
         const userIdMongo = Types.ObjectId(userId);
         const sanatizedComments = comments || '';
-
 
         const lastTutor = await this.studentRepository.entity.aggregate([
             { $match: { user: userIdMongo } },
             { $addFields: { lastProfessor: { $last: '$professorsHistory'} } },
             { $match: { "lastProfessor.professor": newProfessorIdMongo} }
         ]);
-
-        if(lastTutor) {
+        
+        if(lastTutor.length !== 0) {
             throw this.createAppError('El nuevo tutor no puede ser el tutor inmediato anterior', 400);
         }
 
         const updatedCurrentProfessor = await this.studentRepository.updateOne(
-            { "professorsHistory.professor": currentProfessorIdMongo },
+            { "professorsHistory._id": currentProfessorHistoryIdMongo },
             { "$set": { 
                 "professorsHistory.$.dischargeAt": createdAt,
                 "professorsHistory.$.comments": sanatizedComments
             }});
-
-        if(!updatedCurrentProfessor) {
+        
+        if(updatedCurrentProfessor.n <= 0) {
             throw this.createAppError('No se pudo actualizar el tutor actual', 500);
         }
 
         const newProfessor = {
             professor: newProfessorId,
+            idProfessorBefore: currentProfessorHistoryIdMongo ,
             createdAt
         };
 
         const addProfessor = await this.studentRepository.updateOne(
-            { "user": userIdMongo, "professorsHistory.professor": { $last: { $nin: newProfessorIdMongo } } },
+            { "user": userIdMongo },
             { $push: { professorsHistory:  newProfessor }});
+
+        const { nModified } = addProfessor;
+
+        if(nModified <= 0) {
+            throw this.createAppError('No se pudo agregar el tutor al alumno', 500);
+        }
         
-        return addProfessor;
     }
 
-    async deleteProfessorInHistory(userId, professorId) {
+    async deleteProfessorInHistory(userId, professorHistoryId) {
 
-        if(!userId || !professorId) {
+        if(!userId || !professorHistoryId) {
             throw this.createAppError('El alumno y el profesor son requeridos', 400);
         }
 
         const userIdMongo = Types.ObjectId(userId);
-        const professorIdMongo = Types.ObjectId(professorId);
+        const professorHistoryIdMongo = Types.ObjectId(professorHistoryId);
 
         const numberOfProfessorsResult = await this.studentRepository.entity.aggregate([
             { $match: { user: userIdMongo } },
@@ -268,16 +273,86 @@ class StudentService  {
         
         const deletedProfessor = await this.studentRepository.updateOne(
             { user: userIdMongo },
-            { $pull: { "professorsHistory": { professor: professorIdMongo }}},
+            { $pull: { "professorsHistory": { "_id": professorHistoryIdMongo }}},
             { multi: true }
         );
 
         const { nModified } = deletedProfessor;
 
         if(nModified <= 0) {
-            throw this.createAppError('No se desvincular el tutor al alumno', 500);
+            throw this.createAppError('No se pudo desvincular el tutor al alumno', 500);
         }
     }
+
+
+    async updateProfessorInHistory(userId, professorHistoryId, { createdAt, professorId , comments, professorBeforeId }) {
+
+        if(!userId || !professorHistoryId || !createdAt || !professorId) {
+            throw this.createAppError('Todos los campos son requeridos', 400);
+        }
+
+        const userIdMongo = Types.ObjectId(userId);
+        const professorHistoryIdMongo = Types.ObjectId(professorHistoryId);
+       
+        const lastTutor = await this.studentRepository.entity.aggregate([
+            { $match: { user: userIdMongo } },
+            { $addFields: { lastProfessor: { $last: '$professorsHistory'} } },
+            { $match: { "lastProfessor._id": professorHistoryIdMongo } } 
+        ]);
+
+
+        if(lastTutor.length !== 1) {
+            throw this.createAppError('No se puede actualizar un tutor diferente al ultimo agregado', 400);
+        }
+
+        if(professorBeforeId) {
+            const professorBeforeIdMongo = Types.ObjectId(professorBeforeId);
+            const sanatizedComments = comments || '';
+    
+            const { n } = await this.studentRepository.updateOne(
+                { "professorsHistory._id": professorBeforeIdMongo },
+                { "$set": { 
+                    "professorsHistory.$.dischargeAt": createdAt,
+                    "professorsHistory.$.comments": sanatizedComments
+                }});
+
+            if(n <= 0) {
+                throw this.createAppError('No se pudo actualizar el tutor anterior', 500);
+            }
+
+            const [{ professor: [{ professor: previousProfessor }] }] =  await this.studentRepository.entity.aggregate([
+                { $match: { "user": userIdMongo } },
+                {
+                    $project: {
+                        professor: {
+                            $filter: {
+                                input: "$professorsHistory",
+                                as: 'professorsHistory',
+                                cond: { $eq: ['$$professorsHistory._id', professorBeforeIdMongo] }
+                            }
+                        }
+                    }
+                }
+            ]);
+
+            if(`${previousProfessor}` === professorId ){
+                throw this.createAppError('El nuevo tutor no puede ser el tutor inmediato anterior', 400);
+            }
+            
+        }
+
+        const { n } = await this.studentRepository.updateOne(
+            { "professorsHistory._id": professorHistoryIdMongo },
+            { "$set": { 
+                "professorsHistory.$.professor": professorId,
+                "professorsHistory.$.createdAt": createdAt,
+            }});
+
+        if(n <= 0) {
+            throw this.createAppError('No se pudo actualizar el tutor', 500);
+        }
+    }
+
 
 }
 

@@ -40,12 +40,10 @@ module.exports = ({
     
     const addNewProfessor = (self) => async (req, res) => {
       const { id } = req.params;
-      const doc = await  self.service.addNewProfessor(id, req.body);
-      const data =  self.dto.single(doc);
+      await  self.service.addNewProfessor(id, req.body);;
   
-      return res.status(200).json({ 
+      return res.status(201).json({ 
         status: 'success',
-        data
       }); 
     }
     
@@ -58,19 +56,30 @@ module.exports = ({
       }); 
     }
 
+    const updateProfessorInHistory = (self) => async (req, res) => {
+    const { id, professorHistoryId } = req.params;
+
+    await self.service.updateProfessorInHistory(id, professorHistoryId, req.body);  
+
+      return res.status(204).json({ 
+        status: 'success',
+      }); 
+    }
+
 
     const methods = (self) => ({
         findStudents: self.catchAsync(FactoryController.findDocs(self)),
         findProfessorsHistory: self.catchAsync(findProfessorsHistory(self)),
         createStudent: self.catchAsync(createStudent(self)),
-        addNewProfessor: self.catchAsync(addNewProfessor(self)),
-        deleteProfessorInHistory: self.catchAsync(deleteProfessorInHistory(self)),
         updateStudent: self.catchAsync(
           FactoryController.updateByMethod(
             self, 
             self.userService.updateUserStudent.bind(UserService)
           )
         ),
+        addNewProfessor: self.catchAsync(addNewProfessor(self)),
+        deleteProfessorInHistory: self.catchAsync(deleteProfessorInHistory(self)),
+        updateProfessorInHistory: self.catchAsync(updateProfessorInHistory(self)),
     });
   
     return methods(self);

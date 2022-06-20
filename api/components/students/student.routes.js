@@ -41,6 +41,12 @@ module.exports = function({
         restrictTo(delete_students), 
         StudentController.deleteProfessorInHistory
     );
+    
+    router.patch(
+        '/:id/professors/:professorHistoryId', 
+        restrictTo(update_students), 
+        StudentController.updateProfessorInHistory
+    );
 
     return router;
 }

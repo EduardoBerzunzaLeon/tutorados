@@ -39,6 +39,10 @@ const StudentSchema = new Schema({
             lowercase: true,
             default: '',
         },
+        idProfessorBefore: {
+            type: Schema.ObjectId,
+            ref: 'Student.professorsHistory',
+        }
     }],
     enrollment: {
         type: String,
