@@ -45,7 +45,8 @@ class StudentDTO {
         }
       },
       comments: professor.comments,
-      dischargeAt: professor?.dischargeAt
+      dischargeAt: professor?.dischargeAt,
+      idProfessorBefore: professor?.idProfessorBefore
     })
 
     singleProfessorsHistory = (student) => ({

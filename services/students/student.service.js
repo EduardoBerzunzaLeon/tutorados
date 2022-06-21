@@ -264,22 +264,37 @@ class StudentService  {
 
         const numberOfProfessorsResult = await this.studentRepository.entity.aggregate([
             { $match: { user: userIdMongo } },
-            { $project: { numberOfProfessors: { $size: "$professorsHistory" } } },
+            { $addFields: { lastProfessor: { $last: '$professorsHistory'} } },
+            { $project: { 
+                numberOfProfessors: { $size: "$professorsHistory" },
+                idProfessorBefore: "$lastProfessor.idProfessorBefore"
+            }},
         ]);
+
 
         if(!numberOfProfessorsResult || numberOfProfessorsResult[0].numberOfProfessors === 1 ) {
             throw this.createAppError('No se puede eliminar el unico profesor asignado', 400);
         } 
+
+        const [{ idProfessorBefore }] = numberOfProfessorsResult;
+        const idProfessorBeforeMongo = Types.ObjectId(idProfessorBefore);
+
+        const updateProfessorBefore = this.studentRepository.updateOne(
+            { "professorsHistory._id": idProfessorBeforeMongo },
+            { "$set": { 
+                "professorsHistory.$.dischargeAt": undefined,
+                "professorsHistory.$.comments": ''
+            }});
         
-        const deletedProfessor = await this.studentRepository.updateOne(
+        const deleteProfessor =  this.studentRepository.updateOne(
             { user: userIdMongo },
             { $pull: { "professorsHistory": { "_id": professorHistoryIdMongo }}},
             { multi: true }
         );
 
-        const { nModified } = deletedProfessor;
+        const [{ nModified: nUpdateModified }, { nModified: nDeleteModified } ] = await Promise.all([updateProfessorBefore, deleteProfessor]);
 
-        if(nModified <= 0) {
+        if(nUpdateModified <= 0 || nDeleteModified <= 0) {
             throw this.createAppError('No se pudo desvincular el tutor al alumno', 500);
         }
     }
