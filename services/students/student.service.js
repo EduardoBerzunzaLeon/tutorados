@@ -36,6 +36,10 @@ class StudentService  {
                 type: 'string',
             },
             {
+                field: 'inChanelling',
+                type: 'string',
+            },
+            {
                 field: 'status.status',
                 type: 'string',
             },
@@ -94,6 +98,7 @@ class StudentService  {
                     currentSemester: 1,
                     gender: "$userData.gender",
                     atRisk: 1,
+                    inChannelling: 1,
                     status: {
                         $last: "$statusHistory"
                     },
@@ -103,6 +108,7 @@ class StudentService  {
 
         const data =  await this.studentRepository.findAggregation(aggregation, query, globalFields);
 
+        console.log(data);
         return data;
     }
 

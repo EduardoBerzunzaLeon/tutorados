@@ -24,6 +24,7 @@ class StudentDTO {
         avatar: resource.professor?.avatar && this.getCompleteURLAvatar(resource.professor.avatar)
       },
       atRisk: resource?.atRisk,
+      inChannelling: resource?.inChannelling,
       enrollment: resource?.enrollment,
       status: resource?.status,
       studentId: resource?.studentId,

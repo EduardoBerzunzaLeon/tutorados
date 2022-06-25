@@ -1,7 +1,12 @@
 const { Schema, model } = require('mongoose');
 
 const validStatus = {
-    values: ['regular', 'baja', 'baja temporal', 'egresado'],
+    values: ['regular', 'baja', 'baja temporal', 'egresado', 'rezago'],
+    message: '{VALUE} no es un estatus válido'
+};
+
+const validChanellings = {
+    values: ['no', 'asesoria', 'mentoria', 'atencion psicologica interna', 'atencion psicologica externa', 'consejeria'],
     message: '{VALUE} no es un estatus válido'
 };
 
@@ -82,6 +87,13 @@ const StudentSchema = new Schema({
     atRisk: {
         type: String,
         enum: validAtRisk,
+        lowercase: true,
+        trim: true,
+        default: 'no'
+    },
+    inChanelling: {
+        type: String,
+        enum: validChanellings,
         lowercase: true,
         trim: true,
         default: 'no'
