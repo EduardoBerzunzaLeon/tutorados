@@ -38,6 +38,17 @@ module.exports = ({
       }); 
     }
     
+    const findByExcel = (self) => async (req, res) => {
+      const [ total, docs ] = await self.service.findByExcel(req.query);
+      const docsSend = self.dto.multipleByExcel(docs);
+  
+      return res.status(200).json({
+        status: 'success',
+        total,
+        data: docsSend,
+      });
+    }
+    
     const addNewProfessor = (self) => async (req, res) => {
       const { id } = req.params;
       await  self.service.addNewProfessor(id, req.body);
@@ -70,6 +81,7 @@ module.exports = ({
     const methods = (self) => ({
         findStudents: self.catchAsync(FactoryController.findDocs(self)),
         findProfessorsHistory: self.catchAsync(findProfessorsHistory(self)),
+        findByExcel: self.catchAsync(findByExcel(self)),
         createStudent: self.catchAsync(createStudent(self)),
         updateStudent: self.catchAsync(
           FactoryController.updateByMethod(

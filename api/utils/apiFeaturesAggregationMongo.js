@@ -99,13 +99,12 @@ class ApiFeaturesAggregationMongo {
 
     paginate() {
         const page = this.params.page * 1 || 1;
-        const limit = this.params.limit * 1 || 100;
-        const skip = (page - 1) * limit;
+        const limit = this.params.limit * 1;        
+        const data = isNaN(limit) ? [] : [ { $skip: (page - 1) * limit }, { $limit: limit } ]
 
-        
         const paginateObj =  { '$facet' : {
-            metadata: [ { $count: "total" }, { $addFields: { page } } ],
-            data: [ { $skip: skip }, { $limit: limit } ]
+                metadata: [ { $count: "total" }, { $addFields: { page } } ],
+                data
             }};
 
         this.aggregation.push({...paginateObj});

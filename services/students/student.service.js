@@ -2,88 +2,87 @@ const { Types } = require('mongoose');
 
 class StudentService  {
 
+    globalFields = [
+        {
+            field: 'name.first',
+            type: 'string',
+        },
+        {
+            field: 'name.last',
+            type: 'string',
+        },
+        {
+            field: 'enrollment',
+            type: 'string',
+        },
+        {
+            field: 'classroom',
+            type: 'string',
+        },
+        {
+            field: 'gender',
+            type: 'string',
+        },
+        {
+            field: 'atRisk',
+            type: 'string',
+        },
+        {
+            field: 'inChanelling',
+            type: 'string',
+        },
+        {
+            field: 'status.status',
+            type: 'string',
+        },
+        {
+            field: 'professor.name.first',
+            type: 'string',
+        },
+        {
+            field: 'professor.name.last',
+            type: 'string',
+        },
+        {
+            field: 'currentSemester',
+            type: 'number',
+        }];
+
+    gloablAggregation = [{
+        $addFields: { lastProfessor: { $last: '$professorsHistory'}}
+    },
+   {
+    $lookup: {
+        from: 'users',
+        foreignField: "_id",
+        localField: "user",
+        pipeline: [
+            { $match: { roles: 'student' }},
+            { $project: { name: 1, gender: 1, email: 1, active: 1, _id: 1, avatar: 1 } }
+        ],
+        as: "userData"
+    },
+   },
+   { $unwind: "$userData" },
+   {
+    $lookup: {
+        from: 'users',
+        foreignField: "_id",
+        localField: "lastProfessor.professor",
+        pipeline: [
+            { $project: { name: 1,  _id: 1, avatar: 1 } }
+        ],
+        as: "professor"
+    }},{ $unwind: "$professor" }];
+
     constructor({ StudentRepository,  UserRepository, createAppError }) {
         this.studentRepository = StudentRepository;
         this.userRepository = UserRepository;
         this.createAppError = createAppError;
     }
 
-
-    async find(query) {
-        const globalFields = [
-            {
-                field: 'name.first',
-                type: 'string',
-            },
-            {
-                field: 'name.last',
-                type: 'string',
-            },
-            {
-                field: 'enrollment',
-                type: 'string',
-            },
-            {
-                field: 'classroom',
-                type: 'string',
-            },
-            {
-                field: 'gender',
-                type: 'string',
-            },
-            {
-                field: 'atRisk',
-                type: 'string',
-            },
-            {
-                field: 'inChanelling',
-                type: 'string',
-            },
-            {
-                field: 'status.status',
-                type: 'string',
-            },
-            {
-                field: 'professor.name.first',
-                type: 'string',
-            },
-            {
-                field: 'professor.name.last',
-                type: 'string',
-            },
-            {
-                field: 'currentSemester',
-                type: 'number',
-            }];
-
-        const aggregation= [
-            {
-                $addFields: { lastProfessor: { $last: '$professorsHistory'}}
-            },
-           {
-            $lookup: {
-                from: 'users',
-                foreignField: "_id",
-                localField: "user",
-                pipeline: [
-                    { $match: { roles: 'student' }},
-                    { $project: { name: 1, gender: 1, email: 1, active: 1, _id: 1, avatar: 1 } }
-                ],
-                as: "userData"
-            },
-           },
-           { $unwind: "$userData" },
-           {
-            $lookup: {
-                from: 'users',
-                foreignField: "_id",
-                localField: "lastProfessor.professor",
-                pipeline: [
-                    { $project: { name: 1,  _id: 1, avatar: 1 } }
-                ],
-                as: "professor"
-            }},
-            { $unwind: "$professor" },
+    async find(query) {        
+        const aggregation= [...this.gloablAggregation,
            {
                $project: {
                     id: "$userData._id",
@@ -106,9 +105,32 @@ class StudentService  {
                 }
            }];
 
-        const data =  await this.studentRepository.findAggregation(aggregation, query, globalFields);
+        const data =  await this.studentRepository.findAggregation(aggregation, query, this.globalFields);
+        return data;
+    }
+    
+    async findByExcel(query) {        
+        const aggregation= [...this.gloablAggregation,
+           {
+               $project: {
+                    _id: 0,
+                    name: "$userData.name",
+                    active: "$userData.active",
+                    email: "$userData.email",
+                    enrollment: 1,
+                    classroom: 1,
+                    currentSemester: 1,
+                    gender: "$userData.gender",
+                    atRisk: 1,
+                    inChannelling: 1,
+                    status: { $last: "$statusHistory" },
+                    professor: "$professor"
+                }
+           }];
 
-        console.log(data);
+        const { limit, ...restQuery } = query;
+
+        const data =  await this.studentRepository.findAggregation(aggregation, restQuery, this.globalFields);
         return data;
     }
 

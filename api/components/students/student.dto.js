@@ -55,9 +55,27 @@ class StudentDTO {
       professorsHistory: student?.professorsHistory.map(this.setProfessorInHistory)
     });
 
+
+    singleByExcel = (resource) => ({
+      fullname: `${resource.name.first} ${resource.name.last}`,
+      email: resource?.email,
+      gender: resource?.gender === 'M' ? 'Hombre' : 'Mujer',
+      professorName: `${resource.professor?.name?.first} ${resource.professor?.name?.last}`,
+      atRisk: resource?.atRisk,
+      inChannelling: resource?.inChannelling,
+      enrollment: resource?.enrollment,
+      status: resource?.status,
+      currentSemester: resource?.currentSemester,
+      classroom: resource?.classroom,
+    });
+
     multiple = (resources) => {
       return resources.map((resource) => this.single(resource));
     };
+    
+    multipleByExcel = (resources) => {
+      return resources.map((resource) => this.singleByExcel(resource));
+    }
     
     
   }
