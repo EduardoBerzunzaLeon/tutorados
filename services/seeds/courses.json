@@ -1,0 +1,71 @@
+[{
+  "_id": {
+    "$oid": "627953e6b063741f34242cc8"
+  },
+  "impartedAt": {
+    "$date": {
+      "$numberLong": "1651850577830"
+    }
+  },
+  "name": "second course",
+  "professor": {
+    "$oid": "627953632485a625881d5a6c"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6279547c3818123b24069c4f"
+  },
+  "impartedAt": {
+    "$date": {
+      "$numberLong": "1651850577830"
+    }
+  },
+  "name": "new course by professors",
+  "professor": {
+    "$oid": "627953632485a625881d5a6c"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "628a81375649814d18e7a3c4"
+  },
+  "impartedAt": {
+    "$date": {
+      "$numberLong": "1651850577830"
+    }
+  },
+  "name": "frist course",
+  "professor": {
+    "$oid": "627953632485a625881d5a6c"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62990c9bf6ccb34e9016298c"
+  },
+  "impartedAt": {
+    "$date": {
+      "$numberLong": "1654197226803"
+    }
+  },
+  "name": "second course",
+  "professor": {
+    "$oid": "6298fabc1669cf28dcb30aef"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "629967f013ee144990ec1b63"
+  },
+  "impartedAt": {
+    "$date": {
+      "$numberLong": "1654220523842"
+    }
+  },
+  "name": "third course",
+  "professor": {
+    "$oid": "6298fabc1669cf28dcb30aef"
+  },
+  "__v": 0
+}]

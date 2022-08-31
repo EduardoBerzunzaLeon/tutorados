@@ -1,0 +1,102 @@
+[{
+  "_id": {
+    "$oid": "608064aa1d7963091081ab5d"
+  },
+  "active": true,
+  "google": true,
+  "name": {
+    "first": "eduardo jesús",
+    "last": "berzunza león"
+  },
+  "email": "eduardoberzunzal@gmail.com",
+  "password": "$2a$12$tC.MjmBsi6K6NHdlknr4OODSuVv9BwW5Kc0L6z5gP/R96OSsLCgTu",
+  "gender": "M",
+  "__v": 0,
+  "avatar": "109b910e7ffa0c981e17aa5de577d5.png",
+  "passwordChangedAt": {
+    "$date": {
+      "$numberLong": "1648180529985"
+    } 
+  },
+  "facebook": false,
+  "blocked": false,
+  "roles": [
+    "admin",
+    "mentor"
+  ]
+},{
+  "_id": {
+    "$oid": "62b76003f531ac3614282511"
+  },
+  "avatar": "95516c4b46e7cccf0f72e587357cdc.jpg",
+  "roles": [
+    "professor"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1656176021821"
+    }
+  },
+  "active": true,
+  "blocked": true,
+  "google": false,
+  "facebook": false,
+  "name": {
+    "first": "tutor por",
+    "last": "defecto"
+  },
+  "email": "tutordefecto@gmail.com",
+  "password": "$2a$12$4PKrrIj3PkW5w4AbReL4zuY/AQRjNhhqhokMCCFr60L2xfN982iRy",
+  "gender": "M",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62b76383f531ac361428254f"
+  },
+  "avatar": "551efacf23f46e1ada1f3c2443dc29.jpg",
+  "roles": [
+    "student"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1656176021821"
+    }
+  },
+  "active": true,
+  "blocked": false,
+  "google": false,
+  "facebook": false,
+  "name": {
+    "first": "studenttest",
+    "last": "testgin"
+  },
+  "email": "studetn@gamil.com",
+  "password": "$2a$12$NOSZ0TwYF9.WGKBqZA.C6uQdgyGvpSgs3Oh.XDWw.mZBk7NBqqYkq",
+  "gender": "M",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62b76453f531ac361428255f"
+  },
+  "avatar": "ed518273d0ce8fae6e29db89ae96f9.jpg",
+  "roles": [
+    "student"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1656176021821"
+    }
+  },
+  "active": true,
+  "blocked": false,
+  "google": false,
+  "facebook": false,
+  "name": {
+    "first": "studetntwo",
+    "last": "two"
+  },
+  "email": "studenttoe@gmai.com",
+  "password": "$2a$12$LFVH3AxpIS.wdXH13b7tgOg56Kk3dGkcZWtuoGEFVOhnn6sc3awPK",
+  "gender": "M",
+  "__v": 0
+}]

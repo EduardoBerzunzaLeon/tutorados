@@ -83,9 +83,10 @@ class BaseRepository {
   deleteAll() {
     return this.entity.deleteMany({});
   }
+  
 
-  create(data) {
-    return this.entity.create(data);
+  create(data, options = {}) {
+    return this.entity.create(data, options);
   }
 
   save(entity, options = {}) {

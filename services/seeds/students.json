@@ -1,0 +1,95 @@
+[{
+  "_id": {
+    "$oid": "62b76383f531ac3614282553"
+  },
+  "classroom": "A",
+  "atRisk": "no",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1656176021869"
+    }
+  },
+  "user": {
+    "$oid": "62b76383f531ac361428254f"
+  },
+  "professorsHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1656176021869"
+        }
+      },
+      "comments": "",
+      "_id": {
+        "$oid": "62b76383f531ac3614282554"
+      },
+      "professor": {
+        "$oid": "62b76003f531ac3614282511"
+      }
+    }
+  ],
+  "enrollment": "al20325",
+  "currentSemester": 1,
+  "statusHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1656176021869"
+        }
+      },
+      "_id": {
+        "$oid": "62b76383f531ac3614282555"
+      },
+      "status": "regular"
+    }
+  ],
+  "__v": 0,
+  "inChannelling": "no"
+},{
+  "_id": {
+    "$oid": "62b76453f531ac3614282563"
+  },
+  "classroom": "A",
+  "atRisk": "no",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1656176021869"
+    }
+  },
+  "user": {
+    "$oid": "62b76453f531ac361428255f"
+  },
+  "professorsHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1656176021869"
+        }
+      },
+      "comments": "",
+      "_id": {
+        "$oid": "62b76453f531ac3614282564"
+      },
+      "professor": {
+        "$oid": "62b76003f531ac3614282511"
+      }
+    }
+  ],
+  "enrollment": "al23560",
+  "currentSemester": 1,
+  "statusHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1656176021869"
+        }
+      },
+      "_id": {
+        "$oid": "62b76453f531ac3614282565"
+      },
+      "status": "regular"
+    }
+  ],
+  "__v": 0,
+  "inChannelling": "no"
+}]

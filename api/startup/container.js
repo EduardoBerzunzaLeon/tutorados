@@ -19,19 +19,11 @@ const { SubjectController, SubjectDTO, subjectRoutes } = require('../components/
 const { CourseController, CourseDTO, courseMiddleware, courseRoutes } = require('../components/courses');
 const { ProfessorController, ProfessorDTO, professorRoutes } = require('../components/professors');
 const { StudentController, StudentDTO, studentRoutes } = require('../components/students');
+const { SeedController, seedRoutes } = require('../components/seeds');
+const { AuthController } = require('../components/auth');
 
-// { 
-//   findDocs, 
-//   findById,
-//   updateById,
-//   updateWithFile,
-//   create,
-//   createWithFile,
-//   deleteById
-// }
 const FactoryController = require('../components/factory/factory.controller');
 
-const { authController } = require('../components/auth');
 const { ErrorController, ErrorDTO } = require('../components/errors/');
 const { FileController, fileRoutes } = require('../components/files');
 
@@ -62,6 +54,7 @@ const ProfessorService = require('../../services/professors/professor.service');
 const StudentService = require('../../services/students/student.service');
 const AuthService = require('../../services/auth/auth.service');
 const FileService = require('../../services/files/file.service');
+const SeedService = require('../../services/seeds/seed.service');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 
@@ -176,12 +169,18 @@ container
     fileRoutes: asFunction(fileRoutes).singleton(),
     FileService: asClass(FileService).singleton(),
   })
+  // * Seeds
+  .register({
+    SeedService: asClass(SeedService).singleton(),
+    SeedController: asFunction(SeedController).singleton(),
+    seedRoutes: asFunction(seedRoutes).singleton(),
+  })
   .register({
     ErrorController: asClass(ErrorController).singleton(),
     ErrorDTO: asClass(ErrorDTO).singleton(),
   })
   .register({
-    AuthController: asFunction(authController).singleton(),
+    AuthController: asFunction(AuthController).singleton(),
     AuthService: asClass(AuthService).singleton(),
   })
   .register({

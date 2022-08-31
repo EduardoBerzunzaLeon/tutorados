@@ -24,11 +24,14 @@ class ErrorController {
   };
 
   handleValidationErrorDB = ({ errors }) => {
-    const errorsPrepare = Object.values(errors).map(
-      ({ properties }) => properties.message
-    );
 
-    const message = errorsPrepare.join('. ');
+    const message = Object.values(errors).reduce(
+      (acc, { properties, reason }) => {
+        const currentMessage = reason ?? properties.message;
+        return `${acc} ${currentMessage}.`
+      }
+    , '');
+    
     return this.createAppError(message, 400);
   };
 
