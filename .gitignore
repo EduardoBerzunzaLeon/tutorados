@@ -1,3 +1,6 @@
+
+mongo/
+
 node_modules/
 .env
 public/
