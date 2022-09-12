@@ -1,7 +1,7 @@
 class CourseDTO {
 
     constructor({ features }) {
-      this.ucwords = features;
+      this.ucwords = features.ucWords;
     }
   
     single = (resource) => ({

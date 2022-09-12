@@ -21,7 +21,7 @@ class Server {
   }
 
   errorsListener(http) {
-    process.on('unhandledRejection', (err) => {
+    process.once('unhandledRejection', (err) => {
       console.log('UNHANDLED REJECTION! 💥 Shutting down...');
       console.log(err.name, err.message);
       http.close(() => {
@@ -29,7 +29,7 @@ class Server {
       });
     });
 
-    process.on('SIGTERM', () => {
+    process.once('SIGTERM', () => {
       console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
       http.close(() => {
         console.log('💥 Process terminated!');

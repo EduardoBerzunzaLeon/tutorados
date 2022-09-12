@@ -10,6 +10,7 @@ class SeedService {
       StudentRepository, 
       CourseRepository, 
       SubjectRepository, 
+      SubjectHistoryRepository, 
       createAppError,
       getEnviroment
     }) {
@@ -18,6 +19,7 @@ class SeedService {
         this.studentRepository = StudentRepository;
         this.courseRepository = CourseRepository;
         this.subjectRepository = SubjectRepository;
+        this.subjectHistoryRepository = SubjectHistoryRepository;
         this.createAppError = createAppError;
         this.enviroment = getEnviroment;
     }
@@ -34,6 +36,7 @@ class SeedService {
             this.studentRepository.deleteAll(),
             this.courseRepository.deleteAll(),
             this.subjectRepository.deleteAll(),
+            this.subjectHistoryRepository.deleteAll(),
         ]);
         
         // const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8')).map( user => ({
@@ -78,6 +81,7 @@ class SeedService {
         const subjects = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/subjects.json`, 'utf-8')) );
         const students = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/students.json`, 'utf-8')) );
         const courses = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/courses.json`, 'utf-8')) );
+        const subjectsHistory = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/subjectHistory.json`, 'utf-8')) );
 
 
         await this.userRepository.create( users, { validateBeforeSave: false, forceServerObjectId: true });
@@ -85,6 +89,7 @@ class SeedService {
         await this.professorRepository.create( professors, { validateBeforeSave: false } );
         await this.studentRepository.create( students, { validateBeforeSave: false });
         await this.courseRepository.create( courses, { validateBeforeSave: false });
+        await this.subjectHistoryRepository.create( subjectsHistory, { validateBeforeSave: false });
 
     }
   

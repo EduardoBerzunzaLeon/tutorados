@@ -1,7 +1,7 @@
 class UserDTO {
 
   constructor({ features }) {
-    this.ucwords = features;
+    this.ucwords = features.ucWords;
   }
   
   getCompleteURLAvatar = (avatar) => (avatar.startsWith('http')) 

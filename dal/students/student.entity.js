@@ -61,6 +61,7 @@ const StudentSchema = new Schema({
         required: [ true, 'El semestre actual es obligatorio' ],
         min: 1,
         max: 13,
+        default: 1,
     },
     statusHistory: [{
         status: {
@@ -91,7 +92,7 @@ const StudentSchema = new Schema({
         trim: true,
         default: 'no'
     },
-    inChanelling: {
+    inChannelling: {
         type: String,
         enum: validChanellings,
         lowercase: true,

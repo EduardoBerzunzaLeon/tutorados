@@ -9,7 +9,7 @@
     "last": "berzunza león"
   },
   "email": "eduardoberzunzal@gmail.com",
-  "password": "$2a$12$tC.MjmBsi6K6NHdlknr4OODSuVv9BwW5Kc0L6z5gP/R96OSsLCgTu",
+  "password": "123456789",
   "gender": "M",
   "__v": 0,
   "avatar": "109b910e7ffa0c981e17aa5de577d5.png",
@@ -46,7 +46,7 @@
     "last": "defecto"
   },
   "email": "tutordefecto@gmail.com",
-  "password": "$2a$12$4PKrrIj3PkW5w4AbReL4zuY/AQRjNhhqhokMCCFr60L2xfN982iRy",
+  "password": "123456789",
   "gender": "M",
   "__v": 0
 },{
@@ -71,7 +71,7 @@
     "last": "testgin"
   },
   "email": "studetn@gamil.com",
-  "password": "$2a$12$NOSZ0TwYF9.WGKBqZA.C6uQdgyGvpSgs3Oh.XDWw.mZBk7NBqqYkq",
+  "password": "123456789",
   "gender": "M",
   "__v": 0
 },{
@@ -96,7 +96,7 @@
     "last": "two"
   },
   "email": "studenttoe@gmai.com",
-  "password": "$2a$12$LFVH3AxpIS.wdXH13b7tgOg56Kk3dGkcZWtuoGEFVOhnn6sc3awPK",
+  "password": "123456789",
   "gender": "M",
   "__v": 0
 }]

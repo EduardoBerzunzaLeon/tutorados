@@ -36,6 +36,13 @@ const COURSE_PERMISSIONS = {
     create_courses: [Admin, Professor],
 }
 
+const SUBJECT_HISTORY_PERMISSIONS = {
+    get_subject_history:  [Admin, Reader, Professor],
+    delete_subject_history: [Admin, Professor],
+    update_subject_history: [Admin, Professor],
+    create_subject_history: [Admin, Professor],
+}
+
 const SEED_PERMISSIONS = {
     load_seeds: [Admin]
 }
@@ -49,6 +56,7 @@ const PERMISSIONS_LIST = {
     subject: SUBJECT_PERMISSIONS,
     course: COURSE_PERMISSIONS,
     seed: SEED_PERMISSIONS,
+    subjectHistory: SUBJECT_HISTORY_PERMISSIONS,
 }
 
 module.exports = PERMISSIONS_LIST;

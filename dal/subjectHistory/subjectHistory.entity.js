@@ -6,7 +6,7 @@ const validPhaseStatus = {
 };
 
 
-const SubjectHistorySchema = new Schema({
+const subjectHistorySchema = new Schema({
     student: {
         type: Schema.ObjectId,
         ref: 'User',
@@ -40,10 +40,46 @@ const SubjectHistorySchema = new Schema({
                 required: [ true, 'El semestre es obligatorio' ],
             }
         }
-    ]
+    ],
 });
 
 
+// subjectHistorySchema.statics.calcCurrentSemester = async function( studentId, subjectId ) {
+
+//     const currentSemester = await this.aggregate([
+//         // Implements Aggregation pipeline
+//     ]);
+    
+//     console.log(currentSemester);
+//     if (currentSemester.length > 0 ) {
+//         console.log('greater than 0' );
+//     }
+// }
+
+// Create 
+// subjectHistorySchema.post('save', function() {
+   
+//     // this points to current subjectHistory
+
+//     this.constructor.calcCurrentSemester(this.student, this.subject);
+
+// });
+
+// Update and delete
+// subjectHistorySchema.pre(/^findOneAdd/, async function(next) {
+//     this.subjectInHistory = await this.findOne();
+//     next();
+// });
+
+// subjectHistorySchema.post(/^findOneAdd/, async function() {
+//     // this.subjectInHistory = await this.findOne(); does NOT work here, query has already been executed
+//     await this.subjectInHistory.constructor.calcCurrentSemester( this.subjectInHistory.student, this.subjectInHistory.subject );
+
+// });
 
 
-module.exports = model('SubjectHistory', SubjectHistorySchema);
+
+
+
+
+module.exports = model('SubjectHistory', subjectHistorySchema);

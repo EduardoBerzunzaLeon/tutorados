@@ -107,6 +107,8 @@ UserSchema.pre('save', async function(next) {
 
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
+
+
   // Delete confirmPassword field
   this.confirmPassword = undefined;
   next();
@@ -152,4 +154,5 @@ UserSchema.methods.createPasswordResetToken = function () {
 // UserSchema.plugin(uniqueValidator, { message: '{PATH} ya existe' });
 // UserSchema.plugin(mongoosePaginate);
 UserSchema.index( { "$**": "text" } );
+
 module.exports = model('User', UserSchema);

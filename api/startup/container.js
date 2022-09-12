@@ -19,6 +19,7 @@ const { SubjectController, SubjectDTO, subjectRoutes } = require('../components/
 const { CourseController, CourseDTO, courseMiddleware, courseRoutes } = require('../components/courses');
 const { ProfessorController, ProfessorDTO, professorRoutes } = require('../components/professors');
 const { StudentController, StudentDTO, studentRoutes } = require('../components/students');
+const { SubjectHistoryController, SubjectHistoryDTO, subjectHistoryRoutes } = require('../components/subjectHistory');
 const { SeedController, seedRoutes } = require('../components/seeds');
 const { AuthController } = require('../components/auth');
 
@@ -55,6 +56,7 @@ const StudentService = require('../../services/students/student.service');
 const AuthService = require('../../services/auth/auth.service');
 const FileService = require('../../services/files/file.service');
 const SeedService = require('../../services/seeds/seed.service');
+const SubjectHistoryService = require('../../services/subjectHistory/subjectHistory.service');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 
@@ -160,8 +162,12 @@ container
   })
   // * Subject History
   .register({
+    SubjectHistoryController: asFunction(SubjectHistoryController).singleton(),
+    subjectHistoryRoutes: asFunction(subjectHistoryRoutes).singleton(),
+    SubjectHistoryDTO: asClass(SubjectHistoryDTO).singleton(),
     SubjectHistoryRepository: asClass(SubjectHistoryRepository).singleton(),
     SubjectHistoryEntity: asValue(SubjectHistoryEntity),
+    SubjectHistoryService: asClass(SubjectHistoryService).singleton(),
   })
   // * Files
   .register({
