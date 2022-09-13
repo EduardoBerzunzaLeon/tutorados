@@ -80,6 +80,4 @@ const subjectHistorySchema = new Schema({
 
 
 
-
-
 module.exports = model('SubjectHistory', subjectHistorySchema);

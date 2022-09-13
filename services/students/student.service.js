@@ -209,6 +209,7 @@ class StudentService  {
 
         if (!studentCreated)
             throw this.createAppError('No se pudo crear el detalle del alumno', 500);
+
         
         return studentCreated;
     }

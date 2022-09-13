@@ -39,7 +39,7 @@
     const doc = await controller.service.create(req.body);
     const docSend = controller.dto.single(doc);
 
-    return res.status(200).json({
+    return res.status(201).json({
       status: 'success',
       data: docSend,
     });
@@ -94,4 +94,15 @@
       data: docSend,
     });
 
+  }
+
+  exports.findByMethod = ( method, dtoMethod ) => async (req, res) => {
+    const { id } = req.params;
+    const doc = await  method(id);
+    const data =  dtoMethod(doc);
+
+    return res.status(200).json({ 
+      status: 'success',
+      data
+    }); 
   }

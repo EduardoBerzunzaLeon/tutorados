@@ -19,20 +19,15 @@ module.exports = function({
 
     router.get('/:id', restrictTo(get_subject_history), SubjectHistoryController.findByUserId);
     router.get('/:id/history', restrictTo(get_subject_history), SubjectHistoryController.findHistoryByUserId);
-    
-    // TODO: Move this into the subject routes
     router.get('/:id/unstudy', restrictTo(get_subject_history), SubjectHistoryController.findUnstudySubjects);
 
     router.post('/', restrictTo(create_subject_history), SubjectHistoryController.createSubjectInHistory);
-
     router.post('/:id/phase', restrictTo(create_subject_history), SubjectHistoryController.addNewPhase);
-
     router.delete(
         '/:phaseId/phase', 
         restrictTo(delete_subject_history), 
         SubjectHistoryController.deletePhase
     );
-    
     router.patch(
         '/:phaseId/phase', 
         restrictTo(update_subject_history), 

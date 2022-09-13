@@ -11,38 +11,7 @@ module.exports = ({
       service: SubjectHistoryService,
     };
   
-    const findByUserId = (self) => async (req, res) => {
-      const { id } = req.params;
-      const doc = await  self.service.findByUserId(id);
-      const data =  self.dto.single(doc);
-  
-      return res.status(200).json({ 
-        status: 'success',
-        data
-      }); 
-    }
-    
-    const findHistoryByUserId = (self) => async (req, res) => {
-      const { id } = req.params;
-      const doc = await  self.service.findHistoryByUserId(id);
-      const data =  self.dto.multipleHistory(doc);
-  
-      return res.status(200).json({ 
-        status: 'success',
-        data
-      }); 
-    }
-    
-    const findUnstudySubjects = (self) => async (req, res) => {
-      const { id } = req.params;
-      const doc = await  self.service.findUnstudySubjects(id);
-      const data =  self.dto.multipleUnstudy(doc);
-  
-      return res.status(200).json({ 
-        status: 'success',
-        data
-      }); 
-    }
+
     
     const addNewPhase = (self) => async (req, res) => {
       const { id } = req.params;
@@ -70,14 +39,14 @@ module.exports = ({
 
     const updatePhase = (self) => async (req, res) => {
 
-    const { phaseId } = req.params;
+      const { phaseId } = req.params;
 
-    const request = {
-      ...req.body,
-      phaseId
-    }
+      const request = {
+        ...req.body,
+        phaseId
+      }
 
-    await self.service.updatePhase(request);  
+      await self.service.updatePhase(request);  
 
       return res.status(204).json({ 
         status: 'success',
@@ -85,9 +54,18 @@ module.exports = ({
     }
 
     const methods = (self) => ({
-      findByUserId: self.catchAsync(findByUserId(self)),
-      findHistoryByUserId: self.catchAsync(findHistoryByUserId(self)),
-      findUnstudySubjects: self.catchAsync(findUnstudySubjects(self)),
+      findByUserId: self.catchAsync(FactoryController.findByMethod(
+        self.service.findByUserId.bind(SubjectHistoryService),
+        self.dto.single.bind(SubjectHistoryDTO)
+      )),
+      findHistoryByUserId: self.catchAsync(FactoryController.findByMethod(
+        self.service.findHistoryByUserId.bind(SubjectHistoryService),
+        self.dto.multipleHistory.bind(SubjectHistoryDTO)
+      )),
+      findUnstudySubjects: self.catchAsync(FactoryController.findByMethod(
+        self.service.findUnstudySubjects.bind(SubjectHistoryService),
+        self.dto.multipleUnstudy.bind(SubjectHistoryDTO)
+      )),
       createSubjectInHistory: self.catchAsync(FactoryController.create(self)),
       addNewPhase: self.catchAsync(addNewPhase(self)),
       deletePhase: self.catchAsync(deletePhase(self)),

@@ -85,8 +85,8 @@ class BaseRepository {
   }
   
 
-  create(data, options = {}) {
-    return this.entity.create(data, options);
+  create(data) {
+    return this.entity.create(data);
   }
 
   save(entity, options = {}) {

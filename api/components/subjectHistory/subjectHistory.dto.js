@@ -7,25 +7,14 @@ class SubjectDTO {
   
     single = (resource) => ({
       id: resource._id,
-      currentSemester: resource?.currentSemester,
-      classroom: resource?.classroom,
-      atRisk: resource?.atRisk,
-      inChannelling: resource?.inChannelling,
-      enrollment: resource?.enrollment,
-      professorsHistory: resource?.professorsHistory,
-      statusHistory: resource?.statusHistory,
-      subjectHistory: resource?.subjectHistory,
-      user: {
-        id: resource?.user.id,
-        avatar: resource?.user.avatar && this.getCompleteURLAvatar(resource.user.avatar),
-        name: {
-          first: this.ucwords(resource.user.name.first),
-          last: this.ucwords(resource.user.name.last),
-        },
-        fullname: `${resource.user.name.first} ${resource.user.name.last}`,
-        email: resource?.user.email,
-        gender: resource?.user.gender,
-      },
+      student: resource.student,
+      subject: resource.subject,
+      phase: resource.phase.map(phase => ({
+        id: phase._id,
+        date: phase.date,
+        phaseStatus: phase.phaseStatus,
+        semester: phase.semester,
+      })),
     });
   
     singleHistory = (resource) => ({
