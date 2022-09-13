@@ -27,7 +27,7 @@ class SubjectHistoryService  {
 
         const idMongo = ObjectId(id);
 
-        const countPhases = await this.subjectHistoryRepository.entity.aggregate([
+        const history = await this.subjectHistoryRepository.entity.aggregate([
             { $match: { [ fieldToFind ]: idMongo } },
             {
                 $lookup: {
@@ -40,17 +40,17 @@ class SubjectHistoryService  {
             { $unwind: "$student" },
         ]);
 
-        if(!countPhases || countPhases.length === 0) {
+        if(!history || history.length === 0) {
             throw this.createAppError('No se encontro la materia para agregar fase', 400);
         }
     
-        const [ subjectHistory ] = countPhases;
+        const [ subject ] = history;
     
-        if( subjectHistory?.student?.currentSemester  < semester) {
+        if( subject?.student?.currentSemester  < semester) {
             throw this.createAppError('No se puede cargar una materia en un semester mayor al cursado actual del alumno', 400);
         }
 
-        return { phase: subjectHistory.phase , idMongo };
+        return { phase: subject.phase , idMongo };
     }
 
     async findByUserId (userId) {
