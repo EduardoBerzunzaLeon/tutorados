@@ -56,7 +56,7 @@ module.exports = ({
     const methods = (self) => ({
       findByUserId: self.catchAsync(FactoryController.findByMethod(
         self.service.findByUserId.bind(SubjectHistoryService),
-        self.dto.single.bind(SubjectHistoryDTO)
+        self.dto.singleComplete.bind(SubjectHistoryDTO)
       )),
       findHistoryByUserId: self.catchAsync(FactoryController.findByMethod(
         self.service.findHistoryByUserId.bind(SubjectHistoryService),

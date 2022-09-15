@@ -16,6 +16,8 @@ class SubjectDTO {
         semester: phase.semester,
       })),
     });
+
+    singleComplete = (resource) => resource;
   
     singleHistory = (resource) => ({
       id: resource._id,

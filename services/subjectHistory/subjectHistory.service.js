@@ -100,8 +100,7 @@ class SubjectHistoryService  {
         }
 
         studentData.subjectHistory = subjects;
-
-        // console.log(subjects)
+        
         return studentData;
     }
 
@@ -243,7 +242,7 @@ class SubjectHistoryService  {
 
         const phaseAdded = await this.subjectHistoryRepository.updateOne(
             { _id: idMongo },
-            { $push: { newPhase }
+            { $push: { phase:  newPhase }
         });
 
         const { nModified } = phaseAdded;
