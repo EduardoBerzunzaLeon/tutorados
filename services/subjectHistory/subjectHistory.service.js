@@ -53,8 +53,7 @@ class SubjectHistoryService  {
         return { phase: subject.phase , idMongo };
     }
 
-    async findByUserId (userId) {
-
+    async findStudent(userId) {
         if(!ObjectId.isValid(userId)) {
             throw this.createAppError('Estudiante no valido', 400);
         }
@@ -66,7 +65,13 @@ class SubjectHistoryService  {
         if(this.isEmpty(studentData)) {
             throw this.createAppError('Estudiante no encontrado', 404);
         }
+        return studentData;
+    }
 
+    async findByUserId (userId) {
+
+        
+        const studentData = await this.findStudent(userId);
         const { currentSemester } = studentData;
 
         const subjects = await this.subjectHistoryRepository.entity.aggregate([
@@ -159,10 +164,10 @@ class SubjectHistoryService  {
         return subjects;
     }
 
-    async findSubjects (userId, semester) {
-        if(!ObjectId.isValid(userId)) {
-            throw this.createAppError('Estudiante no valido', 400);
-        }
+    async findPossibleSubjectsToAdd (userId) {
+        const studentData = await this.findStudent(userId);
+
+        const { currentSemester } = studentData;
 
         const subjects = await this.subjectHistory.entity.aggregate([
             { $match: { deprecated: false } },
@@ -183,7 +188,7 @@ class SubjectHistoryService  {
                     $or: [
                         { $ne: ["$lastPhase", 'aprobado' ] },
                         { $ne: ['$steps', 3] },
-                        { $not: [{ $gt: ['$lastPhase.semester', semester ]}]}
+                        { $not: [{ $gt: ['$lastPhase.semester', currentSemester ]}]}
                     ]
                 }
             }

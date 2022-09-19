@@ -64,7 +64,11 @@ module.exports = ({
       )),
       findUnstudySubjects: self.catchAsync(FactoryController.findByMethod(
         self.service.findUnstudySubjects.bind(SubjectHistoryService),
-        self.dto.multipleUnstudy.bind(SubjectHistoryDTO)
+        self.dto.multipleSubject.bind(SubjectHistoryDTO)
+      )),
+      findPossibleSubjectsToAdd: self.catchAsync(FactoryController.findByMethod(
+        self.service.findPossibleSubjectsToAdd.bind(SubjectHistoryService),
+        self.dto.multipleSubject.bind(SubjectHistoryDTO)
       )),
       createSubjectInHistory: self.catchAsync(FactoryController.create(self)),
       addNewPhase: self.catchAsync(addNewPhase(self)),

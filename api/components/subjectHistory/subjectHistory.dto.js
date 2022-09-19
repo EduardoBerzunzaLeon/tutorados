@@ -46,7 +46,7 @@ class SubjectDTO {
       return resources.map((resource) => this.singleHistory(resource));
     };
 
-    singleUnstudy = (resource) => ({
+    singleSubject = (resource) => ({
       _id: resource._id,
       practicalHours: resource.practicalHours,
       theoreticalHours: resource.theoreticalHours,
@@ -56,8 +56,8 @@ class SubjectDTO {
       core: resource.core,
     });
    
-    multipleUnstudy = (resources) => {
-      return resources.map((resource) => this.singleUnstudy(resource));
+    multipleSubject = (resources) => {
+      return resources.map((resource) => this.singleSubject(resource));
     };
   }
   

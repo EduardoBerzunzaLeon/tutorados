@@ -20,6 +20,7 @@ module.exports = function({
     router.get('/:id', restrictTo(get_subject_history), SubjectHistoryController.findByUserId);
     router.get('/:id/history', restrictTo(get_subject_history), SubjectHistoryController.findHistoryByUserId);
     router.get('/:id/unstudy', restrictTo(get_subject_history), SubjectHistoryController.findUnstudySubjects);
+    router.get('/:id/subjects', restrictTo(get_subject_history), SubjectHistoryController.findPossibleSubjectsToAdd);
 
     router.post('/', restrictTo(create_subject_history), SubjectHistoryController.createSubjectInHistory);
     router.post('/:id/phase', restrictTo(create_subject_history), SubjectHistoryController.addNewPhase);
