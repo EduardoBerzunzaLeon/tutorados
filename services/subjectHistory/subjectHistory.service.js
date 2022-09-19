@@ -159,6 +159,43 @@ class SubjectHistoryService  {
         return subjects;
     }
 
+    async findSubjects (userId, semester) {
+        if(!ObjectId.isValid(userId)) {
+            throw this.createAppError('Estudiante no valido', 400);
+        }
+
+        const subjects = await this.subjectHistory.entity.aggregate([
+            { $match: { deprecated: false } },
+            {
+                $lookup: {
+                    from: 'subjecthistories',
+                    foreignField: "subject",
+                    localField: "_id",
+                    pipeline: [
+                        { $match:  { student: ObjectId(userId) } }
+                    ],
+                    as: "history"
+                },
+            },
+            { $addFields: { lastPhase: { $last: '$history.phase' }, steps: { $size: '$history.phase' }}},
+            {
+                $match: {
+                    $or: [
+                        { $ne: ["$lastPhase", 'aprobado' ] },
+                        { $ne: ['$steps', 3] },
+                        { $not: [{ $gt: ['$lastPhase.semester', semester ]}]}
+                    ]
+                }
+            }
+        ]);
+
+        if(this.isEmpty(subjects)) {
+            throw this.createAppError('Materias para asignar del alumno no encontradas', 404);
+        }
+
+        return subjects;
+    }
+
     async findUnstudySubjects(userId) {
 
         if(!ObjectId.isValid(userId)) {
