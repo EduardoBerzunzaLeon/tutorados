@@ -149,7 +149,7 @@ class SubjectHistoryService  {
                     }}
                 }
             },
-           
+           { $sort: { _id: 1 }}
         ]);
 
         if(this.isEmpty(subjects)) {

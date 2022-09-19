@@ -17,11 +17,29 @@ class SubjectDTO {
       })),
     });
 
-    singleComplete = (resource) => resource;
+    singleComplete = (resource) => ({
+      ...resource,
+      user: {
+        ...resource.user,
+        fullName: `${resource.user.name.first} ${resource.user.name.last}`,
+      }
+    });
   
     singleHistory = (resource) => ({
-      id: resource._id,
-      subjects: resource?.subjects,
+      key: resource._id.toString(),
+      data: {
+        subject: `Semestre ${resource._id}`,
+        status: '',
+        step: ''
+      },
+      children: resource.subjects.map( ({ subject, phaseStatus, step }) => ({
+        key: `${subject._id} - ${ resource._id }`,
+        data: {
+          subject: subject.name,
+          status: phaseStatus,
+          step: step,
+        },
+      }))
     });
 
     multipleHistory = (resources) => {
