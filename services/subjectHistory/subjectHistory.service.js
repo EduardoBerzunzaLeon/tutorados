@@ -169,7 +169,8 @@ class SubjectHistoryService  {
 
         const { currentSemester } = studentData;
 
-        const subjects = await this.subjectHistory.entity.aggregate([
+        // steps: { $size: '$historyObject.phase' }, 
+        const subjects = await this.subjectRepository.entity.aggregate([
             { $match: { deprecated: false } },
             {
                 $lookup: {
@@ -181,15 +182,23 @@ class SubjectHistoryService  {
                     ],
                     as: "history"
                 },
-            },
-            { $addFields: { lastPhase: { $last: '$history.phase' }, steps: { $size: '$history.phase' }}},
+            },,
+            { $addFields: { historyObject: { $first: '$history' }}},
+            { $addFields: { 
+                steps: { $cond: { if: { $isArray: "$historyObject.phase" }, then: { $size: "$historyObject.phase" }, else: 0 } },
+                lastPhase: { $last: '$historyObject.phase' }
+            }},
             {
                 $match: {
                     $or: [
-                        { $ne: ["$lastPhase", 'aprobado' ] },
-                        { $ne: ['$steps', 3] },
-                        { $not: [{ $gt: ['$lastPhase.semester', currentSemester ]}]}
+                        { 'history': { $eq: [] } },
+                        {
+                            'steps': { $ne: 3 },
+                            "lastPhase.phaseStatus": { $ne: 'aprobado' },
+                            'lastPhase.semester': { $not: { $gte: currentSemester }}
+                        }
                     ]
+                     
                 }
             }
         ]);
