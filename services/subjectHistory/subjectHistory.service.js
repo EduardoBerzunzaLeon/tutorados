@@ -166,10 +166,8 @@ class SubjectHistoryService  {
 
     async findPossibleSubjectsToAdd (userId) {
         const studentData = await this.findStudent(userId);
-
         const { currentSemester } = studentData;
 
-        // steps: { $size: '$historyObject.phase' }, 
         const subjects = await this.subjectRepository.entity.aggregate([
             { $match: { deprecated: false } },
             {
@@ -182,7 +180,7 @@ class SubjectHistoryService  {
                     ],
                     as: "history"
                 },
-            },,
+            },
             { $addFields: { historyObject: { $first: '$history' }}},
             { $addFields: { 
                 steps: { $cond: { if: { $isArray: "$historyObject.phase" }, then: { $size: "$historyObject.phase" }, else: 0 } },
@@ -251,13 +249,19 @@ class SubjectHistoryService  {
         const userIdMongo = ObjectId(userId);
         const subjectIdMongo = ObjectId(subjectId);
         
-        const isExists = await this.subjectHistoryRepository.findOne({
+        const subjectInHistory = await this.subjectHistoryRepository.findOne({
             student: userIdMongo,
             subject: subjectIdMongo
-        });
+        }).lean();
         
-        if(isExists) {
-            throw this.createAppError('El alumno ya tiene asiganada la materia', 400);
+        if(subjectInHistory) {
+            // throw this.createAppError('El alumno ya tiene asiganada la materia', 400);
+            const request = {
+                docId: subjectInHistory._id,
+                phaseStatus,
+                semester
+            } 
+            return this.addNewPhase(request);
         }
 
         const subjectCreated = await this.subjectHistoryRepository.create({
@@ -272,7 +276,6 @@ class SubjectHistoryService  {
         if(!subjectCreated) 
             throw this.createAppError('No se pudo concluir su registro', 500);
 
-        return subjectCreated;    
     }
 
     async addNewPhase({ docId, phaseStatus, date, semester }) {
@@ -336,14 +339,21 @@ class SubjectHistoryService  {
 
         const phaseIdMongo = ObjectId(phaseId);
 
-        const phaseDeleted = await this.subjectHistoryRepository.updateOne(
-            { "phase._id": phaseIdMongo  },
-            { $pull: { "phase": { "_id": phaseIdMongo }}},
-        );
+        const subjectDeleted  = await this.subjectHistoryRepository.deleteOne({
+             "phase._id": phaseIdMongo,
+             "phase": { $size: 1 }
+        });
 
-        if(phaseDeleted.n <= 0) 
-            throw this.createAppError('No se pudo eliminar el intento de la materia', 500);
-
+        if(!subjectDeleted) {
+            const phaseDeleted = await this.subjectHistoryRepository.updateOne(
+                { "phase._id": phaseIdMongo  },
+                { $pull: { "phase": { "_id": phaseIdMongo }}},
+            );
+    
+            if(phaseDeleted.n <= 0 || !phaseDeleted ) 
+                throw this.createAppError('No se pudo eliminar el intento de la materia', 500);
+        }
+        
     }
 
 }

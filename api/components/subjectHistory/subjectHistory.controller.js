@@ -13,19 +13,12 @@ module.exports = ({
   
 
     
-    const addNewPhase = (self) => async (req, res) => {
-      const { id } = req.params;
-      
-      const request = {
-        ...req.body,
-        docId: id
-      }
-
-      await  self.service.addNewPhase(request);
+    const create = (self) => async (req, res) => {
+      await self.service.create(req.body);
   
-      return res.status(201).json({ 
+      return res.status(201).json({
         status: 'success',
-      }); 
+      });
     }
     
     const deletePhase = (self) => async (req, res) => {
@@ -70,8 +63,7 @@ module.exports = ({
         self.service.findPossibleSubjectsToAdd.bind(SubjectHistoryService),
         self.dto.multipleSubject.bind(SubjectHistoryDTO)
       )),
-      createSubjectInHistory: self.catchAsync(FactoryController.create(self)),
-      addNewPhase: self.catchAsync(addNewPhase(self)),
+      createSubjectInHistory: self.catchAsync(create(self)),
       deletePhase: self.catchAsync(deletePhase(self)),
       updatePhase: self.catchAsync(updatePhase(self)),
     });
