@@ -100,11 +100,7 @@ class SubjectHistoryService  {
             }
         ]);
 
-        if(this.isEmpty(subjects)) {
-            throw this.createAppError('Materias del semestre no encontradas', 404);
-        }
-
-        studentData.subjectHistory = subjects;
+        studentData.subjectHistory = this.isEmpty(subjects) ? [] : subjects;
         
         return studentData;
     }
@@ -157,11 +153,7 @@ class SubjectHistoryService  {
            { $sort: { _id: 1 }}
         ]);
 
-        if(this.isEmpty(subjects)) {
-            throw this.createAppError('Materias del semestre no encontradas', 404);
-        }
-
-        return subjects;
+        return this.isEmpty(subjects) ? [] : subjects;;
     }
 
     async findPossibleSubjectsToAdd (userId) {
