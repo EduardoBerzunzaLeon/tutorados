@@ -47,12 +47,12 @@ module.exports = ({
     }
 
     const methods = (self) => ({
-      findByUserId: self.catchAsync(FactoryController.findByMethod(
-        self.service.findByUserId.bind(SubjectHistoryService),
+      findCurrentSubjects: self.catchAsync(FactoryController.findByMethod(
+        self.service.findCurrentSubjects.bind(SubjectHistoryService),
         self.dto.singleComplete.bind(SubjectHistoryDTO)
       )),
-      findHistoryByUserId: self.catchAsync(FactoryController.findByMethod(
-        self.service.findHistoryByUserId.bind(SubjectHistoryService),
+      findHistory: self.catchAsync(FactoryController.findByMethod(
+        self.service.findHistory.bind(SubjectHistoryService),
         self.dto.multipleHistory.bind(SubjectHistoryDTO)
       )),
       findUnstudySubjects: self.catchAsync(FactoryController.findByMethod(

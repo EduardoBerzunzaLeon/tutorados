@@ -61,12 +61,12 @@ class BaseRepository {
     });
   }
 
-  updateMany(query, options, more) {
-    return this.entity.updateMany(query, options, more);
+  updateMany(query, values, options) {
+    return this.entity.updateMany(query, values, options);
   }
   
-  updateOne(query, update, options) {
-    return this.entity.updateOne(query, update, options);
+  updateOne(query, values, options) {
+    return this.entity.updateOne(query, values, options);
   }
 
   deleteById(id) {
