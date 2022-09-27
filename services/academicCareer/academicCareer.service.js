@@ -17,7 +17,7 @@ class AcademicCareerService {
 
     calculateSubjects({ subjects, unapprovedSubjects, currentSemester }) {
 
-        const subjectsId = subjects.map(({ _id }) => (_id));
+        const subjectsId = subjects.map(({ _id }) => (_id.toString()));
 
         unapprovedSubjects.forEach(({ _id, requiredSubjects, name, semester }, idx) => {
 
@@ -25,10 +25,10 @@ class AcademicCareerService {
             const isEquivalent =  subtraction % 2 === 0;
             
             if(isEquivalent && semester <= currentSemester ) {
-
-                const hasRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r));
                 
-                if(hasRequiredSubjects) {
+                const hasRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
+                
+                if(hasRequiredSubjects || requiredSubjects.length === 0) {
                     subjects.push({ _id, name, semester: currentSemester, requiredSubjects });
                     unapprovedSubjects.splice(idx, 1);
                 }
@@ -39,7 +39,7 @@ class AcademicCareerService {
             return subjects;
         }
 
-        console.log({unapprovedSubjects});
+        // console.log({unapprovedSubjects});
 
         return this.calculateSubjects({ subjects, unapprovedSubjects, currentSemester: currentSemester + 1 });
 
@@ -61,7 +61,7 @@ class AcademicCareerService {
         if(!student) {
             throw this.createAppError('No se encontro al estudiante', 400);
         }
-        const { currentSemester } = student;
+        // const { currentSemester } = student;
 
         // get approved or in-process subjects
         const approvedSubjects = await this.subjectHistoryRepository.entity.aggregate([
@@ -112,10 +112,10 @@ class AcademicCareerService {
             { $project: { _id: 1, requiredSubjects: 1, name: 1, semester: 1 }}
         ]);
 
-
+        
         // Accommodate depending on whether it is odd or even
         const result = this.calculateSubjects({ subjects, unapprovedSubjects, currentSemester: 6 });
-
+        
         console.log({ result });
 
 

@@ -1,0 +1,1400 @@
+[{
+  "_id": {
+    "$oid": "627efd044c781f6a8c6608e0"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1663972055786"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "histología",
+  "semester": 1,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6282f293cd87677f88ffcb1a"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1663972055786"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    }
+  ],
+  "practicalHours": 0,
+  "theoreticalHours": 5,
+  "name": "embriología genética",
+  "semester": 2,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6282f1c7cd87677f88ffcb0f"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1663972055786"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "anatomía humana",
+  "semester": 1,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "627efde0c74876675430e772"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1663972055786"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "633377469f60166b5ce8327f"
+    },
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    {
+      "$oid": "633377b79f60166b5ce83294"
+    },
+    {
+      "$oid": "6282f293cd87677f88ffcb1a"
+    },
+    {
+      "$oid": "63337aa59f60166b5ce832e6"
+    },
+    {
+      "$oid": "633378089f60166b5ce832b2"
+    },
+    {
+      "$oid": "633378259f60166b5ce832b9"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "operatoria dental",
+  "semester": 4,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 2
+},{
+  "_id": {
+    "$oid": "629a3a34afdb9840f0eadee3"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1663972055786"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "inglés 1",
+  "semester": 1,
+  "credit": 4,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "629a3a50afdb9840f0eadef0"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1663972055786"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "629a3a34afdb9840f0eadee3"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "inglés 2",
+  "semester": 2,
+  "credit": 4,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "629a3a68afdb9840f0eadefd"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1663972055786"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "629a3a50afdb9840f0eadef0"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "inglés 3",
+  "semester": 3,
+  "credit": 4,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633377469f60166b5ce8327f"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "bioquímica dental",
+  "semester": 1,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6333776e9f60166b5ce83286"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 3,
+  "theoreticalHours": 1,
+  "name": "elaboración y presentación de textos",
+  "semester": 1,
+  "credit": 4,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633377969f60166b5ce8328d"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 3,
+  "theoreticalHours": 2,
+  "name": "anatomía dental",
+  "semester": 1,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633377b79f60166b5ce83294"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "microbiología e inmunilogía",
+  "semester": 2,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633377f49f60166b5ce832ab"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 0,
+  "theoreticalHours": 5,
+  "name": "anatomía topográfica de cabeza y cuello",
+  "semester": 2,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633378089f60166b5ce832b2"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 0,
+  "theoreticalHours": 5,
+  "name": "fisiología",
+  "semester": 2,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633378259f60166b5ce832b9"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "anestesia",
+  "semester": 2,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633378649f60166b5ce832c0"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "odontología preventiva y salud pública i",
+  "semester": 2,
+  "credit": 5,
+  "core": "integral",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6333797d9f60166b5ce832ca"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 0,
+  "theoreticalHours": 5,
+  "name": "patología humana",
+  "semester": 3,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6333799e9f60166b5ce832d1"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "propedéutica médico odontológia",
+  "semester": 3,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633379f79f60166b5ce832d8"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 0,
+  "theoreticalHours": 5,
+  "name": "farmacología odontológica i",
+  "semester": 3,
+  "credit": 5,
+  "core": "básico",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337aa59f60166b5ce832e6"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "radiología buco-dental",
+  "semester": 3,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337ab59f60166b5ce832ed"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    {
+      "$oid": "633377f49f60166b5ce832ab"
+    },
+    {
+      "$oid": "6282f293cd87677f88ffcb1a"
+    },
+    {
+      "$oid": "633378089f60166b5ce832b2"
+    },
+    {
+      "$oid": "633378259f60166b5ce832b9"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "exodoncia",
+  "semester": 3,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337ad69f60166b5ce832f4"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "633378649f60166b5ce832c0"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "odontología preventiva y salud pública 2",
+  "semester": 3,
+  "credit": 5,
+  "core": "integral",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337b059f60166b5ce8330b"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "oclusión",
+  "semester": 4,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337b2a9f60166b5ce83314"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "633379f79f60166b5ce832d8"
+    }
+  ],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "farmacología odontológica 2",
+  "semester": 4,
+  "credit": 5,
+  "core": "básico",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337b4b9f60166b5ce8331d"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "medicina estomatológica",
+  "semester": 4,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337b6c9f60166b5ce83326"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "c. de exodoncia 1",
+  "semester": 4,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337b7f9f60166b5ce8332f"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "materiales dentales",
+  "semester": 4,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337b959f60166b5ce83338"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "629a3a68afdb9840f0eadefd"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "inglés 4",
+  "semester": 4,
+  "credit": 4,
+  "core": "básico",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337be89f60166b5ce83359"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "c. de operatoria dental 1",
+  "semester": 5,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337c029f60166b5ce83362"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "prótesis bucal fija",
+  "semester": 5,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337c129f60166b5ce8336b"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "patología bucal",
+  "semester": 5,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337c229f60166b5ce83374"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337b2a9f60166b5ce83314"
+    },
+    {
+      "$oid": "627efde0c74876675430e772"
+    },
+    {
+      "$oid": "63337b059f60166b5ce8330b"
+    },
+    {
+      "$oid": "633377469f60166b5ce8327f"
+    },
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    {
+      "$oid": "633377b79f60166b5ce83294"
+    },
+    {
+      "$oid": "6282f293cd87677f88ffcb1a"
+    },
+    {
+      "$oid": "63337aa59f60166b5ce832e6"
+    },
+    {
+      "$oid": "633378089f60166b5ce832b2"
+    },
+    {
+      "$oid": "633378259f60166b5ce832b9"
+    }
+  ],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "paradoncia",
+  "semester": 5,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 2
+},{
+  "_id": {
+    "$oid": "63337c329f60166b5ce8337d"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337b6c9f60166b5ce83326"
+    }
+  ],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "c. de exodoncia 2",
+  "semester": 5,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337c4a9f60166b5ce83386"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "optativa i",
+  "semester": 5,
+  "credit": 4,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337c749f60166b5ce83392"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337b959f60166b5ce83338"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "inglés 5",
+  "semester": 5,
+  "credit": 4,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337f449f60166b5ce8345e"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337be89f60166b5ce83359"
+    }
+  ],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "c. de operatoria dental 2",
+  "semester": 6,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337f569f60166b5ce83465"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "627efde0c74876675430e772"
+    },
+    {
+      "$oid": "63337b059f60166b5ce8330b"
+    },
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "633377b79f60166b5ce83294"
+    },
+    {
+      "$oid": "63337b7f9f60166b5ce8332f"
+    },
+    {
+      "$oid": "63337aa59f60166b5ce832e6"
+    },
+    {
+      "$oid": "633378089f60166b5ce832b2"
+    },
+    {
+      "$oid": "633378259f60166b5ce832b9"
+    }
+  ],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "c de prótesis bucal fija 1",
+  "semester": 6,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337f6e9f60166b5ce8346c"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337b2a9f60166b5ce83314"
+    },
+    {
+      "$oid": "63337b7f9f60166b5ce8332f"
+    },
+    {
+      "$oid": "63337c229f60166b5ce83374"
+    },
+    {
+      "$oid": "627efde0c74876675430e772"
+    },
+    {
+      "$oid": "63337b059f60166b5ce8330b"
+    },
+    {
+      "$oid": "633377469f60166b5ce8327f"
+    },
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    {
+      "$oid": "633377b79f60166b5ce83294"
+    },
+    {
+      "$oid": "6282f293cd87677f88ffcb1a"
+    },
+    {
+      "$oid": "633378089f60166b5ce832b2"
+    },
+    {
+      "$oid": "633378259f60166b5ce832b9"
+    },
+    {
+      "$oid": "63337aa59f60166b5ce832e6"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "endodoncia",
+  "semester": 6,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337f849f60166b5ce83473"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "c. de paradoncia",
+  "semester": 6,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337f989f60166b5ce8347a"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 3,
+  "theoreticalHours": 2,
+  "name": "prótesis removible",
+  "semester": 6,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337fcf9f60166b5ce83481"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337b7f9f60166b5ce8332f"
+    },
+    {
+      "$oid": "63337b059f60166b5ce8330b"
+    },
+    {
+      "$oid": "633377469f60166b5ce8327f"
+    },
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    {
+      "$oid": "63337aa59f60166b5ce832e6"
+    }
+  ],
+  "practicalHours": 3,
+  "theoreticalHours": 2,
+  "name": "prostodoncia total",
+  "semester": 6,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "63337fe59f60166b5ce83488"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "inglés 6",
+  "semester": 6,
+  "credit": 4,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63337ffb9f60166b5ce8348f"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "ortodoncia",
+  "semester": 7,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633380179f60166b5ce8349c"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337f569f60166b5ce83465"
+    },
+    {
+      "$oid": "627efde0c74876675430e772"
+    },
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    {
+      "$oid": "633377b79f60166b5ce83294"
+    },
+    {
+      "$oid": "63337b7f9f60166b5ce8332f"
+    },
+    {
+      "$oid": "63337aa59f60166b5ce832e6"
+    },
+    {
+      "$oid": "633378089f60166b5ce832b2"
+    },
+    {
+      "$oid": "633378259f60166b5ce832b9"
+    }
+  ],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "c. de prótesis bucal fija 2",
+  "semester": 7,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "633380259f60166b5ce834a3"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "c. de endodoncia",
+  "semester": 7,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633380389f60166b5ce834aa"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "taller de emprendedores",
+  "semester": 7,
+  "credit": 4,
+  "core": "integral",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633380609f60166b5ce834b1"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337b7f9f60166b5ce8332f"
+    },
+    {
+      "$oid": "63337c229f60166b5ce83374"
+    },
+    {
+      "$oid": "63337f6e9f60166b5ce8346c"
+    },
+    {
+      "$oid": "627efde0c74876675430e772"
+    },
+    {
+      "$oid": "63337b059f60166b5ce8330b"
+    },
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    {
+      "$oid": "633377b79f60166b5ce83294"
+    },
+    {
+      "$oid": "6282f293cd87677f88ffcb1a"
+    },
+    {
+      "$oid": "633378089f60166b5ce832b2"
+    },
+    {
+      "$oid": "633378259f60166b5ce832b9"
+    },
+    {
+      "$oid": "63337aa59f60166b5ce832e6"
+    }
+  ],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "clínica de prótesis removible y prostodoncia total",
+  "semester": 7,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "633380779f60166b5ce834b8"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "epidemiología y bioestadística en salud bucal",
+  "semester": 7,
+  "credit": 5,
+  "core": "integral",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6333808a9f60166b5ce834bf"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337b7f9f60166b5ce8332f"
+    },
+    {
+      "$oid": "63337c229f60166b5ce83374"
+    },
+    {
+      "$oid": "63337f6e9f60166b5ce8346c"
+    },
+    {
+      "$oid": "627efde0c74876675430e772"
+    },
+    {
+      "$oid": "633377469f60166b5ce8327f"
+    },
+    {
+      "$oid": "627efd044c781f6a8c6608e0"
+    },
+    {
+      "$oid": "633377969f60166b5ce8328d"
+    },
+    {
+      "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    {
+      "$oid": "633377b79f60166b5ce83294"
+    },
+    {
+      "$oid": "6282f293cd87677f88ffcb1a"
+    },
+    {
+      "$oid": "633378089f60166b5ce832b2"
+    },
+    {
+      "$oid": "633378259f60166b5ce832b9"
+    },
+    {
+      "$oid": "63337aa59f60166b5ce832e6"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 3,
+  "name": "odontopediatría",
+  "semester": 8,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "633380af9f60166b5ce834d6"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 4,
+  "name": "cirugía bucal",
+  "semester": 8,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633380c49f60166b5ce834dd"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 2,
+  "name": "seminario de tesis 1",
+  "semester": 8,
+  "credit": 3,
+  "core": "integral",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633380e29f60166b5ce834e4"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "63337f449f60166b5ce8345e"
+    },
+    {
+      "$oid": "63337c329f60166b5ce8337d"
+    },
+    {
+      "$oid": "63337f849f60166b5ce83473"
+    },
+    {
+      "$oid": "633380259f60166b5ce834a3"
+    },
+    {
+      "$oid": "633380179f60166b5ce8349c"
+    }
+  ],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "clínica integral 1",
+  "semester": 8,
+  "credit": 5,
+  "core": "integral",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "633380f69f60166b5ce834eb"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "optativa 2",
+  "semester": 8,
+  "credit": 4,
+  "core": "integral",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633381ac9f60166b5ce834f5"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "6333808a9f60166b5ce834bf"
+    }
+  ],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "clínica de odontopediatría",
+  "semester": 9,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "633381c29f60166b5ce834fc"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "clínica de cirugía bucal",
+  "semester": 9,
+  "credit": 5,
+  "core": "sustantivo",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "633381d29f60166b5ce83503"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "633380c49f60166b5ce834dd"
+    }
+  ],
+  "practicalHours": 2,
+  "theoreticalHours": 1,
+  "name": "seminario de tesis 2",
+  "semester": 9,
+  "credit": 3,
+  "core": "integral",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "633381eb9f60166b5ce8350a"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [
+    {
+      "$oid": "633380e29f60166b5ce834e4"
+    }
+  ],
+  "practicalHours": 5,
+  "theoreticalHours": 0,
+  "name": "clínica integral 2",
+  "semester": 9,
+  "credit": 5,
+  "core": "integral",
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "633382149f60166b5ce83511"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 2,
+  "theoreticalHours": 2,
+  "name": "odontogeriatría",
+  "semester": 9,
+  "credit": 4,
+  "core": "integral",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6333822d9f60166b5ce83518"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1664316035837"
+    }
+  },
+  "deprecated": false,
+  "requiredSubjects": [],
+  "practicalHours": 1,
+  "theoreticalHours": 3,
+  "name": "odontología legal y forense",
+  "semester": 9,
+  "credit": 4,
+  "core": "integral",
+  "__v": 0
+}]

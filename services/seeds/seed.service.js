@@ -78,7 +78,7 @@ class SeedService {
     
         const users = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8')) );
         const professors = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/professors.json`, 'utf-8')) );
-        const subjects = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/subjects.json`, 'utf-8')) );
+        const subjects = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/subjects_complete.json`, 'utf-8')) );
         const students = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/students.json`, 'utf-8')) );
         const courses = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/courses.json`, 'utf-8')) );
         const subjectsHistory = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/subjectHistory.json`, 'utf-8')) );
