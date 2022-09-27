@@ -20,6 +20,7 @@ const { CourseController, CourseDTO, courseMiddleware, courseRoutes } = require(
 const { ProfessorController, ProfessorDTO, professorRoutes } = require('../components/professors');
 const { StudentController, StudentDTO, studentRoutes } = require('../components/students');
 const { SubjectHistoryController, SubjectHistoryDTO, subjectHistoryRoutes } = require('../components/subjectHistory');
+const { AcademicCareerController, AcademicCareerDTO, academicCareerRoutes } = require('../components/AcademicCareer');
 const { SeedController, seedRoutes } = require('../components/seeds');
 const { AuthController } = require('../components/auth');
 
@@ -57,6 +58,7 @@ const AuthService = require('../../services/auth/auth.service');
 const FileService = require('../../services/files/file.service');
 const SeedService = require('../../services/seeds/seed.service');
 const SubjectHistoryService = require('../../services/subjectHistory/subjectHistory.service');
+const AcademicCareerService = require('../../services/academicCareer/academicCareer.service');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 
@@ -150,6 +152,10 @@ container
   .register({
     AcademicCareerRepository: asClass(AcademicCareerRepository).singleton(),
     AcademicCareerEntity: asValue(AcademicCareerEntity),
+    AcademicCareerController: asFunction(AcademicCareerController).singleton(),
+    academicCareerRoutes: asFunction(academicCareerRoutes).singleton(),
+    AcademicCareerDTO: asClass(AcademicCareerDTO).singleton(),
+    AcademicCareerService: asClass(AcademicCareerService).singleton(),
   })
   // * Student
   .register({

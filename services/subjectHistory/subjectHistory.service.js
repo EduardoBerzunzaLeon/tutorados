@@ -184,7 +184,8 @@ class SubjectHistoryService  {
                         {
                             'steps': { $ne: 3 },
                             "lastPhase.phaseStatus": { $ne: 'aprobado' },
-                            'lastPhase.semester': { $not: { $gte: currentSemester }}
+                            // 'lastPhase.semester': { $not: { $gte: currentSemester }}
+                            'lastPhase.semester': { $lt: currentSemester }
                         }
                     ]
                      
