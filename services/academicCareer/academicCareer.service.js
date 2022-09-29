@@ -18,30 +18,36 @@ class AcademicCareerService {
     calculateSubjects({ subjects, unapprovedSubjects, currentSemester }) {
 
         const subjectsId = subjects.map(({ _id }) => (_id.toString()));
+        let count = 0;
 
-        unapprovedSubjects.forEach(({ _id, requiredSubjects, name, semester }, idx) => {
+        const unapprovedSubjectsCopy = [ ...unapprovedSubjects ];
+         
+        unapprovedSubjects.forEach((subject, idx) => {
+            
+            const {  requiredSubjects, semester } = subject;
 
             const subtraction = Math.abs(semester - currentSemester);
             const isEquivalent =  subtraction % 2 === 0;
-            
+
             if(isEquivalent && semester <= currentSemester ) {
                 
                 const hasRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
                 
                 if(hasRequiredSubjects || requiredSubjects.length === 0) {
-                    subjects.push({ _id, name, semester: currentSemester, requiredSubjects });
-                    unapprovedSubjects.splice(idx, 1);
+                    subjects.push(subject);
+                    unapprovedSubjectsCopy.splice(idx - count, 1);
+                    count ++;
                 }
             }
         });
 
-        if(currentSemester === 13 || unapprovedSubjects.length === 0) {
+
+        if(currentSemester === 13 || unapprovedSubjectsCopy.length === 0 ) {
             return subjects;
         }
 
-        // console.log({unapprovedSubjects});
-
-        return this.calculateSubjects({ subjects, unapprovedSubjects, currentSemester: currentSemester + 1 });
+    
+        return this.calculateSubjects({ subjects, unapprovedSubjects: unapprovedSubjectsCopy, currentSemester: currentSemester + 1 });
 
     }
 
@@ -61,7 +67,8 @@ class AcademicCareerService {
         if(!student) {
             throw this.createAppError('No se encontro al estudiante', 400);
         }
-        // const { currentSemester } = student;
+
+        const { currentSemester } = student;
 
         // get approved or in-process subjects
         const approvedSubjects = await this.subjectHistoryRepository.entity.aggregate([
@@ -114,18 +121,53 @@ class AcademicCareerService {
 
         
         // Accommodate depending on whether it is odd or even
-        const result = this.calculateSubjects({ subjects, unapprovedSubjects, currentSemester: 6 });
-        
-        console.log({ result });
-
+        const calculatedSubjects = this.calculateSubjects({ subjects, unapprovedSubjects, currentSemester });
+        const adjustedSubjects = this.adjustBySemester( calculatedSubjects );
 
         // while processing, verify that it has all the requiered subjects
 
+        // if(!Array.isArray(adjustedSubjects)) {
+        //     throw this.createAppError('No se pudo generar la trayectoria, favor de intentarlo de nuevo', 400);
+        // }
         // when a semester ends, check the amount of subjects
+        return adjustedSubjects;
+    }
 
-        return [{
-            unapprovedSubjects
-        }]
+    adjustBySemester ( subjects ) {
+        return subjects.reduce(( acc, { _id, name, semester } ) => {
+            
+            const key  = semester - 1;
+            // const semester = acc[current.semester - 1];
+
+            if(!Array.isArray(acc[key])) {
+                acc[key] = {
+                    key: semester,
+                    data: {
+                        _id: semester,
+                        name: `Semester ${semester}`,
+                    },
+                    children: []
+                };
+            }
+
+            acc[key]['children'].push({
+                key: _id,
+                data: {
+                    _id,
+                    name,
+                }
+            });
+            return acc;
+            // const key = `semestre-${semester}`;
+
+            // if(!acc[key]) {
+            //     acc[key] = [];
+            // }
+
+            // acc[key].push({ _id, name, semester });
+
+            // return acc;
+        }, []);
     }
 
     async findByUserId(userId) {

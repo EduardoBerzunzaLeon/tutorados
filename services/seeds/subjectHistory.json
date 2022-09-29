@@ -3,7 +3,7 @@
         "$oid": "62b76453f531ac361428255f"
     },
     "subject": {
-        "$oid": "627efde0c74876675430e772"
+        "$oid": "627efd044c781f6a8c6608e0"
     },
     "createdAt": {
         "$date": {
@@ -12,18 +12,11 @@
     },
     "phase": [
         {
-            "phaseStatus": "reprobado",
+            "phaseStatus": "aprobado",
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 4
-        },
-        {
-            "phaseStatus": "cursando",
-            "date": {
-                "$numberLong": "1656176021869"
-            },
-            "semester": 5
+            "semester": 1
         }
     ]
 },
@@ -32,7 +25,29 @@
         "$oid": "62b76453f531ac361428255f"
     },
     "subject": {
-        "$oid": "627efd044c781f6a8c6608e0"
+        "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "62b76453f531ac361428255f"
+    },
+    "subject": {
+        "$oid": "629a3a34afdb9840f0eadee3"
     },
     "createdAt": {
         "$date": {
@@ -46,20 +61,6 @@
                 "$numberLong": "1656176021869"
             },
             "semester": 1
-        },
-        {
-            "phaseStatus": "reprobado",
-            "date": {
-                "$numberLong": "1656176021869"
-            },
-            "semester": 3
-        },
-        {
-            "phaseStatus": "cursando",
-            "date": {
-                "$numberLong": "1656176021869"
-            },
-            "semester": 5
         }
     ]
 },
@@ -68,7 +69,7 @@
         "$oid": "62b76453f531ac361428255f"
     },
     "subject": {
-        "$oid": "629a3a50afdb9840f0eadef0"
+        "$oid": "633377469f60166b5ce8327f"
     },
     "createdAt": {
         "$date": {
@@ -81,7 +82,51 @@
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 4
+            "semester": 1
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "62b76453f531ac361428255f"
+    },
+    "subject": {
+        "$oid": "6333776e9f60166b5ce83286"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "62b76453f531ac361428255f"
+    },
+    "subject": {
+        "$oid": "633377969f60166b5ce8328d"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1
         }
     ]
 }]

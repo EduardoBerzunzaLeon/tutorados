@@ -4,7 +4,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1663972055786"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -22,7 +22,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1663972055786"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -44,7 +44,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1663972055786"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -62,7 +62,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1663972055786"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -101,14 +101,14 @@
   "semester": 4,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 2
+  "__v": 0
 },{
   "_id": {
     "$oid": "629a3a34afdb9840f0eadee3"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1663972055786"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -126,7 +126,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1663972055786"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -148,7 +148,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1663972055786"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -170,7 +170,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -188,7 +188,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -206,7 +206,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -224,7 +224,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -242,7 +242,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -260,7 +260,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -278,7 +278,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -296,7 +296,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -314,7 +314,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -332,7 +332,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -350,7 +350,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -368,7 +368,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -386,7 +386,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -419,14 +419,14 @@
   "semester": 3,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337ad69f60166b5ce832f4"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -441,14 +441,14 @@
   "semester": 3,
   "credit": 5,
   "core": "integral",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337b059f60166b5ce8330b"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -466,7 +466,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -481,14 +481,14 @@
   "semester": 4,
   "credit": 5,
   "core": "básico",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337b4b9f60166b5ce8331d"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -506,7 +506,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -524,7 +524,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -542,7 +542,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -557,14 +557,14 @@
   "semester": 4,
   "credit": 4,
   "core": "básico",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337be89f60166b5ce83359"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -582,7 +582,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -600,7 +600,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -618,7 +618,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -666,14 +666,14 @@
   "semester": 5,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 2
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337c329f60166b5ce8337d"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -688,14 +688,14 @@
   "semester": 5,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337c4a9f60166b5ce83386"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -713,7 +713,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -728,14 +728,14 @@
   "semester": 5,
   "credit": 4,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337f449f60166b5ce8345e"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -750,14 +750,14 @@
   "semester": 6,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337f569f60166b5ce83465"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -796,14 +796,14 @@
   "semester": 6,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337f6e9f60166b5ce8346c"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -857,14 +857,14 @@
   "semester": 6,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337f849f60166b5ce83473"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -882,7 +882,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -900,7 +900,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -933,32 +933,36 @@
   "semester": 6,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "63337fe59f60166b5ce83488"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
-  "requiredSubjects": [],
+  "requiredSubjects": [
+    {
+      "$oid": "63337c749f60166b5ce83392"
+    }
+  ],
   "practicalHours": 2,
   "theoreticalHours": 2,
   "name": "inglés 6",
   "semester": 6,
   "credit": 4,
   "core": "sustantivo",
-  "__v": 0
+  "__v": 1
 },{
   "_id": {
     "$oid": "63337ffb9f60166b5ce8348f"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -976,7 +980,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1018,14 +1022,14 @@
   "semester": 7,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "633380259f60166b5ce834a3"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1043,7 +1047,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1061,7 +1065,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1112,14 +1116,14 @@
   "semester": 7,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "633380779f60166b5ce834b8"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1137,7 +1141,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1188,14 +1192,14 @@
   "semester": 8,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "633380af9f60166b5ce834d6"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1213,7 +1217,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1231,7 +1235,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1258,14 +1262,14 @@
   "semester": 8,
   "credit": 5,
   "core": "integral",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "633380f69f60166b5ce834eb"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1283,7 +1287,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1298,14 +1302,14 @@
   "semester": 9,
   "credit": 5,
   "core": "sustantivo",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "633381c29f60166b5ce834fc"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1323,7 +1327,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1338,14 +1342,14 @@
   "semester": 9,
   "credit": 3,
   "core": "integral",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "633381eb9f60166b5ce8350a"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1360,14 +1364,14 @@
   "semester": 9,
   "credit": 5,
   "core": "integral",
-  "__v": 1
+  "__v": 0
 },{
   "_id": {
     "$oid": "633382149f60166b5ce83511"
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
@@ -1385,7 +1389,7 @@
   },
   "createdAt": {
     "$date": {
-      "$numberLong": "1664316035837"
+      "$numberLong": "1664411607404"
     }
   },
   "deprecated": false,
