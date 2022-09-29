@@ -34,7 +34,18 @@ class AcademicCareerService {
                 const hasRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
                 
                 if(hasRequiredSubjects || requiredSubjects.length === 0) {
-                    subjects.push(subject);
+                    const newPhase  = { phaseStatus: 'Por cursar' };
+
+                    const phase = subject?.history?.phase 
+                      ? [ ...subject.history.phase, newPhase]
+                      : [newPhase];
+
+                    const subjectToPush = {
+                        ...subject,
+                        phase
+                    }
+
+                    subjects.push(subjectToPush);
                     unapprovedSubjectsCopy.splice(idx - count, 1);
                     count ++;
                 }
@@ -98,7 +109,13 @@ class AcademicCareerService {
                 $project: {
                     _id: 1,
                     lastPhase: 1,
-                    subject: '$subjectDetail'
+                    subject: {
+                        _id: '$subjectDetail._id',
+                        requiredSubjects: '$subjectDetail.requiredSubjects',
+                        name: '$subjectDetail.name',
+                        semester: '$subjectDetail.semester',
+                        phase: '$phase'
+                    }
                 }
             }
         ]);
@@ -116,10 +133,25 @@ class AcademicCareerService {
                 _id: { $nin: ids }
              }
             },
-            { $project: { _id: 1, requiredSubjects: 1, name: 1, semester: 1 }}
+            {
+                $lookup:{
+                    from: 'subjecthistories',
+                    foreignField: 'subject',
+                    localField: '_id',
+                    pipeline: [
+                        { $match: { student: userIdMongo }},
+                    ],
+                    as: 'history'
+                }
+            },
+            { $project: { 
+                _id: 1, 
+                requiredSubjects: 1, 
+                name: 1, 
+                semester: 1, 
+                history: { $first: '$history' },
+            }} 
         ]);
-
-        
         // Accommodate depending on whether it is odd or even
         const calculatedSubjects = this.calculateSubjects({ subjects, unapprovedSubjects, currentSemester });
         const adjustedSubjects = this.adjustBySemester( calculatedSubjects );
@@ -134,7 +166,7 @@ class AcademicCareerService {
     }
 
     adjustBySemester ( subjects ) {
-        return subjects.reduce(( acc, { _id, name, semester } ) => {
+        return subjects.reduce(( acc, { _id, name, semester, phase } ) => {
             
             const key  = semester - 1;
             // const semester = acc[current.semester - 1];
@@ -145,6 +177,7 @@ class AcademicCareerService {
                     data: {
                         _id: semester,
                         name: `Semester ${semester}`,
+                        phase: ''
                     },
                     children: []
                 };
@@ -155,6 +188,7 @@ class AcademicCareerService {
                 data: {
                     _id,
                     name,
+                    phase
                 }
             });
             return acc;
