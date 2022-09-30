@@ -17,7 +17,7 @@ module.exports = ({
       const { userId }= req.params;
 
       const data = await self.service.generate({ ...req.body, userId, authenticatedUser: req.user._id });
-      const dataSend = self.dto.multiple(data);
+      const dataSend = self.dto.single(data);
 
       return res.status(201).json({
         status: 'success',

@@ -15,50 +15,92 @@ class AcademicCareerService {
         this.createAppError = createAppError;
     }
 
-    calculateSubjects({ subjects, unapprovedSubjects, currentSemester }) {
+    addLastChanceRisk({ subject , currentSemester }) {
+
+        const newPhase  = { phaseStatus: 'Por cursar', semester: currentSemester };
+        const subjectPhase = subject?.history?.phase;
+        let atRisk = '';
+        let phase = [newPhase];
+
+        if(subjectPhase) {
+            phase = [ ...subjectPhase, newPhase];
+            if(phase.length >= 3) {
+                atRisk = 'Ultimo intento.';
+            }
+        }
+
+        return { atRisk, phase };
+
+    }
+
+    addUniqueSubjectRisk ( subjects, { currentSemester, amountOfSubjects }) {
+        const position = subjects.length - 1;
+        const lastSemester = subjects.length > 0 
+            ? subjects[position].semester
+            : currentSemester;
+            
+        if(lastSemester === currentSemester) {
+            amountOfSubjects ++;
+        } else {
+            if(amountOfSubjects === 1) {
+                subjects[position].atRisk += 'Unica materia.'; 
+            }
+            amountOfSubjects = 1;
+        }
+
+        return amountOfSubjects;
+    }
+
+    calculateSubjects({ subjects, unapprovedSubjects, currentSemester, amountOfSubjects }) {
 
         const subjectsId = subjects.map(({ _id }) => (_id.toString()));
-        let count = 0;
-
         const unapprovedSubjectsCopy = [ ...unapprovedSubjects ];
+        let count = 0; 
          
-        unapprovedSubjects.forEach((subject, idx) => {
+        unapprovedSubjects.some((subject, idx) => {
             
             const {  requiredSubjects, semester } = subject;
 
             const subtraction = Math.abs(semester - currentSemester);
-            const isEquivalent =  subtraction % 2 === 0;
+            const isEquivalentSemester =  subtraction % 2 === 0;
 
-            if(isEquivalent && semester <= currentSemester ) {
+            if(isEquivalentSemester && semester <= currentSemester ) {
                 
-                const hasRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
+                const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
                 
-                if(hasRequiredSubjects || requiredSubjects.length === 0) {
-                    const newPhase  = { phaseStatus: 'Por cursar' };
+                if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
 
-                    const phase = subject?.history?.phase 
-                      ? [ ...subject.history.phase, newPhase]
-                      : [newPhase];
+                    const { phase, atRisk } = this.addLastChanceRisk({ subject, currentSemester });
 
+                    amountOfSubjects = this.addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects });
+                    
                     const subjectToPush = {
                         ...subject,
-                        phase
+                        phase,
+                        semester: currentSemester,
+                        atRisk
                     }
-
+                    
                     subjects.push(subjectToPush);
                     unapprovedSubjectsCopy.splice(idx - count, 1);
                     count ++;
                 }
             }
+
+            return semester > currentSemester;
         });
 
-
         if(currentSemester === 13 || unapprovedSubjectsCopy.length === 0 ) {
-            return subjects;
+            return { subjects, unaddedSubjects: unapprovedSubjectsCopy };
         }
 
     
-        return this.calculateSubjects({ subjects, unapprovedSubjects: unapprovedSubjectsCopy, currentSemester: currentSemester + 1 });
+        return this.calculateSubjects({ 
+            subjects, 
+            unapprovedSubjects: unapprovedSubjectsCopy, 
+            currentSemester: currentSemester + 1,
+            amountOfSubjects
+         });
 
     }
 
@@ -150,28 +192,36 @@ class AcademicCareerService {
                 name: 1, 
                 semester: 1, 
                 history: { $first: '$history' },
-            }} 
+            }},
+            { $sort: { semester: 1 }}
         ]);
+
+        // console.log(unapprovedSubjects);
         // Accommodate depending on whether it is odd or even
-        const calculatedSubjects = this.calculateSubjects({ subjects, unapprovedSubjects, currentSemester });
+        const { subjects: calculatedSubjects, unaddedSubjects } = this.calculateSubjects({ 
+            subjects, 
+            unapprovedSubjects, 
+            currentSemester, 
+            amountOfSubjects: 0 
+        });
+
+        if(!calculatedSubjects) {
+            throw this.createAppError('No se pudo generar la trayectoria academica', 500);
+        }
+
         const adjustedSubjects = this.adjustBySemester( calculatedSubjects );
 
-        // while processing, verify that it has all the requiered subjects
 
-        // if(!Array.isArray(adjustedSubjects)) {
-        //     throw this.createAppError('No se pudo generar la trayectoria, favor de intentarlo de nuevo', 400);
-        // }
-        // when a semester ends, check the amount of subjects
-        return adjustedSubjects;
+        return  { adjustedSubjects, unaddedSubjects } ;
     }
 
     adjustBySemester ( subjects ) {
-        return subjects.reduce(( acc, { _id, name, semester, phase } ) => {
+        return subjects.reduce(( acc, { _id, name, semester, phase, atRisk } ) => {
             
             const key  = semester - 1;
             // const semester = acc[current.semester - 1];
 
-            if(!Array.isArray(acc[key])) {
+            if(!acc[key]) {
                 acc[key] = {
                     key: semester,
                     data: {
@@ -188,9 +238,11 @@ class AcademicCareerService {
                 data: {
                     _id,
                     name,
-                    phase
+                    phase, 
+                    atRisk: atRisk ?? ''
                 }
             });
+
             return acc;
             // const key = `semestre-${semester}`;
 
