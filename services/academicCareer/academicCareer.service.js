@@ -67,6 +67,11 @@ class AcademicCareerService {
             if(isEquivalentSemester && semester <= currentSemester ) {
                 
                 const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
+                    // return subjects.some((s) => {
+                    //     return r.toString() === s._id.toString() && s.semester < currentSemester
+                    // });
+                    // return subjectsId.includes(r.toString())
+                // });
                 
                 if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
 
@@ -112,9 +117,7 @@ class AcademicCareerService {
         authenticatedUser
     }) {
 
-        // NOTES: Generate academic career
         const userIdMongo = ObjectId(userId);
-        // get current semester (even or odd) [System settings]
         const student = await this.studentRepository.findOne({ user: userIdMongo }).lean();
         
         if(!student) {
@@ -123,7 +126,6 @@ class AcademicCareerService {
 
         const { currentSemester } = student;
 
-        // get approved or in-process subjects
         const approvedSubjects = await this.subjectHistoryRepository.entity.aggregate([
             { $match: { student: userIdMongo }},
             { $addFields: { lastPhase: { $last: '$phase' }}},
@@ -168,7 +170,6 @@ class AcademicCareerService {
             return acc;
         }, { subjects: [], ids: [] });
 
-        // get No approved subjects (failed and unstudy) [With required subjects and semester]
         const unapprovedSubjects = await this.subjectRepository.entity.aggregate([
             { $match: { 
                 deprecated: false,
@@ -196,8 +197,6 @@ class AcademicCareerService {
             { $sort: { semester: 1 }}
         ]);
 
-        // console.log(unapprovedSubjects);
-        // Accommodate depending on whether it is odd or even
         const { subjects: calculatedSubjects, unaddedSubjects } = this.calculateSubjects({ 
             subjects, 
             unapprovedSubjects, 
@@ -211,15 +210,12 @@ class AcademicCareerService {
 
         const adjustedSubjects = this.adjustBySemester( calculatedSubjects );
 
-
         return  { adjustedSubjects, unaddedSubjects } ;
     }
 
     adjustBySemester ( subjects ) {
         return subjects.reduce(( acc, { _id, name, semester, phase, atRisk } ) => {
-            
             const key  = semester - 1;
-            // const semester = acc[current.semester - 1];
 
             if(!acc[key]) {
                 acc[key] = {
@@ -244,15 +240,6 @@ class AcademicCareerService {
             });
 
             return acc;
-            // const key = `semestre-${semester}`;
-
-            // if(!acc[key]) {
-            //     acc[key] = [];
-            // }
-
-            // acc[key].push({ _id, name, semester });
-
-            // return acc;
         }, []);
     }
 

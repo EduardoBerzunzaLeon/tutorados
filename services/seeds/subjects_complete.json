@@ -71,9 +71,6 @@
       "$oid": "633377469f60166b5ce8327f"
     },
     {
-      "$oid": "627efd044c781f6a8c6608e0"
-    },
-    {
       "$oid": "633377969f60166b5ce8328d"
     },
     {
@@ -624,6 +621,9 @@
   "deprecated": false,
   "requiredSubjects": [
     {
+      "$oid": "63337ab59f60166b5ce832ed"
+    },
+    {
       "$oid": "63337b2a9f60166b5ce83314"
     },
     {
@@ -1014,6 +1014,9 @@
     },
     {
       "$oid": "633378259f60166b5ce832b9"
+    },
+    {
+      "$oid": "63337c129f60166b5ce8336b"
     }
   ],
   "practicalHours": 5,
@@ -1334,6 +1337,9 @@
   "requiredSubjects": [
     {
       "$oid": "633380c49f60166b5ce834dd"
+    },
+    {
+      "$oid": "63337ffb9f60166b5ce8348f"
     }
   ],
   "practicalHours": 2,

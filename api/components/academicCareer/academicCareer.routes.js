@@ -14,6 +14,7 @@ module.exports = function({
 
     router.use(protect);
 
+    router.get('/:userId', restrictTo(create_academic_career), AcademicCareerController.findById);
     router.post('/:userId', restrictTo(create_academic_career), AcademicCareerController.generate);
 
     return router;

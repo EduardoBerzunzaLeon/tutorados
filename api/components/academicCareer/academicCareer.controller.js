@@ -26,8 +26,11 @@ module.exports = ({
     }
     
 
+    
+
     const methods = (self) => ({
       generate: self.catchAsync(generate(self)),
+      findById: self.catchAsync(generate(self)),
     });
   
     return methods(self);
