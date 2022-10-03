@@ -83,7 +83,7 @@ class AcademicCareerService {
                         ...subject,
                         phase,
                         semester: currentSemester,
-                        atRisk
+                        atRisk,
                     }
                     
                     subjects.push(subjectToPush);
@@ -223,7 +223,9 @@ class AcademicCareerService {
                     data: {
                         _id: semester,
                         name: `Semester ${semester}`,
-                        phase: ''
+                        phase: '',
+                        draggable: false,
+                        droppable: true,
                     },
                     children: []
                 };
@@ -235,7 +237,9 @@ class AcademicCareerService {
                     _id,
                     name,
                     phase, 
-                    atRisk: atRisk ?? ''
+                    atRisk: atRisk ?? '',
+                    draggable: true,
+                    droppable: false
                 }
             });
 
