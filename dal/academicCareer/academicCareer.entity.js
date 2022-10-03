@@ -5,6 +5,12 @@ const validProcessStatus = {
     message: '{VALUE} no es un estatus de fase válida'
 };
 
+const validPhaseStatus = {
+    values: ['aprobado', 'reprobado', 'cursando', 'por cursar'],
+    message: '{VALUE} no es un estatus de fase válida'
+};
+
+
 const AcademicCareerSchema = new Schema({
     student: {
         type: Schema.ObjectId,
@@ -41,14 +47,40 @@ const AcademicCareerSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'User',
     },
-    semesters: [
-        [
-            {
-                type: Schema.ObjectId,
-                ref: 'Subject',
+    subjects: [{
+                subject: {
+                    type: Schema.ObjectId,
+                    ref: 'Subject',
+                },
+                phase: [{
+                    phaseStatus: {
+                        type: String,
+                        enum: validPhaseStatus,
+                        lowercase: true,
+                        required: [true, 'El estatus de la fase es requerida'],
+                        trim: true
+                    },
+                    semester: {
+                        type: Number,
+                        max: 13,
+                        min: 1,
+                        required: [ true, 'El semestre es obligatorio' ],
+                    }
+                }],
+                atRisk: {
+                    type: String,
+                    lowercase: true,
+                    trim: true,
+                    default: '',
+                },
+                semester: {
+                    type: Number,
+                    max: 13,
+                    min: 1,
+                    required: [ true, 'El semestre es obligatorio' ],
+                }
             }
         ] 
-    ]
 });
 
 

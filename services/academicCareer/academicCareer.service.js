@@ -67,12 +67,7 @@ class AcademicCareerService {
             if(isEquivalentSemester && semester <= currentSemester ) {
                 
                 const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
-                    // return subjects.some((s) => {
-                    //     return r.toString() === s._id.toString() && s.semester < currentSemester
-                    // });
-                    // return subjectsId.includes(r.toString())
-                // });
-                
+
                 if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
 
                     const { phase, atRisk } = this.addLastChanceRisk({ subject, currentSemester });
@@ -197,7 +192,7 @@ class AcademicCareerService {
             { $sort: { semester: 1 }}
         ]);
 
-        const { subjects: calculatedSubjects, unaddedSubjects } = this.calculateSubjects({ 
+        const { subjects: calculatedSubjects } = this.calculateSubjects({ 
             subjects, 
             unapprovedSubjects, 
             currentSemester, 
@@ -208,14 +203,63 @@ class AcademicCareerService {
             throw this.createAppError('No se pudo generar la trayectoria academica', 500);
         }
 
-        const adjustedSubjects = this.adjustBySemester( calculatedSubjects );
+        await this.academicCareerRepository.deleteOne({ student: userIdMongo });
+        await this.saveSubjects({
+            calculatedSubjects, 
+            subjectsInSemester, 
+            canAdvanceSubject,  
+            hasValidation,
+            authenticatedUser,
+            userId
+        });
 
-        return  { adjustedSubjects, unaddedSubjects } ;
+        const { academicCareer, unaddedSubjects } = await this.findByUserId(userId);
+
+        return  { academicCareer, unaddedSubjects } ;
     }
 
-    adjustBySemester ( subjects ) {
-        return subjects.reduce(( acc, { _id, name, semester, phase, atRisk } ) => {
+    async saveSubjects ({
+        subjects, 
+        subjectsInSemester, 
+        canAdvanceSubject,  
+        hasValidation,
+        authenticatedUser,
+        userId,
+        processStatus = 'generado',
+    }) {
+
+        const preparedSubjects = subjects.reduce((acc, { _id, semester, phase, atRisk }) => {
+            acc.push({
+                subject: _id,
+                phase,
+                atRisk: atRisk || '',
+                semester
+            });
+
+            return acc;
+        },[]);
+
+        const dataToSave = {
+            student: userId,
+            processStatus,
+            generationParams: {
+                subjectsInSemester,
+                hasValidation,
+                canAdvanceSubject
+            },
+            creatorUser: authenticatedUser,
+            subjects: preparedSubjects
+        };
+
+        const savedSubjects = await this.academicCareerRepository.create(dataToSave);
+        return savedSubjects;
+    }
+
+    adjustBySemester (subjects) {
+
+        return subjects.reduce(( acc, { subject, semester, phase, atRisk } ) => {
             const key  = semester - 1;
+            const { _id, name } = subject;
 
             if(!acc[key]) {
                 acc[key] = {
@@ -249,6 +293,87 @@ class AcademicCareerService {
 
     async findByUserId(userId) {
 
+        if(!ObjectId.isValid(userId)) {
+            throw this.createAppError('el alumno no valido, favor de verificarlo', 400);
+        }
+
+        const userIdMongo = ObjectId(userId);
+
+        const [ academicCareer ] = await this.academicCareerRepository.entity.aggregate([
+            { $match: { student: userIdMongo } },
+            { $unwind: { 'path': '$subjects' }},
+            { $lookup: {
+                from:'subjects',
+                localField: 'subjects.subject',
+                foreignField: '_id',
+                as: 'subjects.subject',
+                pipeline: [
+                    { $project: { name: 1 } }
+                ]
+            }},
+            { $unwind: { 'path': '$subjects.subject' }},
+            {
+                '$group': {
+                    '_id': '$_id', 
+                    'data': {
+                        '$push': '$$ROOT'
+                    },
+                }
+            },
+            { $project: {
+                _id: { $first: '$data._id' },
+                createdAt: { $first: '$data.createdAt' },
+                generationParams: { $first: '$data.generationParams' },
+                creatorUser: { $first: '$data.creatorUser' },
+                processStatus: { $first: '$data.processStatus' },
+                student: { $first: '$data.student' },
+                subjects: {
+                    $map: {
+                        input: '$data.subjects',
+                        as: 'subjects',
+                        in: {
+                                subject: '$$subjects.subject',
+                                phase: '$$subjects.phase',
+                                atRisk: '$$subjects.atRisk',
+                                semester: '$$subjects.semester',
+                        }
+                    }
+                }
+            }},
+            {
+                $lookup: {
+                    from: 'users',
+                    foreignField: "_id",
+                    localField: "student",
+                    pipeline: [ { $project: { _id: 1, name: 1, avatar: 1 }} ],
+                    as: "student"
+                },
+            },
+            { $unwind: "$student" },
+            {
+                $lookup: {
+                    from: 'users',
+                    foreignField: "_id",
+                    localField: "creatorUser",
+                    pipeline: [ { $project: { _id: 1, name: 1, avatar: 1 }} ],
+                    as: "creatorUser"
+                },
+            },
+            { $unwind: "$creatorUser" },
+        ]);
+
+        if(!academicCareer) {
+            return { academicCareer: null, unaddedSubjects: []};
+        }
+
+        const subjectsId = academicCareer.subjects.map(({subject}) => subject._id);
+        const unaddedSubjects = await this.subjectRepository.entity.aggregate([{
+            $match: { _id: { $nin: subjectsId }}
+        }]);
+
+        academicCareer.subjects = this.adjustBySemester( academicCareer.subjects );
+
+        return { academicCareer, unaddedSubjects };
     }
 
     async deleteByUserId(userId) {
