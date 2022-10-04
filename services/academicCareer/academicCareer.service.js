@@ -65,8 +65,6 @@ class AcademicCareerService {
         unapprovedSubjects.forEach((subject, idx) => {
         
             const {  requiredSubjects, semester } = subject;
-            
-            // const subtraction = Math.abs(semester - currentSemester);
             const isEquivalentSemester =  this.isEquivalentSemester(semester, currentSemester);
                         
             if(isEquivalentSemester && semester <= currentSemester ) {
@@ -91,8 +89,6 @@ class AcademicCareerService {
                     count ++;
                 }
             }
-
-            // return semester > currentSemester;
         });
 
         if(currentSemester === 13 || unapprovedSubjectsCopy.length === 0 ) {
@@ -107,6 +103,44 @@ class AcademicCareerService {
             amountOfSubjects
          });
 
+    }
+
+    adjustBySemester(subjects) {
+
+        const subjectsTree = subjects.reduce(( acc, { subject, semester, phase, atRisk } ) => {
+            const key  = semester - 1;
+            const { _id, name } = subject;
+
+            if(!acc[key]) {
+                acc[key] = {
+                    key: semester,
+                    data: {
+                        _id: semester,
+                        name: `Semester ${semester}`,
+                        phase: '',
+                        draggable: false,
+                        droppable: true,
+                    },
+                    children: []
+                };
+            }
+
+            acc[key]['children'].push({
+                key: _id,
+                data: {
+                    _id,
+                    name,
+                    phase, 
+                    atRisk: atRisk ?? '',
+                    draggable: true,
+                    droppable: false
+                }
+            });
+
+            return acc;
+        }, []);
+
+        return subjectsTree.filter(element => element);
     }
 
     async getCurrentSemester(userId) {
@@ -231,7 +265,7 @@ class AcademicCareerService {
             userId
         });
 
-        const { academicCareer, unaddedSubjects } = await this.findByUserId(userId);
+        const { academicCareer, unaddedSubjects } = await this.findById(userId);
 
         return { academicCareer, unaddedSubjects } ;
     }
@@ -271,16 +305,12 @@ class AcademicCareerService {
         userId,
     }) {
 
-        const preparedSubjects = subjects.reduce((acc, { _id, semester, phase, atRisk }) => {
-            acc.push({
-                subject: _id,
-                phase,
-                atRisk: atRisk || '',
-                semester
-            });
-
-            return acc;
-        },[]);
+        const preparedSubjects = subjects.map(({ _id, semester, phase, atRisk }) => ({
+            subject: _id,
+            phase,
+            atRisk: atRisk || '',
+            semester
+        }))
 
         const dataToSave = {
             student: userId,
@@ -298,49 +328,30 @@ class AcademicCareerService {
         return savedSubjects;
     }
 
-    adjustBySemester(subjects) {
-
-        return subjects.reduce(( acc, { subject, semester, phase, atRisk } ) => {
-            const key  = semester - 1;
-            const { _id, name } = subject;
-
-            if(!acc[key]) {
-                acc[key] = {
-                    key: semester,
-                    data: {
-                        _id: semester,
-                        name: `Semester ${semester}`,
-                        phase: '',
-                        draggable: false,
-                        droppable: true,
-                    },
-                    children: []
-                };
-            }
-
-            acc[key]['children'].push({
-                key: _id,
-                data: {
-                    _id,
-                    name,
-                    phase, 
-                    atRisk: atRisk ?? '',
-                    draggable: true,
-                    droppable: false
-                }
-            });
-
-            return acc;
-        }, []);
-    }
-
-    async findByUserId(userId) {
+    async findById(userId) {
 
         if(!ObjectId.isValid(userId)) {
             throw this.createAppError('el alumno no valido, favor de verificarlo', 400);
         }
 
         const userIdMongo = ObjectId(userId);
+
+        const student = await this.studentRepository.findOne({ user: userId }, { 
+            path:  'user',
+            select: '_id avatar name email gender'
+        }).lean();
+
+        if(!student) {
+            throw this.createAppError('No se encontro al estudiante', 400);
+        }
+
+        const response = {
+            ...student.user,
+            currentSemester: student.currentSemester,
+            enrollment: student.enrollment,
+            academicCareer: [], 
+            unaddedSubjects: [],
+        }
 
         const [ academicCareer ] = await this.academicCareerRepository.entity.aggregate([
             { $match: { student: userIdMongo } },
@@ -387,16 +398,6 @@ class AcademicCareerService {
                 $lookup: {
                     from: 'users',
                     foreignField: "_id",
-                    localField: "student",
-                    pipeline: [ { $project: { _id: 1, name: 1, avatar: 1 }} ],
-                    as: "student"
-                },
-            },
-            { $unwind: "$student" },
-            {
-                $lookup: {
-                    from: 'users',
-                    foreignField: "_id",
                     localField: "creatorUser",
                     pipeline: [ { $project: { _id: 1, name: 1, avatar: 1 }} ],
                     as: "creatorUser"
@@ -406,7 +407,7 @@ class AcademicCareerService {
         ]);
 
         if(!academicCareer) {
-            return { academicCareer: null, unaddedSubjects: []};
+            return response;
         }
 
         const subjectsId = academicCareer.subjects.map(({subject}) => subject._id);
@@ -416,7 +417,7 @@ class AcademicCareerService {
 
         academicCareer.subjects = this.adjustBySemester( academicCareer.subjects );
 
-        return { academicCareer, unaddedSubjects };
+        return { ...response, academicCareer, unaddedSubjects };
     }
 
     async update({ 
@@ -469,6 +470,45 @@ class AcademicCareerService {
             authenticatedUser,
             userId
         });
+
+    }
+
+    async findDataToExcel(userId) {
+
+        if(!ObjectId.isValid(userId)) {
+            throw this.createAppError('el alumno no valido, favor de verificarlo', 400);
+        }
+
+        const userIdMongo = ObjectId(userId);
+
+        const [ academicCareer ] = await this.academicCareerRepository.entity.aggregate([
+            { $match: { student: userIdMongo } },
+            { $unwind: { 'path': '$subjects' }},
+            { $lookup: {
+                from:'subjects',
+                localField: 'subjects.subject',
+                foreignField: '_id',
+                as: 'subjects.subject',
+                pipeline: [
+                    { $project: { name: 1 } }
+                ]
+            }},
+            { $unwind: { 'path': '$subjects.subject' }},
+            {
+                '$group': {
+                    '_id': '$_id', 
+                    'subjects': {
+                        '$push': '$subjects'
+                    },
+                }
+            },
+        ]);
+
+        if(!academicCareer) {
+            throw this.createAppError('No se encontro la trayectoria academica, favor de generarla', 400);
+        }
+
+        return  { academicCareer }
 
     }
 

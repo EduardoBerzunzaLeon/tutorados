@@ -48,7 +48,7 @@ class StudentService  {
             type: 'number',
         }];
 
-    gloablAggregation = [{
+    globalAggregation = [{
         $addFields: { lastProfessor: { $last: '$professorsHistory'}}
     },
    {
@@ -82,7 +82,7 @@ class StudentService  {
     }
 
     async find(query) {        
-        const aggregation= [...this.gloablAggregation,
+        const aggregation= [...this.globalAggregation,
            {
                $project: {
                     id: "$userData._id",
@@ -110,7 +110,7 @@ class StudentService  {
     }
     
     async findByExcel(query) {        
-        const aggregation= [...this.gloablAggregation,
+        const aggregation = [...this.globalAggregation,
            {
                $project: {
                     _id: 0,

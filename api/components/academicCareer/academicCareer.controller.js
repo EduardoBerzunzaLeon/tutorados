@@ -11,12 +11,11 @@ module.exports = ({
       service: AcademicCareerService,
     };
   
-
     const generate = (self) => async (req, res) => {
 
-      const { userId }= req.params;
+      const { id }= req.params;
 
-      const data = await self.service.generate({ ...req.body, userId, authenticatedUser: req.user._id });
+      const data = await self.service.generate({ ...req.body, userId: id, authenticatedUser: req.user._id });
       const dataSend = self.dto.single(data);
 
       return res.status(201).json({
@@ -27,11 +26,11 @@ module.exports = ({
     
     const update = (self) => async (req, res) => {
 
-      const { userId, subjectId }= req.params;
+      const { id, subjectId }= req.params;
 
       const data = await self.service.update({ 
         ...req.body, 
-        userId,
+        userId: id,
         subjectId,
         authenticatedUser: req.user._id
        });
@@ -43,14 +42,15 @@ module.exports = ({
         data: dataSend
       });
     }
-    
-
-    
 
     const methods = (self) => ({
       generate: self.catchAsync(generate(self)),
       update: self.catchAsync(update(self)),
-      findById: self.catchAsync(generate(self)),
+      findDataToExcel: self.catchAsync(FactoryController.findByMethod(
+        self.service.findDataToExcel.bind(AcademicCareerService),
+        self.dto.single.bind(AcademicCareerDTO)
+      )),
+      findByUserId: self.catchAsync(FactoryController.findById(self)),
     });
   
     return methods(self);

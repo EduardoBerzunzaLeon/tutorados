@@ -16,9 +16,10 @@ module.exports = function({
 
     router.use(protect);
 
-    router.get('/:userId', restrictTo(get_academic_career), AcademicCareerController.findById);
-    router.patch('/:userId/subject/:subjectId', restrictTo(update_academic_career), AcademicCareerController.update);
-    router.post('/:userId', restrictTo(create_academic_career), AcademicCareerController.generate);
+    router.get('/:id', restrictTo(get_academic_career), AcademicCareerController.findByUserId);
+    router.get('/:id/excel', restrictTo(get_academic_career), AcademicCareerController.findDataToExcel);
+    router.patch('/:id/subject/:subjectId', restrictTo(update_academic_career), AcademicCareerController.update);
+    router.post('/:id', restrictTo(create_academic_career), AcademicCareerController.generate);
 
     return router;
 }
