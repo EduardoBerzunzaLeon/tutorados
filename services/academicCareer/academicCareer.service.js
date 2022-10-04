@@ -33,7 +33,7 @@ class AcademicCareerService {
 
     }
 
-    addUniqueSubjectRisk ( subjects, { currentSemester, amountOfSubjects }) {
+    addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects }) {
         const position = subjects.length - 1;
         const lastSemester = subjects.length > 0 
             ? subjects[position].semester
@@ -51,23 +51,28 @@ class AcademicCareerService {
         return amountOfSubjects;
     }
 
+    isEquivalentSemester( semester, newSemester ) {
+        const subtraction = Math.abs(semester - newSemester);
+        return  subtraction % 2 === 0;
+    }
+
     calculateSubjects({ subjects, unapprovedSubjects, currentSemester, amountOfSubjects }) {
 
         const subjectsId = subjects.map(({ _id }) => (_id.toString()));
         const unapprovedSubjectsCopy = [ ...unapprovedSubjects ];
         let count = 0; 
-         
-        unapprovedSubjects.some((subject, idx) => {
-            
+        
+        unapprovedSubjects.forEach((subject, idx) => {
+        
             const {  requiredSubjects, semester } = subject;
-
-            const subtraction = Math.abs(semester - currentSemester);
-            const isEquivalentSemester =  subtraction % 2 === 0;
-
+            
+            // const subtraction = Math.abs(semester - currentSemester);
+            const isEquivalentSemester =  this.isEquivalentSemester(semester, currentSemester);
+                        
             if(isEquivalentSemester && semester <= currentSemester ) {
-                
+                    
                 const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
-
+                
                 if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
 
                     const { phase, atRisk } = this.addLastChanceRisk({ subject, currentSemester });
@@ -87,7 +92,7 @@ class AcademicCareerService {
                 }
             }
 
-            return semester > currentSemester;
+            // return semester > currentSemester;
         });
 
         if(currentSemester === 13 || unapprovedSubjectsCopy.length === 0 ) {
@@ -104,25 +109,23 @@ class AcademicCareerService {
 
     }
 
-    async generate({ 
-        subjectsInSemester, 
-        canAdvanceSubject, 
-        hasValidation, 
-        userId, 
-        authenticatedUser
-    }) {
+    async getCurrentSemester(userId) {
 
-        const userIdMongo = ObjectId(userId);
-        const student = await this.studentRepository.findOne({ user: userIdMongo }).lean();
-        
+        const student = await this.studentRepository.findOne({ user: userId }).lean();
+
         if(!student) {
             throw this.createAppError('No se encontro al estudiante', 400);
         }
 
         const { currentSemester } = student;
 
+        return currentSemester;
+    }
+
+    async getApprovedSubjects(userId) {
+
         const approvedSubjects = await this.subjectHistoryRepository.entity.aggregate([
-            { $match: { student: userIdMongo }},
+            { $match: { student: userId }},
             { $addFields: { lastPhase: { $last: '$phase' }}},
             {
                 $match: {
@@ -159,13 +162,15 @@ class AcademicCareerService {
             }
         ]);
 
-        const { subjects, ids } =  approvedSubjects.reduce((acc, { subject }) => {
+        return approvedSubjects.reduce((acc, { subject }) => {
             acc.subjects.push(subject);
             acc.ids.push(subject._id);
             return acc;
         }, { subjects: [], ids: [] });
+    }
 
-        const unapprovedSubjects = await this.subjectRepository.entity.aggregate([
+    async getUnapprovedSubjects(userId, ids) {
+        return await this.subjectRepository.entity.aggregate([
             { $match: { 
                 deprecated: false,
                 _id: { $nin: ids }
@@ -177,7 +182,7 @@ class AcademicCareerService {
                     foreignField: 'subject',
                     localField: '_id',
                     pipeline: [
-                        { $match: { student: userIdMongo }},
+                        { $match: { student: userId }},
                     ],
                     as: 'history'
                 }
@@ -191,6 +196,18 @@ class AcademicCareerService {
             }},
             { $sort: { semester: 1 }}
         ]);
+    }
+
+    async createAcademicCareer({
+        subjects,
+        unapprovedSubjects,
+        currentSemester,
+        subjectsInSemester, 
+        canAdvanceSubject,  
+        hasValidation,
+        authenticatedUser,
+        userId
+    }) {
 
         const { subjects: calculatedSubjects } = this.calculateSubjects({ 
             subjects, 
@@ -203,9 +220,10 @@ class AcademicCareerService {
             throw this.createAppError('No se pudo generar la trayectoria academica', 500);
         }
 
-        await this.academicCareerRepository.deleteOne({ student: userIdMongo });
+        await this.academicCareerRepository.deleteOne({ student: ObjectId(userId) });
+
         await this.saveSubjects({
-            calculatedSubjects, 
+            subjects: calculatedSubjects, 
             subjectsInSemester, 
             canAdvanceSubject,  
             hasValidation,
@@ -215,17 +233,42 @@ class AcademicCareerService {
 
         const { academicCareer, unaddedSubjects } = await this.findByUserId(userId);
 
-        return  { academicCareer, unaddedSubjects } ;
+        return { academicCareer, unaddedSubjects } ;
     }
 
-    async saveSubjects ({
+    async generate({ 
+        subjectsInSemester, 
+        canAdvanceSubject, 
+        hasValidation, 
+        userId, 
+        authenticatedUser
+    }) {
+
+        const userIdMongo = ObjectId(userId);
+        const currentSemester = await this.getCurrentSemester(userIdMongo);
+        const { subjects, ids } = await this.getApprovedSubjects(userIdMongo);
+        const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, ids);
+
+        return await this.createAcademicCareer({
+            subjects,
+            unapprovedSubjects,
+            currentSemester,
+            subjectsInSemester, 
+            canAdvanceSubject,  
+            hasValidation,
+            authenticatedUser,
+            userId
+        });
+    }
+
+    async saveSubjects({
         subjects, 
         subjectsInSemester, 
         canAdvanceSubject,  
         hasValidation,
+        processStatus = 'generado',
         authenticatedUser,
         userId,
-        processStatus = 'generado',
     }) {
 
         const preparedSubjects = subjects.reduce((acc, { _id, semester, phase, atRisk }) => {
@@ -255,7 +298,7 @@ class AcademicCareerService {
         return savedSubjects;
     }
 
-    adjustBySemester (subjects) {
+    adjustBySemester(subjects) {
 
         return subjects.reduce(( acc, { subject, semester, phase, atRisk } ) => {
             const key  = semester - 1;
@@ -376,7 +419,56 @@ class AcademicCareerService {
         return { academicCareer, unaddedSubjects };
     }
 
-    async deleteByUserId(userId) {
+    async update({ 
+        userId, 
+        subjectId, 
+        newSemester, 
+        authenticatedUser,
+        subjectsInSemester, 
+        canAdvanceSubject,  
+        hasValidation,
+     }) {
+
+        const userIdMongo = ObjectId(userId);
+        const currentSemester = await this.getCurrentSemester(userId);
+
+        if(newSemester < currentSemester ) {
+            throw this.createAppError('El semestre de la materia no puede ser menor al semestre actual del alumno', 400);
+        }
+
+        const subject = await this.subjectRepository.findById(subjectId).lean();
+
+        if(!subject) {
+            throw this.createAppError('No se encontro la materia', 400);
+        }
+
+        const isEquivalentSemester =  this.isEquivalentSemester(subject.semester, newSemester);
+
+        if(!isEquivalentSemester) {
+            throw this.createAppError('El nuevo semestre no es un semestre equivalente', 400);
+        }
+
+        const { subjects, ids } = await this.getApprovedSubjects(userIdMongo);
+
+        if(ids.includes(ObjectId(subjectId))) {
+            throw this.createAppError('No puede actualizar una materia que ya a sido aprobada o este cursando', 400);
+        }
+        
+        const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, ids);
+
+        const subjectIdx = unapprovedSubjects.findIndex(({ _id }) => _id.toString() === subjectId);
+        unapprovedSubjects[subjectIdx].semester = newSemester;
+
+        return await this.createAcademicCareer({
+            subjects,
+            unapprovedSubjects,
+            currentSemester,
+            subjectsInSemester, 
+            canAdvanceSubject,  
+            hasValidation,
+            authenticatedUser,
+            userId
+        });
 
     }
 
