@@ -265,9 +265,7 @@ class AcademicCareerService {
             userId
         });
 
-        const { academicCareer, unaddedSubjects } = await this.findById(userId);
-
-        return { academicCareer, unaddedSubjects } ;
+        return await this.findById(userId);
     }
 
     async generate({ 
@@ -349,7 +347,7 @@ class AcademicCareerService {
             ...student.user,
             currentSemester: student.currentSemester,
             enrollment: student.enrollment,
-            academicCareer: [], 
+            academicCareer: undefined, 
             unaddedSubjects: [],
         }
 

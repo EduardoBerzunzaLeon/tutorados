@@ -4,10 +4,6 @@ class StudentDTO {
       this.ucwords = features.ucWords;
       this.getCompleteURLAvatar = features.getCompleteURLAvatar;
     }
-    
-    getCompleteURLAvatar = (avatar) => (avatar.startsWith('http')) 
-      ? avatar 
-      : `${process.env.PATH_STATIC_FILES}${avatar}`;
   
     single = (resource) => ({
       id: resource.id,

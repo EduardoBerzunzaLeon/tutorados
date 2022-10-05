@@ -1,25 +1,37 @@
 class AcademicCareerDTO {
 
-    constructor() {
+    constructor({ features }) {
+      this.ucwords = features.ucWords;
+      this.getCompleteURLAvatar = features.getCompleteURLAvatar;
     }
   
-    single = (resource) => resource;
-    // single = (resource) => ({
-    //   key: resource._id.toString() ,
-    //   data: {
-    //     subject: `Semestre ${resource.semester}`,
-    //     status: '',
-    //     step: ''
-    //   },
-    //   children: resource.subjects.map( ({ subject, phaseStatus, step }) => ({
-    //     key: `${subject._id} - ${ resource._id }`,
-    //     data: {
-    //       subject: subject.name,
-    //       status: phaseStatus,
-    //       step: step,
-    //     },
-    //   }))
-    // });
+    single = (resource) => ({
+      _id: resource._id,
+      name: {
+        first: this.ucwords(resource.name.first),
+        last: this.ucwords(resource.name.last),
+      },
+      email: resource?.email,
+      active: resource?.active,
+      gender: resource?.gender,
+      avatar: resource?.avatar && this.getCompleteURLAvatar(resource?.avatar),
+      currentSemester: resource?.currentSemester,
+      enrollment: resource?.enrollment,
+      academicCareer: !resource.academicCareer || {
+        ...resource.academicCareer,
+        creatorUser: {
+          _id: resource?.academicCareer.creatorUser._id,
+          name: {
+            first: this.ucwords(resource.academicCareer.creatorUser.name.first),
+            last: this.ucwords(resource.academicCareer.creatorUser.name.last),
+          },
+          avatar: resource.academicCareer.creatorUser?.avatar && this.getCompleteURLAvatar(resource.academicCareer.creatorUser?.avatar),
+        }
+      },
+      subjects: resource.subjects,
+      unaddedSubjects: resource.unaddedSubjects
+    });
+
 
    
     multiple = (resources) => {
