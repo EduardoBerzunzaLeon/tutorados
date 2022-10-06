@@ -17,17 +17,17 @@ class AcademicCareerDTO {
       avatar: resource?.avatar && this.getCompleteURLAvatar(resource?.avatar),
       currentSemester: resource?.currentSemester,
       enrollment: resource?.enrollment,
-      academicCareer: !resource.academicCareer || {
+      academicCareer: resource.academicCareer ? {
         ...resource.academicCareer,
         creatorUser: {
-          _id: resource?.academicCareer.creatorUser._id,
+          createdAt: resource.academicCareer.createdAt,
           name: {
             first: this.ucwords(resource.academicCareer.creatorUser.name.first),
             last: this.ucwords(resource.academicCareer.creatorUser.name.last),
           },
           avatar: resource.academicCareer.creatorUser?.avatar && this.getCompleteURLAvatar(resource.academicCareer.creatorUser?.avatar),
         }
-      },
+      } : undefined,
       subjects: resource.subjects,
       unaddedSubjects: resource.unaddedSubjects
     });
