@@ -265,7 +265,7 @@ class AcademicCareerService {
             userId
         });
 
-        return await this.findById(userId);
+        // return await this.findById(userId);
     }
 
     async generate({ 
@@ -500,13 +500,64 @@ class AcademicCareerService {
                     },
                 }
             },
+            {
+                $project: {
+                    subjects: {
+                        $map: {
+                            input: '$subjects',
+                            as: 'subjects',
+                            in: {
+                                subject: '$$subjects.subject.name',
+                                atRisk: '$$subjects.atRisk',
+                                semester: '$$subjects.semester',
+                                firstPhase: {
+                                    $let: {
+                                        vars: {
+                                           fstCustomer: { $arrayElemAt: [ '$$subjects.phase', 0 ] }                
+                                        },
+                                        in: { $concat: [
+                                            '$$fstCustomer.phaseStatus', 
+                                            ' en el semestre ' , 
+                                            { $convert: { input: '$$fstCustomer.semester', to: 'string' }}
+                                        ]}
+                                     },
+                                },
+                                secondPhase: {
+                                    $let: {
+                                        vars: {
+                                           fstCustomer: { $arrayElemAt: [ '$$subjects.phase', 1 ] }                
+                                        },
+                                        in: { $concat: [
+                                            '$$fstCustomer.phaseStatus', 
+                                            ' en el semestre ' , 
+                                            { $convert: { input: '$$fstCustomer.semester', to: 'string' }}
+                                        ]}
+                                     },
+                                },
+                                thirdPhase: {
+                                    $let: {
+                                        vars: {
+                                           fstCustomer: { $arrayElemAt: [ '$$subjects.phase', 2 ] }                
+                                        },
+                                        in: { $concat: [
+                                            '$$fstCustomer.phaseStatus', 
+                                            ' en el semestre ' , 
+                                            { $convert: { input: '$$fstCustomer.semester', to: 'string' }}
+                                        ]}
+                                     },
+                                },
+                            }
+                        }
+                    }
+                }
+            }
         ]);
 
-        if(!academicCareer) {
+        if(!academicCareer.subjects) {
             throw this.createAppError('No se encontro la trayectoria academica, favor de generarla', 400);
         }
 
-        return  { academicCareer }
+        return  academicCareer.subjects;
 
     }
 

@@ -32,10 +32,23 @@ class AcademicCareerDTO {
       unaddedSubjects: resource.unaddedSubjects
     });
 
-
-   
+    
+    
     multiple = (resources) => {
       return resources.map((resource) => this.single(resource));
+    };
+    
+    singleExcel = ({ subject, atRisk, semester, firstPhase, secondPhase, thirdPhase }) => ({
+      subject,
+      atRisk,
+      semester,
+      firstPhase: firstPhase || '',
+      secondPhase: secondPhase || '',
+      thirdPhase: thirdPhase || '',
+    });
+
+    multipleExcel = (resources) => {
+      return resources.map((resource) => this.singleExcel(resource));
     };
   }
   

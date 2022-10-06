@@ -14,32 +14,25 @@ module.exports = ({
     const generate = (self) => async (req, res) => {
 
       const { id }= req.params;
-
-      const data = await self.service.generate({ ...req.body, userId: id, authenticatedUser: req.user._id });
-      const dataSend = self.dto.single(data);
+      await self.service.generate({ ...req.body, userId: id, authenticatedUser: req.user._id });
 
       return res.status(201).json({
         status: 'success',
-        data: dataSend
       });
     }
     
     const update = (self) => async (req, res) => {
 
       const { id, subjectId }= req.params;
-
-      const data = await self.service.update({ 
+      await self.service.update({ 
         ...req.body, 
         userId: id,
         subjectId,
         authenticatedUser: req.user._id
        });
-       
-      const dataSend = self.dto.single(data);
 
       return res.status(201).json({
         status: 'success',
-        data: dataSend
       });
     }
 
@@ -48,7 +41,7 @@ module.exports = ({
       update: self.catchAsync(update(self)),
       findDataToExcel: self.catchAsync(FactoryController.findByMethod(
         self.service.findDataToExcel.bind(AcademicCareerService),
-        self.dto.single.bind(AcademicCareerDTO)
+        self.dto.multipleExcel.bind(AcademicCareerDTO)
       )),
       findByUserId: self.catchAsync(FactoryController.findById(self)),
     });

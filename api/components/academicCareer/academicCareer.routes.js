@@ -18,7 +18,7 @@ module.exports = function({
 
     router.get('/:id', restrictTo(get_academic_career), AcademicCareerController.findByUserId);
     router.get('/:id/excel', restrictTo(get_academic_career), AcademicCareerController.findDataToExcel);
-    router.patch('/:id/subject/:subjectId', restrictTo(update_academic_career), AcademicCareerController.update);
+    router.put('/:id/subject/:subjectId', restrictTo(update_academic_career), AcademicCareerController.update);
     router.post('/:id', restrictTo(create_academic_career), AcademicCareerController.generate);
 
     return router;

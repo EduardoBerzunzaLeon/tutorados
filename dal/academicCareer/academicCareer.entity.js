@@ -38,11 +38,6 @@ const AcademicCareerSchema = new Schema({
           default: true
       }
     },
-    createdAt: {
-        type: Date,
-        default: Date.now(),
-        select: false,
-    },
     creatorUser: {
         type: Schema.ObjectId,
         ref: 'User',
@@ -81,6 +76,11 @@ const AcademicCareerSchema = new Schema({
                 }
             }
         ] 
+}, {
+    timestamps: {
+        createdAt: 'createdAt', 
+        updatedAt: 'updatedAt' 
+    }
 });
 
 
