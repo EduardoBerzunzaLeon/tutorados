@@ -11,7 +11,7 @@ const validPhaseStatus = {
 };
 
 
-const AcademicCareerSchema = new Schema({
+const academicCareerSchema = new Schema({
     student: {
         type: Schema.ObjectId,
         ref: 'User',
@@ -84,4 +84,4 @@ const AcademicCareerSchema = new Schema({
 });
 
 
-module.exports = model('AcademicCareer', AcademicCareerSchema);
+module.exports = model('AcademicCareer', academicCareerSchema);
