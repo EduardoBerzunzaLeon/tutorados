@@ -50,6 +50,13 @@ const ACADEMIC_CAREER_PERMISSIONS = {
     create_academic_career: [Admin, Professor],
 }
 
+const SCHOOL_YEAR_PERMISSIONS = {
+    get_school_year:  [Admin, Reader, Professor],
+    delete_school_year: [Admin, Professor],
+    update_school_year: [Admin, Professor],
+    create_school_year: [Admin, Professor],
+}
+
 const SEED_PERMISSIONS = {
     load_seeds: [Admin]
 }
@@ -63,6 +70,7 @@ const PERMISSIONS_LIST = {
     seed: SEED_PERMISSIONS,
     subjectHistory: SUBJECT_HISTORY_PERMISSIONS,
     academicCareer: ACADEMIC_CAREER_PERMISSIONS,
+    schoolYear: SCHOOL_YEAR_PERMISSIONS,
 }
 
 module.exports = PERMISSIONS_LIST;
