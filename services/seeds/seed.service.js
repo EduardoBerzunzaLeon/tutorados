@@ -11,6 +11,7 @@ class SeedService {
       CourseRepository, 
       SubjectRepository, 
       SubjectHistoryRepository, 
+      SchoolYearRepository,
       createAppError,
       getEnviroment
     }) {
@@ -20,6 +21,7 @@ class SeedService {
         this.courseRepository = CourseRepository;
         this.subjectRepository = SubjectRepository;
         this.subjectHistoryRepository = SubjectHistoryRepository;
+        this.schoolYearRepository = SchoolYearRepository;
         this.createAppError = createAppError;
         this.enviroment = getEnviroment;
     }
@@ -37,44 +39,8 @@ class SeedService {
             this.courseRepository.deleteAll(),
             this.subjectRepository.deleteAll(),
             this.subjectHistoryRepository.deleteAll(),
+            this.schoolYearRepository.deleteAll(),
         ]);
-        
-        // const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8')).map( user => ({
-        //     ...user,
-        //     _id: ObjectId(user._id["$oid"])
-        // }));
-    
-
-        // const professors = JSON.parse(fs.readFileSync(`${__dirname}/professors.json`, 'utf-8')).map( professor => ({
-        //     ...professor,
-        //     professor: ObjectId(professor.user),
-        //     _id: ObjectId(professor._id),
-        //     subjects: professor.subjects.map( subject => ObjectId(subject))
-        // }));
-
-        // const subjects = JSON.parse(fs.readFileSync(`${__dirname}/subjects.json`, 'utf-8')).map( subject => ({
-        //     ...subject,
-        //     _id: ObjectId(subject._id['$oid']),
-        //     requiredSubjects: subject.requiredSubjects.map( requiredSubject  => ObjectId(requiredSubject['$oid']))
-        // }));
-
-
-        // const students = JSON.parse(fs.readFileSync(`${__dirname}/students.json`, 'utf-8')).map( student => ({
-        //     ...student,
-        //     _id: ObjectId(student._id['$oid']),
-        //     user: ObjectId(student.user['$oid']),
-        //     professorsHistory: student.professorsHistory.map( professor => ({
-        //         ...professor,
-        //         _id: ObjectId(professor._id['$oid']),
-        //         professor: ObjectId(professor.professor['$oid']),
-        //     }))
-        // }));
-        
-        // const courses = JSON.parse(fs.readFileSync(`${__dirname}/courses.json`, 'utf-8')).map( course => ({
-        //     ...course, 
-        //     _id: ObjectId(course._id['$oid']),
-        //     professor: ObjectId(course.professor['$oid']),
-        // }));
     
         const users = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8')) );
         const professors = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/professors.json`, 'utf-8')) );
@@ -82,7 +48,7 @@ class SeedService {
         const students = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/students.json`, 'utf-8')) );
         const courses = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/courses.json`, 'utf-8')) );
         const subjectsHistory = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/subjectHistory.json`, 'utf-8')) );
-
+        const schoolYear = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/schoolYear.json`, 'utf-8')) );
 
         await this.userRepository.create( users, { validateBeforeSave: false, forceServerObjectId: true });
         await this.subjectRepository.create( subjects, { validateBeforeSave: false });
@@ -90,12 +56,12 @@ class SeedService {
         await this.studentRepository.create( students, { validateBeforeSave: false });
         await this.courseRepository.create( courses, { validateBeforeSave: false });
         await this.subjectHistoryRepository.create( subjectsHistory, { validateBeforeSave: false });
+        await this.schoolYearRepository.create( schoolYear, { validateBeforeSave: false });
 
     }
   
     setToObjectID( element ) {
 
-        
         if( typeof element !== 'object' && !Array.isArray(element) ) {
             return;           
         }
@@ -127,9 +93,6 @@ class SeedService {
         } 
 
         return accu;
-        
-
-
     }
 
   }

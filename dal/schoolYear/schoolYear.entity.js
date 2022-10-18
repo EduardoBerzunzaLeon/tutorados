@@ -6,7 +6,7 @@ const validPhaseStatus = {
 };
 
 const schoolYearSchema = new Schema({
-    schoolYear: {
+    period: {
         start: {
             type: Number,
             required: [ true, 'El inicio del ciclo escolar es obligatorio' ]
