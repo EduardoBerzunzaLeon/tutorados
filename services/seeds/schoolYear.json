@@ -1,0 +1,22 @@
+[{
+    "_id": {
+        "$oid": "634df557e59ddc9f48dc04c5"
+    },
+    "period": {
+        "start": 2022,
+        "end": 2023
+    },
+    "firstPhase": {
+        "user": {
+            "$oid": "608064aa1d7963091081ab5d"
+          },
+          "status": "generado"
+    },
+    "secondPhase" : {
+        "status": "no generado"
+    },
+    "isCurrent": true,
+    "beforeSchoolYear": {
+        "$oid": "634df557e59ddc9f48dc04c5"
+    }
+}]

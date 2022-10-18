@@ -21,6 +21,7 @@ const { ProfessorController, ProfessorDTO, professorRoutes } = require('../compo
 const { StudentController, StudentDTO, studentRoutes } = require('../components/students');
 const { SubjectHistoryController, SubjectHistoryDTO, subjectHistoryRoutes } = require('../components/subjectHistory');
 const { AcademicCareerController, AcademicCareerDTO, academicCareerRoutes } = require('../components/AcademicCareer');
+const { SchoolYearController, SchoolYearDTO, schoolYearRoutes } = require('../components/schoolYear');
 const { SeedController, seedRoutes } = require('../components/seeds');
 const { AuthController } = require('../components/auth');
 
@@ -59,6 +60,7 @@ const FileService = require('../../services/files/file.service');
 const SeedService = require('../../services/seeds/seed.service');
 const SubjectHistoryService = require('../../services/subjectHistory/subjectHistory.service');
 const AcademicCareerService = require('../../services/academicCareer/academicCareer.service');
+const SchoolYearService = require('../../services/SchoolYear/SchoolYear.service');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 
@@ -67,10 +69,10 @@ const { UserRepository, UserEntity } = require('../../dal/users');
 const { SubjectRepository, SubjectEntity } = require('../../dal/subjects');
 const { CourseRepository, CourseEntity } = require('../../dal/courses');
 const { ProfessorRepository, ProfessorEntity } = require('../../dal/professors');
-
-const { AcademicCareerRepository, AcademicCareerEntity } = require('../../dal/academicCareer');
 const { StudentRepository, StudentEntity } = require('../../dal/students');
 const { SubjectHistoryRepository, SubjectHistoryEntity } = require('../../dal/subjectHistory');
+const { AcademicCareerRepository, AcademicCareerEntity } = require('../../dal/academicCareer');
+const { SchoolYearRepository, SchoolYearEntity } = require('../../dal/schoolYear');
 
 const container = createContainer();
 
@@ -156,6 +158,15 @@ container
     academicCareerRoutes: asFunction(academicCareerRoutes).singleton(),
     AcademicCareerDTO: asClass(AcademicCareerDTO).singleton(),
     AcademicCareerService: asClass(AcademicCareerService).singleton(),
+  })
+  // * School Year
+  .register({
+    SchoolYearRepository: asClass(SchoolYearRepository).singleton(),
+    SchoolYearEntity: asValue(SchoolYearEntity),
+    SchoolYearController: asFunction(SchoolYearController).singleton(),
+    schoolYearRoutes: asFunction(schoolYearRoutes).singleton(),
+    SchoolYearDTO: asClass(SchoolYearDTO).singleton(),
+    SchoolYearService: asClass(SchoolYearService).singleton(),
   })
   // * Student
   .register({
