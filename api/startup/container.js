@@ -47,6 +47,7 @@ const {
   handlerErrors,
   authMiddleware,
   uploadSingleFile,
+  uploadMultiplesFiles,
 } = require('../middlewares');
 
 // * Services
@@ -108,6 +109,7 @@ container
     handlerErrors: asFunction(handlerErrors),
     AuthMiddleware: asFunction(authMiddleware).singleton(),
     UploadSingleFile: asFunction(uploadSingleFile).singleton(),
+    UploadMultiplesFiles: asFunction(uploadMultiplesFiles).singleton(),
   })
   // Factory Controller
   .register({

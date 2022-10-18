@@ -3,4 +3,5 @@ module.exports = {
   handlerErrors: require('./handlerErrors.middleware'),
   authMiddleware: require('./auth.middleware'),
   uploadSingleFile: require('./uploadFiles.middleware'),
+  uploadMultiplesFiles: require('./uploadMultipleFiles.middleware'),
 };
