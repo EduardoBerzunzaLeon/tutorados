@@ -2,10 +2,12 @@
 class SchoolYearService {
     constructor({
         SchoolYearRepository,
+        SubjectsForSchoolYearService,
         createAppError,
         features,
     }) {
         this.schoolYearRepository = SchoolYearRepository;
+        this.subjectsForSchoolYearService = SubjectsForSchoolYearService;
         this.createAppError = createAppError;
         this.isEmpty = features.isEmptyObject;
     }
@@ -59,17 +61,6 @@ class SchoolYearService {
         }
     }
 
-    manipulateFiles(files) {
-        if(files.length != 2) {
-            throw this.createAppError('El archivo de bajas y nueva carga academica son requeridos', 500);
-        }
-        const [ failureSubjects, newSubjectsTaked ] = files;
-        const decodedFailure = Buffer.from(failureSubjects.buffer, 'base64').toString('ascii');
-        const decodedNew = Buffer.from(newSubjectsTaked.buffer, 'base64').toString('ascii');
-        
-        // TODO: Implements to read data and save in DB
-    }
-
     async create({ authenticatedUser, files }) {
     
 
@@ -79,7 +70,8 @@ class SchoolYearService {
             throw this.createAppError('No se encontro un ciclo escolar vigente', 404);
         }
 
-        this.manipulateFiles(files);
+        const loadedData = this.subjectsForSchoolYearService.loadData(files);
+        console.log(loadedData);
 
         if( current.secondPhase.status === 'no generado' ) {
             await this.close(authenticatedUser);
