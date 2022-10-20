@@ -61,7 +61,8 @@ const FileService = require('../../services/files/file.service');
 const SeedService = require('../../services/seeds/seed.service');
 const SubjectHistoryService = require('../../services/subjectHistory/subjectHistory.service');
 const AcademicCareerService = require('../../services/academicCareer/academicCareer.service');
-const SchoolYearService = require('../../services/SchoolYear/SchoolYear.service');
+const SchoolYearService = require('../../services/schoolYear/SchoolYear.service');
+const SubjectsForSchoolYearService = require('../../services/schoolYear/subjectsForSchoolYear.service');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 
@@ -74,6 +75,8 @@ const { StudentRepository, StudentEntity } = require('../../dal/students');
 const { SubjectHistoryRepository, SubjectHistoryEntity } = require('../../dal/subjectHistory');
 const { AcademicCareerRepository, AcademicCareerEntity } = require('../../dal/academicCareer');
 const { SchoolYearRepository, SchoolYearEntity } = require('../../dal/schoolYear');
+const { CurrentSubjectsRepository, CurrentSubjectsEntity } = require('../../dal/currentSubjects');
+const { FailedSubjectsRepository, FailedSubjectsEntity } = require('../../dal/failedSubjects');
 
 const container = createContainer();
 
@@ -169,6 +172,7 @@ container
     schoolYearRoutes: asFunction(schoolYearRoutes).singleton(),
     SchoolYearDTO: asClass(SchoolYearDTO).singleton(),
     SchoolYearService: asClass(SchoolYearService).singleton(),
+    SubjectsForSchoolYearService: asClass(SubjectsForSchoolYearService).singleton(),
   })
   // * Student
   .register({
@@ -187,6 +191,16 @@ container
     SubjectHistoryRepository: asClass(SubjectHistoryRepository).singleton(),
     SubjectHistoryEntity: asValue(SubjectHistoryEntity),
     SubjectHistoryService: asClass(SubjectHistoryService).singleton(),
+  })
+  // * Current Subjects
+  .register({
+    CurrentSubjectsRepository: asClass(CurrentSubjectsRepository).singleton(),
+    CurrentSubjectsEntity: asValue(CurrentSubjectsEntity),
+  })
+  // * Failed Subjects
+  .register({
+    FailedSubjectsRepository: asClass(FailedSubjectsRepository).singleton(),
+    FailedSubjectsEntity: asValue(FailedSubjectsEntity),
   })
   // * Files
   .register({

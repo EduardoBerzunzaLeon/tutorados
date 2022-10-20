@@ -8,7 +8,6 @@ const validErrors = {
 const currentSubjectsSchema = new Schema({
     enrollment: {
         type: String,
-        unique: true,
         lowercase: true,
         trim: true,
         required: [ true, 'La matricula es obligatoria' ]
@@ -22,8 +21,14 @@ const currentSubjectsSchema = new Schema({
     },
     schoolYear: {
         period: {
-            type: Schema.ObjectId,
-            ref: 'SchoolYear',
+            start: {
+                type: Number,
+                required: [ true, 'El inicio del ciclo escolar es obligatorio' ]
+            },
+            end: {
+                type: Number,
+                required: [ true, 'El fin del ciclo escolar es obligatorio' ]
+            }
         },
         phase: {
             type: Number,

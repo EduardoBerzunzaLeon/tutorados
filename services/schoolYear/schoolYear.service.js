@@ -70,15 +70,14 @@ class SchoolYearService {
             throw this.createAppError('No se encontro un ciclo escolar vigente', 404);
         }
 
-        const loadedData = this.subjectsForSchoolYearService.loadData(files);
-        console.log(loadedData);
+        this.subjectsForSchoolYearService.loadData(files, current);
 
-        if( current.secondPhase.status === 'no generado' ) {
-            await this.close(authenticatedUser);
-        } else {
-            const { period, _id } = current;
-            await this.addNewSchoolYear({ authenticatedUser, period, _id });
-        }
+        // if( current.secondPhase.status === 'no generado' ) {
+        //     await this.close(authenticatedUser);
+        // } else {
+        //     const { period, _id } = current;
+        //     await this.addNewSchoolYear({ authenticatedUser, period, _id });
+        // }
     }
 
     async findCurrentSchoolYear() {
