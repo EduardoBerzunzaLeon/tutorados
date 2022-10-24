@@ -1,7 +1,11 @@
 const { Schema, model } = require('mongoose');
 
 const validErrors = {
-    values: ['Materia no encontrada', 'Alumno no encontrado'],
+    values: [
+        'Materia no encontrada', 
+        'Materia no valida', 
+        'Alumno no encontrado',
+    ],
     message: '{VALUE} no es un error válido'
 };
 
