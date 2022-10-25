@@ -14,8 +14,11 @@ const isEmptyObject = ( object ) => {
     return true;
 }
 
+const decodeFileToString = (file, base = 'base64') =>  Buffer.from(file.buffer, base).toString()
+
 module.exports = {
     ucWords,
     getCompleteURLAvatar,
     isEmptyObject,
+    decodeFileToString,
 }

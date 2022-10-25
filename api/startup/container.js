@@ -62,7 +62,7 @@ const SeedService = require('../../services/seeds/seed.service');
 const SubjectHistoryService = require('../../services/subjectHistory/subjectHistory.service');
 const AcademicCareerService = require('../../services/academicCareer/academicCareer.service');
 const SchoolYearService = require('../../services/schoolYear/SchoolYear.service');
-const SubjectsForSchoolYearService = require('../../services/schoolYear/subjectsForSchoolYear.service');
+const SubjectsForSchoolYearService = require('../../services/schoolYearProcess/subjectsForSchoolYear.service');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 

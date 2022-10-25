@@ -352,7 +352,7 @@ class SubjectHistoryService  {
     }
 
     async updatePhase({ phaseId, phaseStatus, date, semester }) {
-        
+    
         const { phase, mongoId, subject, user } = await this.validBeforeSavePhase(phaseId, phaseStatus, semester, 'phase._id' );
 
         const { length } = phase;
