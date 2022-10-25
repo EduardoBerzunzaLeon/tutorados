@@ -137,14 +137,9 @@ class SubjectsForSchoolYearService {
                     }
                 },
                 { $match: { "subject": { $eq: [] } }},
-                {
-                    $group:{ _id: null, ids: { $push: "$_id" }}
-                },
-                {
-                    $project:{ ids: true , _id: false }
-                }
+                { $group:{ _id: null, ids: { $push: "$_id" }} },
+                { $project:{ ids: true , _id: false } }
              ]);
-
              
              if(subjects.length > 0 ) {
 
@@ -173,23 +168,20 @@ class SubjectsForSchoolYearService {
                     }
                 },
                 { $match: { "student": { $eq: [] } }},
-                {
-                    $group:{ _id: null, ids: { $push: "$_id" }}
-                },
-                {
-                    $project:{ ids: true , _id: false }
-                }
-                ]);
+                { $group:{ _id: null, ids: { $push: "$_id" }} },
+                { $project:{ ids: true , _id: false } }
+            ]);
 
-                if(students.length > 0 ) {
+            if(students.length > 0 ) {
+                const [{ ids }] = students;
+                await this.failedSubjectsRepository.updateMany(
+                    { _id: { "$in": ids} },
+                    { error: 'Alumno no encontrado' }
+                    );
+            }
 
-                    const [{ ids }] = students;
-   
-                    await this.failedSubjectsRepository.updateMany(
-                       { _id: { "$in": ids} },
-                       { error: 'Alumno no encontrado' }
-                     );
-                }
+            // TODO: if some student is marked with some error, we need to return an error
+
 
             const currentSubjects = await this.failedSubjectsRepository.entity.aggregate([
                 {
@@ -216,56 +208,54 @@ class SubjectsForSchoolYearService {
                         'as': 'subject'
                     }
                 },
-                { $unwind: '$subjects' },
+                { $unwind: '$subject' },
                 {
                     $lookup: {
                         from: 'subjecthistories',
                         foreignField: 'student',
                         localField: 'student',
-                        pipiline: [{ $match: { subject: '$subject' } }],
+                        pipeline: [{ $match: { subject: '$subject' } }],
                         as: 'subjectHistory'
                     }
                 },
-                { $unwind:  '$subjectHistory', preserveNullAndEmptyArrays: true },
+                { $unwind: { path: "$subjectHistory", preserveNullAndEmptyArrays: true }},
                 {
                     $addFields: { 
                         phase: {
                             $cond: {
-                                $if: {
+                                if: {
                                     $and: [
-                                        { isArray: "subjectHistory" },
-                                        { '$subjectHistory': { $ne: [] }}  
+                                        { isArray: "$subjectHistory" },
+                                        { 'subjectHistory': { $ne: [] }}  
                                     ]
                                 },
-                                then: { $last: 'subjectHistory.phase' },
+                                then: { $last: '$subjectHistory.phase' },
                                 else: undefined
                             }
                         }
                     }
                 },
-                {
-                    $match: {
-                        '$phase': { $exists: true },
-                        '$phase.phaseStatus': 'cursando' 
-                    }
-                },
-                {
-                    $group:{ _id: null, ids: { $push: "$_id" }}
-                },
-                {
-                    $project:{ ids: true , _id: false }
-                }
-                ]);
+                // {
+                //     $match: {
+                //         '$phase': { $exists: true },
+                //         '$phase.phaseStatus': 'cursando' 
+                //     }
+                // },
+                // { $group:{ _id: null, ids: { $push: "$_id" }} },
+                // { $project:{ ids: true , _id: false } }
+            ]);
 
-                if(currentSubjects.length > 0 ) {
+            console.log(currentSubjects);
 
-                    const [{ ids }] = currentSubjects;
-   
-                    await this.failedSubjectsRepository.updateMany(
-                       { _id: { "$nin": ids} },
-                       { error: 'Materia no existe en su carga actual' }
-                     );
-                }
+            if(currentSubjects.length > 0 ) {
+
+                const [{ ids }] = currentSubjects;
+
+                await this.failedSubjectsRepository.updateMany(
+                    { _id: { "$nin": ids} },
+                    { error: 'Materia no existe en su carga actual' }
+                    );
+            }
 
         } catch (error) {
             console.log(error);

@@ -47,6 +47,28 @@
         "$oid": "62b76453f531ac361428255f"
     },
     "subject": {
+        "$oid": "6282f293cd87677f88ffcb1a"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "cursando",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 2
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "62b76453f531ac361428255f"
+    },
+    "subject": {
         "$oid": "629a3a34afdb9840f0eadee3"
     },
     "createdAt": {
