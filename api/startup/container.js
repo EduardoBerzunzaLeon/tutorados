@@ -62,7 +62,12 @@ const SeedService = require('../../services/seeds/seed.service');
 const SubjectHistoryService = require('../../services/subjectHistory/subjectHistory.service');
 const AcademicCareerService = require('../../services/academicCareer/academicCareer.service');
 const SchoolYearService = require('../../services/schoolYear/SchoolYear.service');
-const SubjectsForSchoolYearService = require('../../services/schoolYearProcess/subjectsForSchoolYear.service');
+const {
+  CurrentSubjectsService,
+  FailedSubjectsService,
+  FeaturesSchoolYearService,
+  SubjectsForSchoolYearService,
+} = require('../../services/schoolYearProcess/');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 
@@ -172,6 +177,9 @@ container
     schoolYearRoutes: asFunction(schoolYearRoutes).singleton(),
     SchoolYearDTO: asClass(SchoolYearDTO).singleton(),
     SchoolYearService: asClass(SchoolYearService).singleton(),
+    CurrentSubjectsService: asClass(CurrentSubjectsService).singleton(),
+    FailedSubjectsService: asClass(FailedSubjectsService).singleton(),
+    FeaturesSchoolYearService: asClass(FeaturesSchoolYearService).singleton(),
     SubjectsForSchoolYearService: asClass(SubjectsForSchoolYearService).singleton(),
   })
   // * Student

@@ -70,7 +70,7 @@ class SchoolYearService {
             throw this.createAppError('No se encontro un ciclo escolar vigente', 404);
         }
 
-        this.subjectsForSchoolYearService.loadData(files, current);
+        await this.subjectsForSchoolYearService.loadData(files, current);
 
         // if( current.secondPhase.status === 'no generado' ) {
         //     await this.close(authenticatedUser);

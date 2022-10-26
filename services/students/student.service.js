@@ -250,8 +250,9 @@ class StudentService  {
             
             const studentsUpdated = await this.studentRepository.updateMany(
                 { _id: { "$in": ids }},
-                { $inc: { currentSemester: amount }}
-                );
+                { $inc: { currentSemester: amount }},
+                { multi: true }
+            );
                 
             if(!studentsUpdated) 
                 throw this.createAppError('No se pudo actualizar los datos escolares', 400);

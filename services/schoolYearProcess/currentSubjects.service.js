@@ -1,177 +1,85 @@
-class CurrentSubjectsService {
 
+class FailedSubjectsService {
     constructor({
         createAppError,
-        FailedSubjectsRepository
+        CurrentSubjectsRepository,
+        features,
+        FeaturesSchoolYearService,
+        SubjectHistoryService,
     }) {
         this.createAppError = createAppError;
-        this.failedSubjectsRepository = FailedSubjectsRepository;
+        this.currentSubjectsRepository = CurrentSubjectsRepository;
+        this.decodeFile = features.decodeFileToString;
+        this.features = FeaturesSchoolYearService;
+        this.subjectHistoryService = SubjectHistoryService;
     }
 
-
-    async loadData(schoolYear, file) {
-
-        const decodedFailure = Buffer.from(failureSubjects.buffer, 'base64').toString();
-
-    }
-
-
-    async delete(schoolYear) {
-        await this.failedSubjectsRepository.deleteMany({
+    async delete( schoolYear ) {
+        await this.currentSubjectsRepository.deleteMany({
             'schoolYear.period': schoolYear.period,
             'schoolYear.phase': schoolYear.phase
         });
     }
 
-    async findFailedSubjectsError( oldSchoolYear ) {
+    async findErrors({ period, phase }) {
+        const repository = this.currentSubjectsRepository;
+        const params = { period, phase, repository };
+        const matchClouse = {
+            $or: [ 
+                { 'phase': { $exists: true }, 'subjectHistory': { $size: 3 } },
+                { 'phase': { $exists: true }, 'phase.phaseStatus': 'aprobado' }
+            ]
+        };
 
-        try {
+        const hasErrorSubjects = await this.features.updateInvalidSubjects({ ...params });
+        const hasErrorStudents = await this.features.updateInvalidStudents({ ...params });
+        const hasErrorCurrent = await this.features.updateInvalidCurrentSubjects({ 
+            ...params, 
+            matchClouse, 
+            errorMessage: 'Materia no valida' 
+        });
 
-            const invalidSubjects = await this.failedSubjectsRepository.entity.aggregate([
-                {
-                    $match: {
-                        'schoolYear.period': oldSchoolYear.period,
-                        'schoolYear.phase': oldSchoolYear.phase
-                    },
-                },
-                { 
-                    $lookup: {
-                        'from': 'subjects',
-                        'foreignField': 'name',
-                        'localField': 'subject',
-                        'as': 'subject'
-                    }
-                },
-                { $match: { "subject": { $eq: [] } }},
-                { $group:{ _id: null, ids: { $push: "$_id" }} },
-                { $project:{ ids: true , _id: false } }
-             ]);
-             
-             if(invalidSubjects.length > 0 ) {
-
-                 const [{ ids }] = invalidSubjects;
-
-                 await this.failedSubjectsRepository.updateMany(
-                    { _id: { "$in": ids} },
-                    { error: 'Materia no encontrada' }
-                  );
-             }
-    
-            const invalidStudents = await this.failedSubjectsRepository.entity.aggregate([
-                {
-                    $match: {
-                        'schoolYear.period': oldSchoolYear.period,
-                        'schoolYear.phase': oldSchoolYear.phase
-                    },
-                },
-                { 
-                    $lookup: {
-                        'from': 'students',
-                        'foreignField': 'enrollment',
-                        'localField': 'enrollment',
-                        'as': 'student'
-                    }
-                },
-                { $match: { "student": { $eq: [] } }},
-                { $group:{ _id: null, ids: { $push: "$_id" }} },
-                { $project:{ ids: true , _id: false } }
-            ]);
-
-            if(invalidStudents.length > 0 ) {
-                const [{ ids }] = invalidStudents;
-                await this.failedSubjectsRepository.updateMany(
-                    { _id: { "$in": ids} },
-                    { error: 'Alumno no encontrado' }
-                    );
-            }
-
-            const invalidCurrentSubjects = await this.failedSubjectsRepository.entity.aggregate([
-                {
-                    $match: {
-                        'schoolYear.period': oldSchoolYear.period,
-                        'schoolYear.phase': oldSchoolYear.phase,
-                        'error': { $exists: false }
-                    },
-                },
-                { 
-                    $lookup: {
-                        'from': 'students',
-                        'foreignField': 'enrollment',
-                        'localField': 'enrollment',
-                        'as': 'student'
-                    }
-                },
-                { $unwind: '$student' },
-                { 
-                    $lookup: {
-                        'from': 'subjects',
-                        'foreignField': 'name',
-                        'localField': 'subject',
-                        'as': 'subject'
-                    }
-                },
-                { $unwind: '$subject' },
-                {
-                    $lookup: {
-                        from: "subjecthistories",
-                        let: {
-                           subjectHis: "$subject._id",
-                           studentHis: "$student.user"
-                        },
-                        pipeline: [
-                           {
-                              $match: {
-                                 $expr: {
-                                    $and: [
-                                       { $eq: [ "$subject", "$$subjectHis" ] },
-                                       { $eq: [ "$student", "$$studentHis" ] }
-                                    ]
-                                 }
-                              }
-                           }
-                        ],
-                        as: "subjectHistory"
-                     }
-                },
-                { $unwind: { path: "$subjectHistory", preserveNullAndEmptyArrays: true }},
-                {
-                    $addFields: { 
-                        phase: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { isArray: "$subjectHistory" },
-                                        { $ne: [ '$subjectHistory', [] ]}  
-                                    ]
-                                },
-                                then: { $last: '$subjectHistory.phase' },
-                                else: undefined
-                            }
-                        }
-                    }
-                },
-                {
-                    $match: {
-                        'phase': { $exists: true },
-                        'phase.phaseStatus': { $ne: 'cursando' }
-                    }
-                },
-                { $group:{ _id: null, ids: { $push: "$_id" }} },
-                { $project:{ ids: true , _id: false } }
-            ]);
-
-            if(invalidCurrentSubjects.length > 0 ) {
-                const [{ ids }] = invalidCurrentSubjects;
-
-                await this.failedSubjectsRepository.updateMany(
-                    { _id: { "$in": ids } },
-                    { error: 'Materia no existe en su carga actual' }
-                );
-            }
-
-        } catch (error) {
-            console.log(error);
-        }
+        return hasErrorSubjects || hasErrorStudents || hasErrorCurrent;
     }
 
+    async updateHistory({ period, phase }) {
+
+        const subjects = await this.currentSubjectsRepository.entity.aggregate([
+            ...this.features.getInitialAggregate({ period, phase }),
+            {
+                $lookup: {
+                    from: 'users',
+                    foreignField: '_id',
+                    localField: 'student.user',
+                    as: 'user'
+                }
+            },
+            { $unwind:  '$user' },
+        ]);
+
+        if(!subjects) {
+            throw this.createAppError('No se encontraron materias para reprobar', 404);
+        }
+
+        const subjectsToAdd = subjects.map(({ user, student, subject }) => {
+
+            const newSubject = {
+                userId: user._id,
+                subjectId: subject._id,
+                phaseStatus: 'cursando',
+                semester: student.currentSemester
+            }
+
+            return this.subjectHistoryService.create(newSubject);
+        });
+
+        return await Promise.all(subjectsToAdd);
+
+    }
+
+    async create(data) {
+        return await this.currentSubjectsRepository.create(data);
+    }
 }
+
+module.exports = FailedSubjectsService;
