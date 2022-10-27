@@ -14,14 +14,13 @@ module.exports = ({
     
     const create = (self) => async (req, res) => {
 
-      const data = await self.service.create({ 
-        ...req.body, 
-        authenticatedUser: req.user._id
+      await self.service.create({ 
+        files: req.files.files, 
+        authenticatedUser: req.user._id,
        });
 
       return res.status(201).json({
         status: 'success',
-        data
       });
     }
 

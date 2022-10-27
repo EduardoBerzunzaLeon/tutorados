@@ -33,13 +33,13 @@ class SeedService {
         }
             
         await Promise.all([
-            this.userRepository.deleteAll(),
-            this.professorRepository.deleteAll(),
-            this.studentRepository.deleteAll(),
-            this.courseRepository.deleteAll(),
-            this.subjectRepository.deleteAll(),
-            this.subjectHistoryRepository.deleteAll(),
-            this.schoolYearRepository.deleteAll(),
+            this.userRepository.deleteMany(),
+            this.professorRepository.deleteMany(),
+            this.studentRepository.deleteMany(),
+            this.courseRepository.deleteMany(),
+            this.subjectRepository.deleteMany(),
+            this.subjectHistoryRepository.deleteMany(),
+            this.schoolYearRepository.deleteMany(),
         ]);
     
         const users = this.setToObjectID( JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8')) );

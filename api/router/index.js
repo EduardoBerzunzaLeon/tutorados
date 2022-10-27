@@ -12,6 +12,8 @@ module.exports = function ({
   subjectHistoryRoutes,
   academicCareerRoutes,
   schoolYearRoutes,
+  failedSubjectRoutes,
+  currentSubjectRoutes,
  }) {
   const router = Router();
   const apiRoute = Router();
@@ -26,6 +28,8 @@ module.exports = function ({
   apiRoute.use('/academicCareer', academicCareerRoutes);
   apiRoute.use('/schoolYear', schoolYearRoutes);
   apiRoute.use('/seed', seedRoutes);
+  apiRoute.use('/failedSubjects', failedSubjectRoutes);
+  apiRoute.use('/currentSubjects', currentSubjectRoutes);
 
   router.use(`/api/${config.API_VERSION}`, apiRoute);
   router.use(`/`, fileRoutes);

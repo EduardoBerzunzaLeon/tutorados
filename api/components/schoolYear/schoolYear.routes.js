@@ -3,6 +3,7 @@ const { Router } = require('express');
 module.exports = function({
     SchoolYearController,
     AuthMiddleware,
+    UploadMultiplesFiles,
     config
 }) {
     const router = Router();
@@ -16,7 +17,10 @@ module.exports = function({
     router.use(protect);
 
     router.get('/', restrictTo(get_school_year), SchoolYearController.findCurrentSchoolYear);
-    router.post('/', restrictTo(create_school_year), SchoolYearController.create);
+    router.post('/', 
+    restrictTo(create_school_year), 
+    UploadMultiplesFiles(/\.(csv|txt)$/i, '2', 'files'),
+    SchoolYearController.create);
 
     return router;
 }

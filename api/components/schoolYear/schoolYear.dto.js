@@ -25,7 +25,10 @@ class SchoolYearDTO {
       isCurrent: resource.isCurrent,
       beforeSchoolYear: resource.beforeSchoolYear,
       createdAt: resource.createdAt,
-      updatedAt: resource.updatedAt
+      updatedAt: resource.updatedAt,
+      period: resource.period,
+      currentSubjectsErrors: resource.currentSubjectsErrors,
+      failedSubjectsErrors: resource.failedSubjectsErrors,
     });
   }
   

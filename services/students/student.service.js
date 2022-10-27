@@ -232,6 +232,34 @@ class StudentService  {
       return studentUpdated;
     }
 
+    async increaseSemester(amount = 1) {
+
+        const students = await this.studentRepository.entity.aggregate([
+            { $addFields: { lastStatus: { $last: '$statusHistory' }}},
+            { $match: { 'lastStatus.status': 'regular', currentSemester: { '$ne': 13 }}},
+            { $group:{ _id: null, ids: { $push: "$_id" }}},
+            { $project:{ ids: true , _id: false }}
+        ]);
+
+        if (!students)
+            throw this.createAppError('No se pudo actualizar los datos escolares', 400);
+            
+        if(students[0].ids.length > 0 ) {
+            
+            const [{ ids }] = students;
+            
+            const studentsUpdated = await this.studentRepository.updateMany(
+                { _id: { "$in": ids }},
+                { $inc: { currentSemester: amount }},
+                { multi: true }
+            );
+                
+            if(!studentsUpdated) 
+                throw this.createAppError('No se pudo actualizar los datos escolares', 400);
+        }
+
+    }
+
     async addNewProfessor(userId, { currentProfessorHistoryId, newProfessorId, createdAt, comments  } ) {
 
         if(!currentProfessorHistoryId) {

@@ -22,6 +22,8 @@ const { StudentController, StudentDTO, studentRoutes } = require('../components/
 const { SubjectHistoryController, SubjectHistoryDTO, subjectHistoryRoutes } = require('../components/subjectHistory');
 const { AcademicCareerController, AcademicCareerDTO, academicCareerRoutes } = require('../components/AcademicCareer');
 const { SchoolYearController, SchoolYearDTO, schoolYearRoutes } = require('../components/schoolYear');
+const { FailedSubjectController, FailedSubjectDTO, failedSubjectRoutes } = require('../components/failedSubject');
+const { CurrentSubjectController, CurrentSubjectDTO, currentSubjectRoutes } = require('../components/currentSubject');
 const { SeedController, seedRoutes } = require('../components/seeds');
 const { AuthController } = require('../components/auth');
 
@@ -47,6 +49,7 @@ const {
   handlerErrors,
   authMiddleware,
   uploadSingleFile,
+  uploadMultiplesFiles,
 } = require('../middlewares');
 
 // * Services
@@ -60,7 +63,13 @@ const FileService = require('../../services/files/file.service');
 const SeedService = require('../../services/seeds/seed.service');
 const SubjectHistoryService = require('../../services/subjectHistory/subjectHistory.service');
 const AcademicCareerService = require('../../services/academicCareer/academicCareer.service');
-const SchoolYearService = require('../../services/SchoolYear/SchoolYear.service');
+const SchoolYearService = require('../../services/schoolYear/SchoolYear.service');
+const {
+  CurrentSubjectsService,
+  FailedSubjectsService,
+  FeaturesSchoolYearService,
+  SubjectsForSchoolYearService,
+} = require('../../services/schoolYearProcess/');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
 
@@ -73,6 +82,8 @@ const { StudentRepository, StudentEntity } = require('../../dal/students');
 const { SubjectHistoryRepository, SubjectHistoryEntity } = require('../../dal/subjectHistory');
 const { AcademicCareerRepository, AcademicCareerEntity } = require('../../dal/academicCareer');
 const { SchoolYearRepository, SchoolYearEntity } = require('../../dal/schoolYear');
+const { CurrentSubjectsRepository, CurrentSubjectsEntity } = require('../../dal/currentSubjects');
+const { FailedSubjectsRepository, FailedSubjectsEntity } = require('../../dal/failedSubjects');
 
 const container = createContainer();
 
@@ -108,6 +119,7 @@ container
     handlerErrors: asFunction(handlerErrors),
     AuthMiddleware: asFunction(authMiddleware).singleton(),
     UploadSingleFile: asFunction(uploadSingleFile).singleton(),
+    UploadMultiplesFiles: asFunction(uploadMultiplesFiles).singleton(),
   })
   // Factory Controller
   .register({
@@ -167,6 +179,8 @@ container
     schoolYearRoutes: asFunction(schoolYearRoutes).singleton(),
     SchoolYearDTO: asClass(SchoolYearDTO).singleton(),
     SchoolYearService: asClass(SchoolYearService).singleton(),
+    FeaturesSchoolYearService: asClass(FeaturesSchoolYearService).singleton(),
+    SubjectsForSchoolYearService: asClass(SubjectsForSchoolYearService).singleton(),
   })
   // * Student
   .register({
@@ -185,6 +199,24 @@ container
     SubjectHistoryRepository: asClass(SubjectHistoryRepository).singleton(),
     SubjectHistoryEntity: asValue(SubjectHistoryEntity),
     SubjectHistoryService: asClass(SubjectHistoryService).singleton(),
+  })
+  // * Current Subjects
+  .register({
+    CurrentSubjectsRepository: asClass(CurrentSubjectsRepository).singleton(),
+    CurrentSubjectsEntity: asValue(CurrentSubjectsEntity),
+    CurrentSubjectsService: asClass(CurrentSubjectsService).singleton(),
+    CurrentSubjectController: asFunction(CurrentSubjectController).singleton(),
+    currentSubjectRoutes: asFunction(currentSubjectRoutes).singleton(),
+    CurrentSubjectDTO: asClass(CurrentSubjectDTO).singleton(),
+  })
+  // * Failed Subjects
+  .register({
+    FailedSubjectsRepository: asClass(FailedSubjectsRepository).singleton(),
+    FailedSubjectsEntity: asValue(FailedSubjectsEntity),
+    FailedSubjectsService: asClass(FailedSubjectsService).singleton(),
+    FailedSubjectController: asFunction(FailedSubjectController).singleton(),
+    failedSubjectRoutes: asFunction(failedSubjectRoutes).singleton(),
+    FailedSubjectDTO: asClass(FailedSubjectDTO).singleton(),
   })
   // * Files
   .register({

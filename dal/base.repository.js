@@ -15,8 +15,7 @@ class BaseRepository {
       .paginate();
 
       if(popOptions) features.query = features.query.populate(popOptions);
-      
-      console.log({base: features.queryFind});
+
       return [
          this.entity.find(features.queryFind).countDocuments(),
          features.query
@@ -31,10 +30,12 @@ class BaseRepository {
       .sort()
       .paginate()
       .aggregation;
-
+  
+    console.log(aggregationWithFeatures);
     const doc = await this.entity.aggregate(aggregationWithFeatures);
-
+    
     const [ { metadata, data } ] = doc;
+
     return [ metadata[0]?.total || 0, data ];
   }
 
@@ -79,11 +80,10 @@ class BaseRepository {
     }
     return this.entity.findOneAndDelete(params);
   }
-
-  deleteAll() {
-    return this.entity.deleteMany({});
-  }
   
+  deleteMany(query = {}) {
+    return this.entity.deleteMany(query);
+  }
 
   create(data, options = null) {
     return options ? this.entity.create(data, options) : this.entity.create(data);

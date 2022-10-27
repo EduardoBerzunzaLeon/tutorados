@@ -2,23 +2,87 @@
 class SchoolYearService {
     constructor({
         SchoolYearRepository,
+        SubjectsForSchoolYearService,
+        CurrentSubjectsService,
+        FailedSubjectsService,
+        FeaturesSchoolYearService,
         createAppError,
         features,
     }) {
         this.schoolYearRepository = SchoolYearRepository;
+        this.subjectsForSchoolYearService = SubjectsForSchoolYearService;
+        this.currentSubjectsService = CurrentSubjectsService;
+        this.failedSubjectsService = FailedSubjectsService;
+        this.featuresService = FeaturesSchoolYearService;
         this.createAppError = createAppError;
         this.isEmpty = features.isEmptyObject;
     }
 
-    close() {
-        return 'was closed';
+    async close(authenticatedUser) {
+        const phaseUpdated = await this.schoolYearRepository.updateOne(
+            { isCurrent: true },
+            { "$set": { 
+                "secondPhase.status": 'generado',
+                "secondPhase.createdAt": Date.now(),
+                "secondPhase.user": authenticatedUser
+            }}
+        );
+
+        if(phaseUpdated.n <= 0) {
+            throw this.createAppError('No se pudo actualizar el cilo escolar', 500);
+        }
     }
 
-    create() {
-        const isClosed =  this.close();
-        return {
-            isClosed,
-            isCreate: 'was created'
+    async addNewSchoolYear({ authenticatedUser, period, _id }) {
+        const schoolYearUpdated = await this.schoolYearRepository.updateOne(
+            { isCurrent: true },
+            { isCurrent: false }
+        );
+        
+        if(schoolYearUpdated.n <= 0) {
+            throw this.createAppError('No se pudo actualizar el cilo escolar', 500);
+        }
+        
+        const schoolYearCreated = await this.schoolYearRepository.create(
+            { 
+                isCurrent: true,
+                firstPhase: {
+                    user: authenticatedUser,
+                    status: 'generado',
+                    createdAt: Date.now()
+                },
+                secondPhase: {
+                    status: 'sin generar'
+                },
+                period: {
+                    start: period.end,
+                    end: period.end + 1
+                },
+                beforeSchoolYear: _id,
+            },
+        );
+
+        if(!schoolYearCreated) {
+            throw this.createAppError('No se pudo actualizar el cilo escolar', 500);
+        }
+    }
+
+    async create({ authenticatedUser, files }) {
+    
+
+        const current = await this.schoolYearRepository.findOne({ isCurrent: true }).lean();
+
+        if(!current) {
+            throw this.createAppError('No se encontro un ciclo escolar vigente', 404);
+        }
+
+        await this.subjectsForSchoolYearService.loadData(files, current);
+
+        if( current.secondPhase.status === 'no generado' ) {
+            await this.close(authenticatedUser);
+        } else {
+            const { period, _id } = current;
+            await this.addNewSchoolYear({ authenticatedUser, period, _id });
         }
     }
 
@@ -86,14 +150,26 @@ class SchoolYearService {
                     isCurrent: 1,
                     beforeSchoolYear: 1,
                     createdAt: 1,
-                    updatedAt: 1
+                    updatedAt: 1,
+                    period: 1,
                 }
             }
         ]);
 
+        
         if(!currentSchoolYear || this.isEmpty(currentSchoolYear)) {
             throw this.createAppError('No se encontro el ciclo escolar', 404);
         }
+        
+        // const { period, secondPhase } = currentSchoolYear;
+        // const { oldSchoolYear, newSchoolYear } = this.featuresService.getCorrectSchoolYear({ period, secondPhase });  
+        // const [ currentSubjectsErrors, failedSubjectsErrors ] = await Promise.all([
+        //     this.currentSubjectsService.findErrors(newSchoolYear),   
+        //     this.failedSubjectsService.findErrors(oldSchoolYear)
+        // ]);
+
+        // currentSchoolYear.currentSubjectsErrors = currentSubjectsErrors || [];
+        // currentSchoolYear.failedSubjectsErrors = failedSubjectsErrors || [];
 
         return currentSchoolYear;
     }

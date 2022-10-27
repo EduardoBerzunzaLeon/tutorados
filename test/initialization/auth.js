@@ -50,7 +50,7 @@ const data = {
 };
 
 const initialize = async () => {
-  await UserRepository.deleteAll();
+  await UserRepository.deleteMany();
 };
 
 module.exports = {

@@ -219,7 +219,7 @@ describe('Base Repository', () => {
 
     describe('DeleteAll', () => {
       it('Should return an empty array', async () => {
-        const deleted = await baseRepository.deleteAll();
+        const deleted = await baseRepository.deleteMany();
         const users = await baseRepository.findAll();
 
         expect(users).to.have.length(0);
