@@ -95,19 +95,24 @@ class FailedSubjectsService {
         return await this.failedSubjectsRepository.create(data);
     }
 
-    async findErrors({ period, phase }) {
+    async findErrors(query) {
 
-        const errors = await this.failedSubjectsRepository.entity.aggregate([
-            {
-                $match: {
-                    'schoolYear.period': period,
-                    'schoolYear.phase': phase,
-                    'error': { $exists: true }
-                },
-            }
-        ]);
+        const { start, end, status, ...params } = query;
 
-        return errors;
+        const { oldSchoolYear } = this.featuresService.getCorrectSchoolYear({ 
+            period: { start: Number(start), end: Number(end) }, 
+            secondPhase: { status } 
+        });
+
+        const aggregation = [{
+            $match: {
+                'schoolYear.period': oldSchoolYear.period,
+                'schoolYear.phase': oldSchoolYear.phase,
+                'error': { $exists: true }
+            },
+        }]
+
+        return await this.failedSubjectsRepository.findAggregation(aggregation, params);
     }
 }
 

@@ -30,10 +30,12 @@ class BaseRepository {
       .sort()
       .paginate()
       .aggregation;
-
+  
+    console.log(aggregationWithFeatures);
     const doc = await this.entity.aggregate(aggregationWithFeatures);
-
+    
     const [ { metadata, data } ] = doc;
+
     return [ metadata[0]?.total || 0, data ];
   }
 

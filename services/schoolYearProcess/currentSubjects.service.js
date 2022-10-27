@@ -74,26 +74,29 @@ class FailedSubjectsService {
         });
 
         return await Promise.all(subjectsToAdd);
-
     }
 
     async create(data) {
         return await this.currentSubjectsRepository.create(data);
     }
 
-    async findErrors({ period, phase }) {
+    async findErrors(query) {
 
-        const errors = await this.currentSubjectsRepository.entity.aggregate([
-            {
-                $match: {
-                    'schoolYear.period': period,
-                    'schoolYear.phase': phase,
-                    'error': { $exists: true }
-                },
-            }
-        ]);
+        const { start, end, status, ...params } = query;
+        const { newSchoolYear } = this.featuresService.getCorrectSchoolYear({ 
+            period: { start: Number(start), end: Number(end) }, 
+            secondPhase: { status } 
+        });
 
-        return errors;
+        const aggregation = [{
+            $match: {
+                'schoolYear.period': newSchoolYear.period,
+                'schoolYear.phase': newSchoolYear.phase,
+                'error': { $exists: true }
+            }, 
+        }]
+
+        return await this.currentSubjectsRepository.findAggregation(aggregation, params);
     }
 }
 

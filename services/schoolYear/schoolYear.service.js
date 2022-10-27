@@ -161,15 +161,15 @@ class SchoolYearService {
             throw this.createAppError('No se encontro el ciclo escolar', 404);
         }
         
-        const { period, secondPhase } = currentSchoolYear;
-        const { oldSchoolYear, newSchoolYear } = this.featuresService.getCorrectSchoolYear({ period, secondPhase });  
-        const [ currentSubjectsErrors, failedSubjectsErrors ] = await Promise.all([
-            this.currentSubjectsService.findErrors(newSchoolYear),   
-            this.failedSubjectsService.findErrors(oldSchoolYear)
-        ]);
+        // const { period, secondPhase } = currentSchoolYear;
+        // const { oldSchoolYear, newSchoolYear } = this.featuresService.getCorrectSchoolYear({ period, secondPhase });  
+        // const [ currentSubjectsErrors, failedSubjectsErrors ] = await Promise.all([
+        //     this.currentSubjectsService.findErrors(newSchoolYear),   
+        //     this.failedSubjectsService.findErrors(oldSchoolYear)
+        // ]);
 
-        currentSchoolYear.currentSubjectsErrors = currentSubjectsErrors || [];
-        currentSchoolYear.failedSubjectsErrors = failedSubjectsErrors || [];
+        // currentSchoolYear.currentSubjectsErrors = currentSubjectsErrors || [];
+        // currentSchoolYear.failedSubjectsErrors = failedSubjectsErrors || [];
 
         return currentSchoolYear;
     }

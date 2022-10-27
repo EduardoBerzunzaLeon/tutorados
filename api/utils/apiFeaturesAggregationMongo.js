@@ -108,7 +108,6 @@ class ApiFeaturesAggregationMongo {
             }};
 
         this.aggregation.push({...paginateObj});
-
         return this;
     }
 
