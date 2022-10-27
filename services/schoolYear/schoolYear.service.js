@@ -3,11 +3,17 @@ class SchoolYearService {
     constructor({
         SchoolYearRepository,
         SubjectsForSchoolYearService,
+        CurrentSubjectsService,
+        FailedSubjectsService,
+        FeaturesSchoolYearService,
         createAppError,
         features,
     }) {
         this.schoolYearRepository = SchoolYearRepository;
         this.subjectsForSchoolYearService = SubjectsForSchoolYearService;
+        this.currentSubjectsService = CurrentSubjectsService;
+        this.failedSubjectsService = FailedSubjectsService;
+        this.featuresService = FeaturesSchoolYearService;
         this.createAppError = createAppError;
         this.isEmpty = features.isEmptyObject;
     }
@@ -72,12 +78,12 @@ class SchoolYearService {
 
         await this.subjectsForSchoolYearService.loadData(files, current);
 
-        // if( current.secondPhase.status === 'no generado' ) {
-        //     await this.close(authenticatedUser);
-        // } else {
-        //     const { period, _id } = current;
-        //     await this.addNewSchoolYear({ authenticatedUser, period, _id });
-        // }
+        if( current.secondPhase.status === 'no generado' ) {
+            await this.close(authenticatedUser);
+        } else {
+            const { period, _id } = current;
+            await this.addNewSchoolYear({ authenticatedUser, period, _id });
+        }
     }
 
     async findCurrentSchoolYear() {
@@ -144,14 +150,26 @@ class SchoolYearService {
                     isCurrent: 1,
                     beforeSchoolYear: 1,
                     createdAt: 1,
-                    updatedAt: 1
+                    updatedAt: 1,
+                    period: 1,
                 }
             }
         ]);
 
+        
         if(!currentSchoolYear || this.isEmpty(currentSchoolYear)) {
             throw this.createAppError('No se encontro el ciclo escolar', 404);
         }
+        
+        const { period, secondPhase } = currentSchoolYear;
+        const { oldSchoolYear, newSchoolYear } = this.featuresService.getCorrectSchoolYear({ period, secondPhase });  
+        const [ currentSubjectsErrors, failedSubjectsErrors ] = await Promise.all([
+            this.currentSubjectsService.findErrors(newSchoolYear),   
+            this.failedSubjectsService.findErrors(oldSchoolYear)
+        ]);
+
+        currentSchoolYear.currentSubjectsErrors = currentSubjectsErrors || [];
+        currentSchoolYear.failedSubjectsErrors = failedSubjectsErrors || [];
 
         return currentSchoolYear;
     }

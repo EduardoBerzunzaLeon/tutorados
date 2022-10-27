@@ -10,7 +10,7 @@ class FailedSubjectsService {
         this.createAppError = createAppError;
         this.currentSubjectsRepository = CurrentSubjectsRepository;
         this.decodeFile = features.decodeFileToString;
-        this.features = FeaturesSchoolYearService;
+        this.featuresService = FeaturesSchoolYearService;
         this.subjectHistoryService = SubjectHistoryService;
     }
 
@@ -21,7 +21,7 @@ class FailedSubjectsService {
         });
     }
 
-    async findErrors({ period, phase }) {
+    async findAndUpdateErrors({ period, phase }) {
         const repository = this.currentSubjectsRepository;
         const params = { period, phase, repository };
         const matchClouse = {
@@ -31,9 +31,9 @@ class FailedSubjectsService {
             ]
         };
 
-        const hasErrorSubjects = await this.features.updateInvalidSubjects({ ...params });
-        const hasErrorStudents = await this.features.updateInvalidStudents({ ...params });
-        const hasErrorCurrent = await this.features.updateInvalidCurrentSubjects({ 
+        const hasErrorSubjects = await this.featuresService.updateInvalidSubjects({ ...params });
+        const hasErrorStudents = await this.featuresService.updateInvalidStudents({ ...params });
+        const hasErrorCurrent = await this.featuresService.updateInvalidCurrentSubjects({ 
             ...params, 
             matchClouse, 
             errorMessage: 'Materia no valida' 
@@ -45,7 +45,7 @@ class FailedSubjectsService {
     async updateHistory({ period, phase }) {
 
         const subjects = await this.currentSubjectsRepository.entity.aggregate([
-            ...this.features.getInitialAggregate({ period, phase }),
+            ...this.featuresService.getInitialAggregate({ period, phase }),
             {
                 $lookup: {
                     from: 'users',
@@ -79,6 +79,21 @@ class FailedSubjectsService {
 
     async create(data) {
         return await this.currentSubjectsRepository.create(data);
+    }
+
+    async findErrors({ period, phase }) {
+
+        const errors = await this.currentSubjectsRepository.entity.aggregate([
+            {
+                $match: {
+                    'schoolYear.period': period,
+                    'schoolYear.phase': phase,
+                    'error': { $exists: true }
+                },
+            }
+        ]);
+
+        return errors;
     }
 }
 

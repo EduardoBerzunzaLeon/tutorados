@@ -26,7 +26,7 @@ class FeaturesSchoolYear {
             throw this.createAppError('No se pudo guardar todos los registros, favor de realizar el proceso de nuevo.', 400);
         }
 
-        const hasError = await service.findErrors(schoolYear);
+        const hasError = await service.findAndUpdateErrors(schoolYear);
 
         if(hasError) {
             throw this.createAppError('Uno de los archivos tiene un error, favor de verificarlo.', 400);
@@ -208,6 +208,29 @@ class FeaturesSchoolYear {
 
         return hasError;
     }
+
+    getCorrectSchoolYear({ period, secondPhase }) {
+
+        const schoolYear = {
+            oldSchoolYear: {
+                period,
+                phase: 1
+            },
+            newSchoolYear: {
+                period,
+                phase: 2
+            }
+        };
+
+        if(secondPhase.status === 'generado') {
+            schoolYear.oldSchoolYear.phase = 2;
+            schoolYear.newSchoolYear.phase = 1;
+            schoolYear.newSchoolYear.period = { start: period.end, end: period.end + 1 };
+        }
+
+        return schoolYear;
+    }
+
 
     getInitialAggregate({ period, phase }) {
         return [

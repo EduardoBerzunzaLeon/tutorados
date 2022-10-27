@@ -16,8 +16,7 @@ module.exports = ({
 
       await self.service.create({ 
         files: req.files.files, 
-        // authenticatedUser: req.user._id
-        authenticatedUser: 'thisisanExampleId'
+        authenticatedUser: req.user._id,
        });
 
       return res.status(201).json({

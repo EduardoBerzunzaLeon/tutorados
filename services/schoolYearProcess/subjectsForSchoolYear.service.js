@@ -18,36 +18,13 @@ class SubjectsForSchoolYearService {
         this.subjectHistoryService = SubjectHistoryService;
     }
 
-    getCorrectSchoolYear(currentSchoolYear) {
-
-        const { period, secondPhase } = currentSchoolYear;
-        const schoolYear = {
-            oldSchoolYear: {
-                period,
-                phase: 1
-            },
-            newSchoolYear: {
-                period,
-                phase: 2
-            }
-        };
-
-        if(secondPhase.status === 'generado') {
-            schoolYear.oldSchoolYear.phase = 2;
-            schoolYear.newSchoolYear.phase = 1;
-            schoolYear.newSchoolYear.period = { start: period.end, end: period.end + 1 };
-        }
-
-        return schoolYear;
-    }
-
     async loadData(files, currentSchoolYear) {
 
         if(files.length != 2) {
             throw this.createAppError('El archivo de materias reprobadas y nueva carga academica son requeridos', 500);
         }
 
-        const { oldSchoolYear, newSchoolYear } = this.getCorrectSchoolYear(currentSchoolYear);        
+        const { oldSchoolYear, newSchoolYear } = this.featuresService.getCorrectSchoolYear(currentSchoolYear);        
         const [ failureSubjectsFile, newSubjectsFile ] = files;
 
         await Promise.all([
