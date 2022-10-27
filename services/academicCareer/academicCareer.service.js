@@ -67,28 +67,27 @@ class AcademicCareerService {
             const {  requiredSubjects, semester } = subject;
             const isEquivalentSemester =  this.isEquivalentSemester(semester, currentSemester);
                         
-            if(isEquivalentSemester && semester <= currentSemester ) {
-                    
-                const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
-                
-                if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
+            if(!isEquivalentSemester || semester > currentSemester) return;
+            
+            const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
+            
+            if( !hasAllRequiredSubjects && requiredSubjects.length !== 0 ) return; 
 
-                    const { phase, atRisk } = this.addLastChanceRisk({ subject, currentSemester });
+            const { phase, atRisk } = this.addLastChanceRisk({ subject, currentSemester });
 
-                    amountOfSubjects = this.addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects });
-                    
-                    const subjectToPush = {
-                        ...subject,
-                        phase,
-                        semester: currentSemester,
-                        atRisk,
-                    }
-                    
-                    subjects.push(subjectToPush);
-                    unapprovedSubjectsCopy.splice(idx - count, 1);
-                    count ++;
-                }
+            amountOfSubjects = this.addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects });
+            
+            const subjectToPush = {
+                ...subject,
+                phase,
+                semester: currentSemester,
+                atRisk,
             }
+            
+            subjects.push(subjectToPush);
+            unapprovedSubjectsCopy.splice(idx - count, 1);
+            count ++;
+            
         });
 
         if(currentSemester === 13 || unapprovedSubjectsCopy.length === 0 ) {
