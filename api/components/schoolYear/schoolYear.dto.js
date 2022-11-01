@@ -11,7 +11,7 @@ class SchoolYearDTO {
         ...resource.firstPhase,
         user: {
           ...resource.firstPhase.user,
-          avatar: resource.firstPhase?.avatar && this.getCompleteURLAvatar(resource.firstPhase?.avatar)
+          avatar: resource.firstPhase?.user.avatar && this.getCompleteURLAvatar(resource.firstPhase?.user.avatar)
         }
       },
       secondPhase: {
@@ -19,7 +19,7 @@ class SchoolYearDTO {
         user: resource.secondPhase.user ?
         {
           ...resource.secondPhase.user,
-          avatar: resource.secondPhase?.avatar && this.getCompleteURLAvatar(resource.secondPhase?.avatar)
+          avatar: resource.secondPhase?.user.avatar && this.getCompleteURLAvatar(resource.secondPhase?.user.avatar)
         } : undefined
       },
       isCurrent: resource.isCurrent,
