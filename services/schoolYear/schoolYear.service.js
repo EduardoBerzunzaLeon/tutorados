@@ -69,7 +69,6 @@ class SchoolYearService {
 
     async create({ authenticatedUser, files }) {
     
-
         const current = await this.schoolYearRepository.findOne({ isCurrent: true }).lean();
 
         if(!current) {

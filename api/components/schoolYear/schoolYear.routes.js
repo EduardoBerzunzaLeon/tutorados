@@ -12,14 +12,14 @@ module.exports = function({
         get_school_year,
     } = config.PERMISSIONS_LIST.schoolYear;
     
-    const { restrictTo, protect } = AuthMiddleware;
+    const { restrictTo, protect, verifyPassword } = AuthMiddleware;
 
     router.use(protect);
 
     router.get('/', restrictTo(get_school_year), SchoolYearController.findCurrentSchoolYear);
-    router.post('/', 
-    restrictTo(create_school_year), 
+    router.post('/', restrictTo(create_school_year), 
     UploadMultiplesFiles(/\.(csv|txt)$/i, '2', 'files'),
+    verifyPassword,
     SchoolYearController.create);
 
     return router;

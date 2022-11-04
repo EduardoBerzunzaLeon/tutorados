@@ -49,6 +49,19 @@ class UserService {
     return await this.userRepository.findOne({ _id, active: true });
   }
   
+  async verifyPassword({ password, user }) {
+    const isCorrectPassword = await user.correctPassword(
+      password,
+      user.password
+    );
+
+    if (!isCorrectPassword)
+      throw this.createAppError('Contraseña invalida', 401);
+
+    return isCorrectPassword;
+  }
+  
+
   async uploadAvatar(file, id, canDelete = false) {
     if(file) {
       const uploadFile = this.fileService.uploadFile();
