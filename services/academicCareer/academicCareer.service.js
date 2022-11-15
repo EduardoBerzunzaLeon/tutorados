@@ -6,10 +6,14 @@ class AcademicCareerService {
         SubjectHistoryRepository,
         SubjectRepository,
         StudentRepository,
+        StudentService,
+        SchoolYearService,
         createAppError
     }) {
         this.academicCareerRepository = AcademicCareerRepository;
         this.subjectHistoryRepository = SubjectHistoryRepository;
+        this.studentService = StudentService;
+        this.schoolYearService = SchoolYearService;
         this.studentRepository = StudentRepository;
         this.subjectRepository = SubjectRepository;
         this.createAppError = createAppError;
@@ -143,19 +147,6 @@ class AcademicCareerService {
         return subjectsTree.filter(element => element);
     }
 
-    async getCurrentSemester(userId) {
-
-        const student = await this.studentRepository.findOne({ user: userId }).lean();
-
-        if(!student) {
-            throw this.createAppError('No se encontro al estudiante', 400);
-        }
-
-        const { currentSemester } = student;
-
-        return currentSemester;
-    }
-
     async getApprovedSubjects(userId) {
 
         const approvedSubjects = await this.subjectHistoryRepository.entity.aggregate([
@@ -265,7 +256,6 @@ class AcademicCareerService {
             userId
         });
 
-        // return await this.findById(userId);
     }
 
     async generate({ 
@@ -277,7 +267,7 @@ class AcademicCareerService {
     }) {
 
         const userIdMongo = ObjectId(userId);
-        const currentSemester = await this.getCurrentSemester(userIdMongo);
+        const { currentSemester } = await this.studentService.findStudent(userIdMongo);
         const { subjects, ids } = await this.getApprovedSubjects(userIdMongo);
         const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, ids);
 
@@ -308,7 +298,9 @@ class AcademicCareerService {
             phase,
             atRisk: atRisk || '',
             semester
-        }))
+        }));
+
+        const { _id, currentPhase } =  await this.schoolYearService.findCurrentSchoolYear();
 
         const dataToSave = {
             student: userId,
@@ -317,6 +309,10 @@ class AcademicCareerService {
                 subjectsInSemester,
                 hasValidation,
                 canAdvanceSubject
+            },
+            schoolYear: {
+                id: _id,
+                phase: currentPhase,
             },
             creatorUser: authenticatedUser,
             subjects: preparedSubjects
@@ -378,6 +374,7 @@ class AcademicCareerService {
                 generationParams: { $first: '$data.generationParams' },
                 creatorUser: { $first: '$data.creatorUser' },
                 processStatus: { $first: '$data.processStatus' },
+                schoolYear: { $first: '$data.schoolYear' },
                 student: { $first: '$data.student' },
                 subjects: {
                     $map: {
@@ -402,6 +399,16 @@ class AcademicCareerService {
                 },
             },
             { $unwind: "$creatorUser" },
+            {
+                $lookup: {
+                    from: 'schoolyears',
+                    foreignField: "_id",
+                    localField: "schoolYear.id",
+                    pipeline: [ { $project: { _id: 1, period: 1 }} ],
+                    as: "schoolYear.id"
+                },
+            },
+            { $unwind: "$schoolYear.id" },
         ]);
 
         if(!academicCareer) {
@@ -429,7 +436,7 @@ class AcademicCareerService {
      }) {
 
         const userIdMongo = ObjectId(userId);
-        const currentSemester = await this.getCurrentSemester(userId);
+        const { currentSemester } = await this.studentService.findStudent(userIdMongo);
 
         if(newSemester < currentSemester ) {
             throw this.createAppError('El semestre de la materia no puede ser menor al semestre actual del alumno', 400);

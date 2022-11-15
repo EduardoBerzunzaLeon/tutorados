@@ -38,6 +38,18 @@ const academicCareerSchema = new Schema({
           default: true
       }
     },
+    schoolYear: {
+        id: {
+            type: Schema.ObjectId,
+            ref: 'SchoolYear' 
+        },
+        phase: {
+            type: Number,
+            min: 1,
+            max: 2,
+            required: [true, 'La fase del ciclo escolar es obligatorio'],
+        }
+    },
     creatorUser: {
         type: Schema.ObjectId,
         ref: 'User',

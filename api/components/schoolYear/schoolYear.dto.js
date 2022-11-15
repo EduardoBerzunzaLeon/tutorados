@@ -23,6 +23,7 @@ class SchoolYearDTO {
         } : undefined
       },
       isCurrent: resource.isCurrent,
+      currentPhase: resource.currentPhase,
       beforeSchoolYear: resource.beforeSchoolYear,
       createdAt: resource.createdAt,
       updatedAt: resource.updatedAt,
