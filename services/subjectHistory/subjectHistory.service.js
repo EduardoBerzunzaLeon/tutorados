@@ -16,12 +16,12 @@ class SubjectHistoryService  {
         this.isEmpty = features.isEmptyObject;
     }
 
-    async validBeforeSavePhase(id, phaseStatus, semester, fieldToFind ) {
+    async validBeforeSavePhase({ id, phaseStatus, semester, fieldToFind }) {
         if(!ObjectId.isValid(id)) {
             throw this.createAppError('La fase no es valida, favor de verificarla', 400);
         }
         
-        if( !phaseStatus || !semester  ) {
+        if( !phaseStatus || !semester) {
             throw this.createAppError('Todos los campos son obligatorios', 400);
         }
 
@@ -43,10 +43,10 @@ class SubjectHistoryService  {
         if(!history || history.length === 0) {
             throw this.createAppError('No se encontro la materia para agregar fase', 400);
         }
-    
+        
         const [ { student, phase, subject } ] = history;
-    
-        if( student?.currentSemester  < semester) {
+        
+        if( student?.currentSemester < semester) {
             throw this.createAppError('No se puede cargar una materia en un semester mayor al cursado actual del alumno', 400);
         }
 
@@ -101,6 +101,7 @@ class SubjectHistoryService  {
 
         studentData.subjectHistory = this.isEmpty(subjects) ? [] : subjects;
         
+        console.log(studentData);
         return studentData;
     }
 
@@ -121,7 +122,8 @@ class SubjectHistoryService  {
                             'position': { "$indexOfArray": [ "$phase._id",   "$$specificPhase._id" ] },
                             'phaseStatus': "$$specificPhase.phaseStatus",
                             '_id': "$$specificPhase._id",
-                            'semester': '$$specificPhase.semester'
+                            'semester': '$$specificPhase.semester',
+                            'mode': '$$specificPhase.mode',
                         }
                     }
                 }
@@ -145,6 +147,7 @@ class SubjectHistoryService  {
                     subjects: { $push: { 
                         subject: "$subject",
                         phaseStatus: "$phasesWithPosition.phaseStatus",
+                        mode: "$phasesWithPosition.mode",
                         step: { $add: [ "$phasesWithPosition.position", 1 ] }
                     }}
                 }
@@ -152,7 +155,7 @@ class SubjectHistoryService  {
            { $sort: { _id: 1 }}
         ]);
 
-        return this.isEmpty(subjects) ? [] : subjects;;
+        return this.isEmpty(subjects) ? [] : subjects;
     }
 
     async findPossibleSubjectsToAdd(userId) {
@@ -184,7 +187,6 @@ class SubjectHistoryService  {
                         {
                             'steps': { $ne: 3 },
                             "lastPhase.phaseStatus": { $ne: 'aprobado' },
-                            // 'lastPhase.semester': { $not: { $gte: currentSemester }}
                             'lastPhase.semester': { $lt: currentSemester }
                         }
                     ]
@@ -193,11 +195,20 @@ class SubjectHistoryService  {
             }
         ]);
 
+
         if(this.isEmpty(subjects)) {
             throw this.createAppError('Materias para asignar del alumno no encontradas', 404);
         }
 
-        return subjects;
+        const ids = subjects.map(({_id}) => _id.toString());
+
+        const validSubjects = subjects.reduce((acc, current) => {
+            if(current.requiredSubjects.some( r => ids.includes(r.toString()))) return acc;
+            acc.push(current);
+            return acc;
+        }, []);
+
+        return validSubjects;
     }
 
     async findUnstudySubjects(userId) {
@@ -282,14 +293,14 @@ class SubjectHistoryService  {
 
    }
 
-    async create({ userId, subjectId, phaseStatus, semester }) {
-
+    async create({ userId, subjectId, phaseStatus, semester, mode }) {
+        
         if ( !userId || !subjectId || !phaseStatus || !semester ) 
             throw this.createAppError('Todos los campos son obligatorios', 400);
 
         if(!ObjectId.isValid(userId) || !ObjectId.isValid(subjectId)) 
             throw this.createAppError('Estudiando o materia no valido', 400);
-        
+
         const userMongoId = ObjectId(userId);
         const subjectMongoId = ObjectId(subjectId);
         
@@ -302,7 +313,8 @@ class SubjectHistoryService  {
             const request = {
                 docId: subjectInHistory._id,
                 phaseStatus,
-                semester
+                semester,
+                mode
             } 
             return this.addNewPhase(request);
         }
@@ -313,6 +325,7 @@ class SubjectHistoryService  {
             phase: [{
                 phaseStatus,
                 semester,
+                mode
             }],
         });
         
@@ -321,20 +334,21 @@ class SubjectHistoryService  {
 
     }
 
-    async addNewPhase({ docId, phaseStatus, date, semester }) {
+    async addNewPhase({ docId, phaseStatus, date, semester, mode }) {
         
-        const { phase, mongoId, user, subject } = await this.validBeforeSavePhase(docId, phaseStatus, semester, '_id' );
+        const { phase, mongoId, user, subject } = await this.validBeforeSavePhase({
+            id: docId,
+            fieldToFind: '_id',
+            phaseStatus,
+            semester
+        });
 
         if(phase.length === 3) {
             throw this.createAppError('El alumno ya alcanzo su tercer intento con la materia', 400);
         }
         
-        const lastPhase = phase[phase.length - 1];
-        
-        if( lastPhase?.semester >= semester ) {
-            throw this.createAppError('El semestre tiene que ser mayor al ultimo semestre cursado de la materia', 400);
-        }
-        
+        this.validModeBeforeToSave({ phase: phase[phase.length - 1], mode, semester });
+
         const newPhase = { phaseStatus, date, semester };
 
         const phaseAdded = await this.subjectHistoryRepository.updateOne(
@@ -351,15 +365,35 @@ class SubjectHistoryService  {
 
     }
 
-    async updatePhase({ phaseId, phaseStatus, date, semester }) {
-    
-        const { phase, mongoId, subject, user } = await this.validBeforeSavePhase(phaseId, phaseStatus, semester, 'phase._id' );
-
-        const { length } = phase;
+    validModeBeforeToSave({ phase, mode, semester }) {
         
-        if( length > 1 && phase[length - 2]?.semester >= semester ) {
+        if( phase?.semester === semester ) {
+            if(phase.mode === mode) {
+                throw this.createAppError('No puedes cargar la misma modalidad el mismo semestre', 400);
+            }
+            
+            if(phase.mode === 'intersemestral' || mode !== 'intersemestral') {
+                throw this.createAppError('No puedes cargar el mismo semestre que no se intersemestral', 400);
+            }
+        }
+        
+        if( phase?.semester > semester ) {
             throw this.createAppError('El semestre tiene que ser mayor al ultimo semestre cursado de la materia', 400);
         }
+    }
+
+    async updatePhase({ phaseId, phaseStatus, date, semester, mode = 'normal' }) {
+    
+        const { phase, mongoId, subject, user } = await this.validBeforeSavePhase({
+            id: phaseId,
+            fieldToFind: 'phase._id',
+            phaseStatus,
+            semester,
+        });
+
+        if( phase.length > 1 ) 
+            this.validModeBeforeToSave({ phase: phase[phase.length - 2], mode, semester });
+        
 
         const phaseUpdated = await this.subjectHistoryRepository.updateOne(
             { "phase._id": mongoId },

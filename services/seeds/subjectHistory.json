@@ -16,7 +16,8 @@
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 1
+            "semester": 1,
+            "mode": "normal"
         }
     ]
 },
@@ -38,7 +39,8 @@
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 1
+            "semester": 1,
+            "mode": "normal"
         }
     ]
 },
@@ -60,7 +62,8 @@
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 2
+            "semester": 2,
+            "mode": "normal"
         }
     ]
 },
@@ -82,7 +85,8 @@
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 1
+            "semester": 1,
+            "mode": "normal"
         }
     ]
 },
@@ -104,7 +108,8 @@
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 1
+            "semester": 1,
+            "mode": "normal"
         }
     ]
 },
@@ -126,7 +131,8 @@
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 1
+            "semester": 1,
+            "mode": "normal"
         }
     ]
 },
@@ -148,7 +154,8 @@
             "date": {
                 "$numberLong": "1656176021869"
             },
-            "semester": 1
+            "semester": 1,
+            "mode": "normal"
         }
     ]
 }]

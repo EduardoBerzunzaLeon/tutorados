@@ -480,6 +480,8 @@ class AcademicCareerService {
 
     async findDataToExcel(userId) {
 
+        // TODO: Add mode in the subject
+
         if(!ObjectId.isValid(userId)) {
             throw this.createAppError('el alumno no valido, favor de verificarlo', 400);
         }
