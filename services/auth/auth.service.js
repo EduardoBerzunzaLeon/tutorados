@@ -79,6 +79,7 @@ class AuthService {
     return userUpdated;
   }
 
+
   async login({ email, password }) {
     if (!email || !password)
       throw this.createAppError(

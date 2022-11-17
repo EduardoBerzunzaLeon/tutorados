@@ -14,6 +14,7 @@ class SubjectDTO {
         date: phase.date,
         phaseStatus: phase.phaseStatus,
         semester: phase.semester,
+        mode: phase.mode,
       })),
     });
 
@@ -30,14 +31,16 @@ class SubjectDTO {
       data: {
         subject: `Semestre ${resource._id}`,
         status: '',
-        step: ''
+        step: '',
+        mode: '',
       },
-      children: resource.subjects.map( ({ subject, phaseStatus, step }) => ({
+      children: resource.subjects.map( ({ subject, phaseStatus, step, mode }) => ({
         key: `${subject._id} - ${ resource._id }`,
         data: {
           subject: subject.name,
           status: phaseStatus,
-          step: step,
+          step,
+          mode
         },
       }))
     });

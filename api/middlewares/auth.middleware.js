@@ -117,9 +117,27 @@ module.exports = ({ catchAsync, UserService, createAppError, config }) => {
       next();
     };
 
+    const verifyPassword = async (req, res, next) => {
+      
+      const { password } = req.body;
+
+      if(!password || !req.user) {
+        return next(
+          self.createAppError(
+            'Datos de usuario incorrecto, favor de intentarlo de nuevo.',
+            401
+          )
+        );
+      }
+      
+      await self.userService.verifyPassword({ password, user: req.user });
+      next();
+    }
+
   const methods = (self) => ({
     protect: self.catchAsync(protect),
     isLoggedIn: self.catchAsync(isLoggedIn),
+    verifyPassword: self.catchAsync(verifyPassword),
     restrictTo,
   });
 

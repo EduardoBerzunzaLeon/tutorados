@@ -5,6 +5,11 @@ const validPhaseStatus = {
     message: '{VALUE} no es un estatus de fase válida'
 };
 
+const validMode = {
+    values: ['normal', 'adelantar', 'intersemestral'],
+    message: '{VALUE} no es una modalidad válida'
+};
+
 
 const subjectHistorySchema = new Schema({
     student: {
@@ -38,7 +43,15 @@ const subjectHistorySchema = new Schema({
                 max: 13,
                 min: 1,
                 required: [ true, 'El semestre es obligatorio' ],
-            }
+            },
+            mode: {
+                type: String,
+                enum: validMode,
+                lowercase: true,
+                required: [ true, 'La modalidad es requerida'],
+                trim: true,
+                default: 'normal'
+            },
         }
     ],
 });

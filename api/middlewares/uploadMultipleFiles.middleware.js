@@ -25,8 +25,8 @@ module.exports =
       dest: path.join(__dirname, pathTemp),
       storage: multerStorage,
       filteFilter: multerFilter,
-    }).fields([{ name: fieldname, maxCount }]);
-  
+    }).array(fieldname, maxCount);
+
     upload(req, res, (err) => {
       if (err) {
         next(err);

@@ -50,4 +50,6 @@ const failedSubjectsSchema = new Schema({
     }
 }, { timestamps: true });
 
+failedSubjectsSchema.index( { "$**": "text" } );
+
 module.exports = model('failedSubject', failedSubjectsSchema);

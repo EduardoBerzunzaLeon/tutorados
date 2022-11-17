@@ -50,4 +50,6 @@ const currentSubjectsSchema = new Schema({
     }
 }, { timestamps: true });
 
+currentSubjectsSchema.index( { "$**": "text" } );
+
 module.exports = model('currentSubject', currentSubjectsSchema);

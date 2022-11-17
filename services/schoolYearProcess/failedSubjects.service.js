@@ -104,13 +104,15 @@ class FailedSubjectsService {
             secondPhase: { status } 
         });
 
-        const aggregation = [{
-            $match: {
-                'schoolYear.period': oldSchoolYear.period,
-                'schoolYear.phase': oldSchoolYear.phase,
-                'error': { $exists: true }
+        const aggregation = [
+            {
+                $match: {
+                    'schoolYear.period': oldSchoolYear.period,
+                    'schoolYear.phase': oldSchoolYear.phase,
+                    'error': { $exists: true }
+                },
             },
-        }]
+        ]
 
         return await this.failedSubjectsRepository.findAggregation(aggregation, params);
     }

@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 const validPhaseStatus = {
-    values: ['generado', 'sin generar'],
+    values: ['generado', 'no generado'],
     message: '{VALUE} no es un estatus de fase válida'
 };
 

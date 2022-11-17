@@ -425,6 +425,16 @@ class StudentService  {
         }
     }
 
+    async findStudent(userId) {
+        const student = await this.studentRepository.findOne({ user: userId }).lean();
+
+        if(!student) {
+            throw this.createAppError('No se encontro al estudiante', 400);
+        }
+
+        return student;
+    }
+
 
 }
 

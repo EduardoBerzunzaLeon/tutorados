@@ -10,6 +10,11 @@ const validPhaseStatus = {
     message: '{VALUE} no es un estatus de fase válida'
 };
 
+const validMode = {
+    values: ['normal', 'adelantar', 'intersemestral'],
+    message: '{VALUE} no es una modalidad válida'
+};
+
 
 const academicCareerSchema = new Schema({
     student: {
@@ -38,6 +43,18 @@ const academicCareerSchema = new Schema({
           default: true
       }
     },
+    schoolYear: {
+        id: {
+            type: Schema.ObjectId,
+            ref: 'SchoolYear' 
+        },
+        phase: {
+            type: Number,
+            min: 1,
+            max: 2,
+            required: [true, 'La fase del ciclo escolar es obligatorio'],
+        }
+    },
     creatorUser: {
         type: Schema.ObjectId,
         ref: 'User',
@@ -60,7 +77,15 @@ const academicCareerSchema = new Schema({
                         max: 13,
                         min: 1,
                         required: [ true, 'El semestre es obligatorio' ],
-                    }
+                    },
+                    mode: {
+                        type: String,
+                        enum: validMode,
+                        lowercase: true,
+                        required: [ true, 'La modalidad es requerida'],
+                        trim: true,
+                        default: 'normal'
+                    },
                 }],
                 atRisk: {
                     type: String,
@@ -73,6 +98,10 @@ const academicCareerSchema = new Schema({
                     max: 13,
                     min: 1,
                     required: [ true, 'El semestre es obligatorio' ],
+                },
+                hasModifications: {
+                   type: Boolean,
+                   default: false, 
                 }
             }
         ] 

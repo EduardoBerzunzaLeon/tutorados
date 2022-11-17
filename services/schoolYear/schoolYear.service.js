@@ -69,7 +69,6 @@ class SchoolYearService {
 
     async create({ authenticatedUser, files }) {
     
-
         const current = await this.schoolYearRepository.findOne({ isCurrent: true }).lean();
 
         if(!current) {
@@ -160,17 +159,11 @@ class SchoolYearService {
         if(!currentSchoolYear || this.isEmpty(currentSchoolYear)) {
             throw this.createAppError('No se encontro el ciclo escolar', 404);
         }
+
+        currentSchoolYear.currentPhase = currentSchoolYear.secondPhase.status === 'no generado' 
+            ? 1
+            : 2;
         
-        // const { period, secondPhase } = currentSchoolYear;
-        // const { oldSchoolYear, newSchoolYear } = this.featuresService.getCorrectSchoolYear({ period, secondPhase });  
-        // const [ currentSubjectsErrors, failedSubjectsErrors ] = await Promise.all([
-        //     this.currentSubjectsService.findErrors(newSchoolYear),   
-        //     this.failedSubjectsService.findErrors(oldSchoolYear)
-        // ]);
-
-        // currentSchoolYear.currentSubjectsErrors = currentSubjectsErrors || [];
-        // currentSchoolYear.failedSubjectsErrors = failedSubjectsErrors || [];
-
         return currentSchoolYear;
     }
 }

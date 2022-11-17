@@ -100,4 +100,5 @@ class FailedSubjectsService {
     }
 }
 
+
 module.exports = FailedSubjectsService;
