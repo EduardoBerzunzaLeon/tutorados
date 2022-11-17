@@ -98,6 +98,10 @@ const academicCareerSchema = new Schema({
                     max: 13,
                     min: 1,
                     required: [ true, 'El semestre es obligatorio' ],
+                },
+                hasModifications: {
+                   type: Boolean,
+                   default: false, 
                 }
             }
         ] 

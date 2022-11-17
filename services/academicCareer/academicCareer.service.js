@@ -7,6 +7,7 @@ class AcademicCareerService {
         SubjectRepository,
         StudentRepository,
         StudentService,
+        SubjectHistoryService,
         SchoolYearService,
         createAppError
     }) {
@@ -14,14 +15,15 @@ class AcademicCareerService {
         this.subjectHistoryRepository = SubjectHistoryRepository;
         this.studentService = StudentService;
         this.schoolYearService = SchoolYearService;
+        this.subjectHistoryService = SubjectHistoryService;
         this.studentRepository = StudentRepository;
         this.subjectRepository = SubjectRepository;
         this.createAppError = createAppError;
     }
 
-    addLastChanceRisk({ subject , currentSemester }) {
+    addLastChanceRisk({ subject , currentSemester, mode }) {
 
-        const newPhase  = { phaseStatus: 'Por cursar', semester: currentSemester };
+        const newPhase  = { phaseStatus: 'Por cursar', semester: currentSemester, mode };
         const subjectPhase = subject?.history?.phase;
         let atRisk = '';
         let phase = [newPhase];
@@ -68,7 +70,7 @@ class AcademicCareerService {
         
         unapprovedSubjects.forEach((subject, idx) => {
         
-            const {  requiredSubjects, semester } = subject;
+            const { requiredSubjects, semester } = subject;
             const isEquivalentSemester =  this.isEquivalentSemester(semester, currentSemester);
                         
             if(isEquivalentSemester && semester <= currentSemester ) {
@@ -77,15 +79,23 @@ class AcademicCareerService {
                 
                 if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
 
-                    const { phase, atRisk } = this.addLastChanceRisk({ subject, currentSemester });
+                    const { phase, atRisk } = this.addLastChanceRisk({ 
+                        subject, 
+                        currentSemester, 
+                        mode: subject.mode ?? 'normal'
+                    });
 
                     amountOfSubjects = this.addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects });
                     
+                    if(subject.hasModifications) {
+                        console.log(subject.hasModifications)
+                    }
                     const subjectToPush = {
                         ...subject,
                         phase,
                         semester: currentSemester,
                         atRisk,
+                        hasModifications: Boolean(subject.hasModifications)
                     }
                     
                     subjects.push(subjectToPush);
@@ -293,11 +303,12 @@ class AcademicCareerService {
         userId,
     }) {
 
-        const preparedSubjects = subjects.map(({ _id, semester, phase, atRisk }) => ({
+        const preparedSubjects = subjects.map(({ _id, semester, phase, atRisk, hasModifications }) => ({
             subject: _id,
             phase,
             atRisk: atRisk || '',
-            semester
+            semester,
+            hasModifications
         }));
 
         const { _id, currentPhase } =  await this.schoolYearService.findCurrentSchoolYear();
@@ -430,6 +441,7 @@ class AcademicCareerService {
         subjectId, 
         newSemester, 
         authenticatedUser,
+        mode,
         subjectsInSemester, 
         canAdvanceSubject,  
         hasValidation,
@@ -438,7 +450,11 @@ class AcademicCareerService {
         const userIdMongo = ObjectId(userId);
         const { currentSemester } = await this.studentService.findStudent(userIdMongo);
 
-        if(newSemester < currentSemester ) {
+        if(mode === 'intersemestral' && newSemester < currentSemester - 1) {
+            throw this.createAppError('El semestre de la materia intersemestral incorrecto', 400);
+        }
+
+        if(newSemester < currentSemester && mode !== 'intersemestral') {
             throw this.createAppError('El semestre de la materia no puede ser menor al semestre actual del alumno', 400);
         }
 
@@ -460,13 +476,29 @@ class AcademicCareerService {
             throw this.createAppError('No puede actualizar una materia que ya a sido aprobada o este cursando', 400);
         }
         
-        const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, ids);
+        const modifiedSubjects = await this.getSubjectsWithHasModifications(userIdMongo);
+        const modifiedSubjectsId = modifiedSubjects.map(({_id}) => _id);
+
+        const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, [...ids, ...modifiedSubjectsId]);
 
         const subjectIdx = unapprovedSubjects.findIndex(({ _id }) => _id.toString() === subjectId);
+        const phase  = unapprovedSubjects[subjectIdx]?.history?.phase;
+
+        if(phase && phase.length > 0) {
+            const lastPhase = phase.length > 1 ? phase[phase.length - 1] : phase[0];
+            this.subjectHistoryService.validModeBeforeToSave({ 
+                phase: lastPhase, 
+                mode, 
+                semester: newSemester 
+            });
+        }
+
         unapprovedSubjects[subjectIdx].semester = newSemester;
+        unapprovedSubjects[subjectIdx].hasModifications = true;
+        unapprovedSubjects[subjectIdx].mode = mode;
 
         return await this.createAcademicCareer({
-            subjects,
+            subjects: [...subjects, ...modifiedSubjects],
             unapprovedSubjects,
             currentSemester,
             subjectsInSemester, 
@@ -477,6 +509,40 @@ class AcademicCareerService {
         });
 
     }
+
+    async getSubjectsWithHasModifications(userId) {
+        const data = await this.academicCareerRepository.entity.aggregate([
+            { $match: { student: userId }},
+            { $unwind: '$subjects' },
+            { $match: { 'subjects.hasModifications': true }},
+            { $lookup: {
+                from:'subjects',
+                localField: 'subjects.subject',
+                foreignField: '_id',
+                as: 'subjects.subject',
+                pipeline: [
+                    { $project: { name: 1, requiredSubjects: 1 } }
+                ]
+            }},
+            { $unwind: { 'path': '$subjects.subject' }},
+            {
+                $project: {
+                    _id: 0,
+                    subjects: 1
+                }
+            }
+        ]);
+
+        return data.map(({ subjects }) => {
+            const { subject, ...rest } = subjects;
+            return {
+                ...rest,
+                _id: subject._id,
+                name: subject.name,
+                requiredSubjects: subject.requiredSubjects
+            }
+        });
+     }
 
     async findDataToExcel(userId) {
 
