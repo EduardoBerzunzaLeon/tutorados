@@ -38,13 +38,26 @@ class AcademicCareerDTO {
       return resources.map((resource) => this.single(resource));
     };
     
-    singleExcel = ({ subject, atRisk, semester, firstPhase, secondPhase, thirdPhase }) => ({
+    singleExcel = ({ 
+      subject,
+      atRisk,
+      semester,
+      firstPhase,
+      secondPhase,
+      thirdPhase,
+      firstPhaseMode,
+      secondPhaseMode,
+      thirdPhaseMode
+    }) => ({
       subject,
       atRisk,
       semester,
       firstPhase: firstPhase || '',
+      firstPhaseMode: firstPhaseMode || '',
       secondPhase: secondPhase || '',
+      secondPhaseMode: secondPhaseMode || '',
       thirdPhase: thirdPhase || '',
+      thirdPhaseMode: thirdPhaseMode || '',
     });
 
     multipleExcel = (resources) => {

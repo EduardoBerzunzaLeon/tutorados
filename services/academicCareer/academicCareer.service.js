@@ -73,11 +73,11 @@ class AcademicCareerService {
             const { requiredSubjects, semester } = subject;
             const isEquivalentSemester =  this.isEquivalentSemester(semester, currentSemester);
                         
-            if(!isEquivalentSemester || semester > currentSemester) return;
-            
-            const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
-            
-            if( !hasAllRequiredSubjects && requiredSubjects.length !== 0 ) return; 
+            if(isEquivalentSemester && semester <= currentSemester ) {
+                    
+                const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
+                
+                if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
 
                     const { phase, atRisk } = this.addLastChanceRisk({ 
                         subject, 
@@ -545,9 +545,7 @@ class AcademicCareerService {
      }
 
     async findDataToExcel(userId) {
-
-        // TODO: Add mode in the subject
-
+  
         if(!ObjectId.isValid(userId)) {
             throw this.createAppError('el alumno no valido, favor de verificarlo', 400);
         }
@@ -597,6 +595,12 @@ class AcademicCareerService {
                                         ]}
                                      },
                                 },
+                                firstPhaseMode: {
+                                    $let: {
+                                        vars: { element: { $arrayElemAt: [ '$$subjects.phase', 0 ]}},
+                                        in: '$$element.mode'
+                                    }
+                                },
                                 secondPhase: {
                                     $let: {
                                         vars: {
@@ -609,10 +613,16 @@ class AcademicCareerService {
                                         ]}
                                      },
                                 },
+                                secondPhaseMode: {
+                                    $let: {
+                                        vars: { element: { $arrayElemAt: [ '$$subjects.phase', 1 ]}},
+                                        in: '$$element.mode'
+                                    }
+                                },
                                 thirdPhase: {
                                     $let: {
                                         vars: {
-                                           fstCustomer: { $arrayElemAt: [ '$$subjects.phase', 2 ] }                
+                                           fstCustomer: { $arrayElemAt: [ '$$subjects.phase', 2 ]}                
                                         },
                                         in: { $concat: [
                                             '$$fstCustomer.phaseStatus', 
@@ -620,6 +630,12 @@ class AcademicCareerService {
                                             { $convert: { input: '$$fstCustomer.semester', to: 'string' }}
                                         ]}
                                      },
+                                },
+                                thirdPhaseMode: {
+                                    $let: {
+                                        vars: { element: { $arrayElemAt: [ '$$subjects.phase', 2 ]}},
+                                        in: '$$element.mode'
+                                    }
                                 },
                             }
                         }
