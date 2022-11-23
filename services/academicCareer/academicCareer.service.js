@@ -40,20 +40,21 @@ class AcademicCareerService {
     }
 
     addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects }) {
+
         const position = subjects.length - 1;
         const lastSemester = subjects.length > 0 
             ? subjects[position].semester
             : currentSemester;
-            
+        
         if(lastSemester === currentSemester) {
             amountOfSubjects ++;
-        } else {
-            if(amountOfSubjects === 1) {
-                subjects[position].atRisk += 'Unica materia.'; 
-            }
-            amountOfSubjects = 1;
-        }
+            return amountOfSubjects;
+        } 
 
+        if(amountOfSubjects === 1) {
+            subjects[position].atRisk += 'Unica materia.'; 
+        }
+        amountOfSubjects = 1;
         return amountOfSubjects;
     }
 
@@ -62,7 +63,7 @@ class AcademicCareerService {
         return  subtraction % 2 === 0;
     }
 
-    calculateSubjects({ subjects, unapprovedSubjects, currentSemester, amountOfSubjects }) {
+    calculateSubjects({ subjects, unapprovedSubjects, currentSemester, amountOfSubjects, totalSubjects }) {
 
         const subjectsId = subjects.map(({ _id }) => (_id.toString()));
         const unapprovedSubjectsCopy = [ ...unapprovedSubjects ];
@@ -72,29 +73,27 @@ class AcademicCareerService {
         
             const { requiredSubjects, semester } = subject;
             const isEquivalentSemester =  this.isEquivalentSemester(semester, currentSemester);
-                        
+
+            
             if(isEquivalentSemester && semester <= currentSemester ) {
-                    
+                
                 const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
                 
                 if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
-
+                    
                     const { phase, atRisk } = this.addLastChanceRisk({ 
                         subject, 
                         currentSemester, 
                         mode: subject.mode ?? 'normal'
                     });
 
-                    amountOfSubjects = this.addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects });
                     
-                    if(subject.hasModifications) {
-                        console.log(subject.hasModifications)
-                    }
+                    amountOfSubjects = this.addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects });
                     const subjectToPush = {
                         ...subject,
                         phase,
                         semester: currentSemester,
-                        atRisk,
+                        atRisk: totalSubjects === subjects.length + 1 && amountOfSubjects === 1 ? `${atRisk}Unica materia.` : atRisk,
                         hasModifications: Boolean(subject.hasModifications)
                     }
                     
@@ -114,7 +113,8 @@ class AcademicCareerService {
             subjects, 
             unapprovedSubjects: unapprovedSubjectsCopy, 
             currentSemester: currentSemester + 1,
-            amountOfSubjects
+            amountOfSubjects,
+            totalSubjects
          });
 
     }
@@ -122,7 +122,7 @@ class AcademicCareerService {
     adjustBySemester(subjects) {
 
         const subjectsTree = subjects.reduce(( acc, { subject, semester, phase, atRisk } ) => {
-            const key  = semester - 1;
+            const key = semester - 1;
             const { _id, name } = subject;
 
             if(!acc[key]) {
@@ -150,6 +150,7 @@ class AcademicCareerService {
                     droppable: false
                 }
             });
+
 
             return acc;
         }, []);
@@ -242,13 +243,16 @@ class AcademicCareerService {
         hasValidation,
         authenticatedUser,
         userId
+
     }) {
+        const totalSubjects = await this.subjectRepository.entity.find().countDocuments();
 
         const { subjects: calculatedSubjects } = this.calculateSubjects({ 
             subjects, 
             unapprovedSubjects, 
             currentSemester, 
-            amountOfSubjects: 0 
+            amountOfSubjects: 0,
+            totalSubjects
         });
 
         if(!calculatedSubjects) {
@@ -280,6 +284,7 @@ class AcademicCareerService {
         const { currentSemester } = await this.studentService.findStudent(userIdMongo);
         const { subjects, ids } = await this.getApprovedSubjects(userIdMongo);
         const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, ids);
+        
 
         return await this.createAcademicCareer({
             subjects,

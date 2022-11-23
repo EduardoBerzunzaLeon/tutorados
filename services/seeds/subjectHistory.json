@@ -87,6 +87,14 @@
             },
             "semester": 1,
             "mode": "normal"
+        },
+        {
+            "phaseStatus": "reprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1,
+            "mode": "intersemestral"
         }
     ]
 },
