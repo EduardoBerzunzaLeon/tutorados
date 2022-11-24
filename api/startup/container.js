@@ -24,6 +24,7 @@ const { AcademicCareerController, AcademicCareerDTO, academicCareerRoutes } = re
 const { SchoolYearController, SchoolYearDTO, schoolYearRoutes } = require('../components/schoolYear');
 const { FailedSubjectController, FailedSubjectDTO, failedSubjectRoutes } = require('../components/failedSubject');
 const { CurrentSubjectController, CurrentSubjectDTO, currentSubjectRoutes } = require('../components/currentSubject');
+const { IntersemestralSubjectController, IntersemestralSubjectDTO, intersemestralSubjectRoutes } = require('../components/intersemestralSubject');
 const { SeedController, seedRoutes } = require('../components/seeds');
 const { AuthController } = require('../components/auth');
 
@@ -69,6 +70,7 @@ const {
   FailedSubjectsService,
   FeaturesSchoolYearService,
   SubjectsForSchoolYearService,
+  IntersemestralSubjectsService
 } = require('../../services/schoolYearProcess/');
 
 const { EmailService, EmailTemplates } = require('../../services/email');
@@ -84,6 +86,7 @@ const { AcademicCareerRepository, AcademicCareerEntity } = require('../../dal/ac
 const { SchoolYearRepository, SchoolYearEntity } = require('../../dal/schoolYear');
 const { CurrentSubjectsRepository, CurrentSubjectsEntity } = require('../../dal/currentSubjects');
 const { FailedSubjectsRepository, FailedSubjectsEntity } = require('../../dal/failedSubjects');
+const { IntersemestralSubjectsRepository, IntersemestralSubjectsEntity } = require('../../dal/intersemestralSubjects');
 
 const container = createContainer();
 
@@ -200,7 +203,7 @@ container
     SubjectHistoryEntity: asValue(SubjectHistoryEntity),
     SubjectHistoryService: asClass(SubjectHistoryService).singleton(),
   })
-  // * Current Subjects
+  // * Current Subjects File
   .register({
     CurrentSubjectsRepository: asClass(CurrentSubjectsRepository).singleton(),
     CurrentSubjectsEntity: asValue(CurrentSubjectsEntity),
@@ -209,7 +212,7 @@ container
     currentSubjectRoutes: asFunction(currentSubjectRoutes).singleton(),
     CurrentSubjectDTO: asClass(CurrentSubjectDTO).singleton(),
   })
-  // * Failed Subjects
+  // * Failed Subjects File
   .register({
     FailedSubjectsRepository: asClass(FailedSubjectsRepository).singleton(),
     FailedSubjectsEntity: asValue(FailedSubjectsEntity),
@@ -217,6 +220,15 @@ container
     FailedSubjectController: asFunction(FailedSubjectController).singleton(),
     failedSubjectRoutes: asFunction(failedSubjectRoutes).singleton(),
     FailedSubjectDTO: asClass(FailedSubjectDTO).singleton(),
+  })
+  // * Intersemestral Subjects File
+  .register({
+    IntersemestralSubjectsRepository: asClass(IntersemestralSubjectsRepository).singleton(),
+    IntersemestralSubjectsEntity: asValue(IntersemestralSubjectsEntity),
+    IntersemestralSubjectsService: asClass(IntersemestralSubjectsService).singleton(),
+    IntersemestralSubjectController: asFunction(IntersemestralSubjectController).singleton(),
+    intersemestralSubjectRoutes: asFunction(intersemestralSubjectRoutes).singleton(),
+    IntersemestralSubjectDTO: asClass(IntersemestralSubjectDTO).singleton(),
   })
   // * Files
   .register({

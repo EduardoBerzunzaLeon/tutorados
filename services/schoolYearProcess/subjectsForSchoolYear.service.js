@@ -5,6 +5,7 @@ class SubjectsForSchoolYearService {
         features,
         CurrentSubjectsService,
         FailedSubjectsService,
+        IntersemestralSubjectsService,
         FeaturesSchoolYearService,
         StudentService,
         SubjectHistoryService,
@@ -13,6 +14,7 @@ class SubjectsForSchoolYearService {
         this.decodeFile = features.decodeFileToString;
         this.currentSubjectsService = CurrentSubjectsService;
         this.failedSubjectsService = FailedSubjectsService;
+        this.intersemestralSubjectsService = IntersemestralSubjectsService;
         this.featuresService = FeaturesSchoolYearService;
         this.studentService = StudentService;
         this.subjectHistoryService = SubjectHistoryService;
@@ -25,7 +27,7 @@ class SubjectsForSchoolYearService {
         }
 
         const { oldSchoolYear, newSchoolYear } = this.featuresService.getCorrectSchoolYear(currentSchoolYear);        
-        const [ failureSubjectsFile, newSubjectsFile ] = files;
+        const [ failureSubjectsFile, newSubjectsFile, interSubjectsFile ] = files;
 
         await Promise.all([
             this.featuresService.loadData({ 
@@ -37,16 +39,28 @@ class SubjectsForSchoolYearService {
                 schoolYear: newSchoolYear, 
                 file: newSubjectsFile,
                 service: this.currentSubjectsService
-            })
+            }),
+            this.featuresService.loadData({ 
+                schoolYear: oldSchoolYear, 
+                file: interSubjectsFile,
+                service: this.intersemestralSubjectsService,
+                cb: this.intersemestralSubjectsService.prepareObject,
+                isEmptyAllowed: true
+            }),
         ]);
 
         await this.studentService.increaseSemester();
 
-        await Promise.all([
-            this.failedSubjectsService.updateHistory({ period: oldSchoolYear.period, phase: oldSchoolYear.phase }),
-            this.currentSubjectsService.updateHistory({ period: newSchoolYear.period, phase: newSchoolYear.phase })
-        ]);
+        const subjectPromises = [
+            this.failedSubjectsService.updateHistory({ ...oldSchoolYear }),
+            this.currentSubjectsService.updateHistory({ ...newSchoolYear }),
+        ]
 
+        if(interSubjectsFile) {
+           subjectPromises.push(this.intersemestralSubjectsService.updateHistory({ ...oldSchoolYear })) 
+        }
+
+        await Promise.all(subjectPromises);
     }
 
 }

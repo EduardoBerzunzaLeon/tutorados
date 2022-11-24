@@ -8,18 +8,32 @@ class FeaturesSchoolYear {
         this.decodeFile = features.decodeFileToString;
     }
 
-   async loadData({ schoolYear, file, service }) {
-        const decodedFile = service.decodeFile(file);
-
+   async loadData({ 
+        schoolYear, 
+        file, 
+        service, 
+        columnSize = 2, 
+        cb = genericCallBack, 
+        isEmptyAllowed = false 
+    }) {
+        if(!file && !isEmptyAllowed) 
+            throw this.createAppError('No se encontro el archivo, favor de mandar los archivos necesarios.', 400);
+        
         await service.delete(schoolYear);
 
+        if(isEmptyAllowed && !file) return;
+
+        const decodedFile = service.decodeFile(file);
         const dataConverted = this.convertStringToObject({
             str: decodedFile, 
             schoolYear: schoolYear,
-            columnSize: 2
+            columnSize,
+            cb
         });
 
+
         const dataSaved = await service.create(dataConverted);
+
 
         if(dataSaved.length !== dataConverted.length) {
             await service.delete(schoolYear);
@@ -262,7 +276,7 @@ class FeaturesSchoolYear {
         ]
     }
 
-    convertStringToObject({ str, schoolYear, columnSize }) {
+    convertStringToObject({ str, schoolYear, columnSize, cb }) {
 
         const arrayOfRows = str.split('\r\n');
 
@@ -274,15 +288,18 @@ class FeaturesSchoolYear {
                 throw this.createAppError('El archivo cargado no tiene la estructura requerida', 500);
             }
 
-            const [ enrollment, subject ] = columns;
-            return  {
-                schoolYear,
-                enrollment,
-                subject,
-            }
+            return cb(schoolYear, columns)
 
         });
+    }
 
+    genericCallBack(schoolYear, columns) {
+        const [ enrollment, subject ] = columns;
+        return  {
+            schoolYear,
+            enrollment,
+            subject,
+        }
     }
 }
 
