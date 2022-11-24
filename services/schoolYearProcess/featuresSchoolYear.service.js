@@ -12,8 +12,8 @@ class FeaturesSchoolYear {
         schoolYear, 
         file, 
         service, 
+        cb, 
         columnSize = 2, 
-        cb = genericCallBack, 
         isEmptyAllowed = false 
     }) {
         if(!file && !isEmptyAllowed) 

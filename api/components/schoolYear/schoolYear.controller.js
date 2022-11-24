@@ -13,8 +13,6 @@ module.exports = ({
   
     
     const create = (self) => async (req, res) => {
-
-
       await self.service.create({ 
         files: req.files, 
         authenticatedUser: req.user._id,

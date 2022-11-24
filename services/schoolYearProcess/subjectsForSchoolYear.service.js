@@ -33,12 +33,14 @@ class SubjectsForSchoolYearService {
             this.featuresService.loadData({ 
                 schoolYear: oldSchoolYear, 
                 file: failureSubjectsFile,
-                service: this.failedSubjectsService
+                service: this.failedSubjectsService,
+                cb: this.featuresService.genericCallBack
             }),
             this.featuresService.loadData({ 
                 schoolYear: newSchoolYear, 
                 file: newSubjectsFile,
-                service: this.currentSubjectsService
+                service: this.currentSubjectsService,
+                cb: this.featuresService.genericCallBack
             }),
             this.featuresService.loadData({ 
                 schoolYear: oldSchoolYear, 

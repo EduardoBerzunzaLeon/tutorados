@@ -18,7 +18,7 @@ module.exports = function({
 
     router.get('/', restrictTo(get_school_year), SchoolYearController.findCurrentSchoolYear);
     router.post('/', restrictTo(create_school_year), 
-    UploadMultiplesFiles(/\.(csv|txt)$/i, '2', 'files'),
+    UploadMultiplesFiles(/\.(csv|txt)$/i, '3', 'files'),
     verifyPassword,
     SchoolYearController.create);
 
