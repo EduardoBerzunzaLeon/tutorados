@@ -237,6 +237,7 @@ class SubjectHistoryService  {
         if(this.isEmpty(subjects)) {
             throw this.createAppError('Materias Sin cursar del alumno no encontradas', 404);
         }
+        
 
         return subjects;
    }

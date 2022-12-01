@@ -198,8 +198,8 @@ class AcademicCareerService {
             }
         ]);
 
-        return approvedSubjects.reduce((acc, { subject }) => {
-            acc.subjects.push(subject);
+        return approvedSubjects.reduce((acc, { subject, lastPhase }) => {
+            acc.subjects.push({...subject, semester: lastPhase.semester});
             acc.ids.push(subject._id);
             return acc;
         }, { subjects: [], ids: [] });
@@ -285,6 +285,7 @@ class AcademicCareerService {
         const { subjects, ids } = await this.getApprovedSubjects(userIdMongo);
         const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, ids);
         
+  
 
         return await this.createAcademicCareer({
             subjects,
@@ -453,6 +454,7 @@ class AcademicCareerService {
      }) {
 
         const userIdMongo = ObjectId(userId);
+
         const { currentSemester } = await this.studentService.findStudent(userIdMongo);
 
         if(mode === 'intersemestral' && newSemester < currentSemester - 1) {
@@ -480,13 +482,20 @@ class AcademicCareerService {
         if(ids.includes(ObjectId(subjectId))) {
             throw this.createAppError('No puede actualizar una materia que ya a sido aprobada o este cursando', 400);
         }
-        
-        const modifiedSubjects = await this.getSubjectsWithHasModifications(userIdMongo);
-        const modifiedSubjectsId = modifiedSubjects.map(({_id}) => _id);
+        const subjectIdMongo = ObjectId(subjectId);
 
+        const modifiedSubjects = await this.getSubjectsWithHasModifications(userIdMongo, subjectIdMongo);
+        
+        const modifiedSubjectsId = modifiedSubjects.map(({_id}) => _id);
+        
         const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, [...ids, ...modifiedSubjectsId]);
 
         const subjectIdx = unapprovedSubjects.findIndex(({ _id }) => _id.toString() === subjectId);
+
+        if(subjectIdx === -1 ) {
+            throw this.createAppError('La materia a modificar esta aprobada', 400);
+        }
+
         const phase  = unapprovedSubjects[subjectIdx]?.history?.phase;
 
         if(phase && phase.length > 0) {
@@ -515,11 +524,11 @@ class AcademicCareerService {
 
     }
 
-    async getSubjectsWithHasModifications(userId) {
+    async getSubjectsWithHasModifications(userId, subjectId) {
         const data = await this.academicCareerRepository.entity.aggregate([
             { $match: { student: userId }},
             { $unwind: '$subjects' },
-            { $match: { 'subjects.hasModifications': true }},
+            { $match: { 'subjects.hasModifications': true, 'subjects.subject': { $ne: subjectId }}},
             { $lookup: {
                 from:'subjects',
                 localField: 'subjects.subject',
@@ -540,6 +549,7 @@ class AcademicCareerService {
 
         return data.map(({ subjects }) => {
             const { subject, ...rest } = subjects;
+
             return {
                 ...rest,
                 _id: subject._id,

@@ -31,7 +31,7 @@ module.exports = function ({
   apiRoute.use('/seed', seedRoutes);
   apiRoute.use('/failedSubjects', failedSubjectRoutes);
   apiRoute.use('/currentSubjects', currentSubjectRoutes);
-  apiRoute.use('/interSubjects', intersemestralSubjectRoutes);
+  apiRoute.use('/intersemestralSubjects', intersemestralSubjectRoutes);
 
   router.use(`/api/${config.API_VERSION}`, apiRoute);
   router.use(`/`, fileRoutes);

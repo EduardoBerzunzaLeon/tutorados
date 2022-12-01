@@ -35,7 +35,7 @@ class SubjectDTO {
         mode: '',
       },
       children: resource.subjects.map( ({ subject, phaseStatus, step, mode }) => ({
-        key: `${subject._id} - ${ resource._id }`,
+        key: `${subject._id} - ${ resource._id } - ${ mode }`,
         data: {
           subject: subject.name,
           status: phaseStatus,

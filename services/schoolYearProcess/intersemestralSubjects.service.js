@@ -117,11 +117,11 @@ class IntersemestralSubjectsService {
     }
 
     prepareObject(schoolYear, columns) {
-        const [ enrollment, subject, status ] = columns;
+        const [ enrollment, subject, passed ] = columns;
         return  {
             enrollment,
             schoolYear,
-            status,
+            passed,
             subject,
         }
     }

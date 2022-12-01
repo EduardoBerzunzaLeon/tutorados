@@ -9,7 +9,7 @@ const validErrors = {
     message: '{VALUE} no es un error válido'
 };
 
-const validStatus = {
+const validPassed = {
     values: [ 'aprobado', 'reprobado' ],
     message: '{VALUES} no es un error válido'
 }
@@ -28,12 +28,12 @@ const intersemestralSubjectsSchema = new Schema({
         lowercase: true,
         minlength: [5, 'La materia debe ser mínimo de 5 carácteres'],
     },
-    status: {
+    passed: {
         type: String,
         required: [true, 'El estatus de la materia es obligatorio'],
         trim: true,
         lowercase: true,
-        enum: validStatus,
+        enum: validPassed,
     },
     schoolYear: {
         period: {
