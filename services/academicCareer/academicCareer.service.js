@@ -63,45 +63,46 @@ class AcademicCareerService {
         return  subtraction % 2 === 0;
     }
 
-    calculateSubjects({ subjects, unapprovedSubjects, currentSemester, amountOfSubjects, totalSubjects }) {
+    calculateSubjects({ subjects, unapprovedSubjects, currentSemester, amountOfSubjects, totalSubjects, maxSubjects = 6 }) {
 
         const subjectsId = subjects.map(({ _id }) => (_id.toString()));
         const unapprovedSubjectsCopy = [ ...unapprovedSubjects ];
         let count = 0; 
         
-        unapprovedSubjects.forEach((subject, idx) => {
+        unapprovedSubjects.some((subject, idx) => {
         
             const { requiredSubjects, semester } = subject;
             const isEquivalentSemester =  this.isEquivalentSemester(semester, currentSemester);
 
+            if(!isEquivalentSemester || semester > currentSemester) return false;
             
-            if(isEquivalentSemester && semester <= currentSemester ) {
-                
-                const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
-                
-                if(hasAllRequiredSubjects || requiredSubjects.length === 0) {
-                    
-                    const { phase, atRisk } = this.addLastChanceRisk({ 
-                        subject, 
-                        currentSemester, 
-                        mode: subject.mode ?? 'normal'
-                    });
+            const hasAllRequiredSubjects = requiredSubjects.every( r => subjectsId.includes(r.toString()));
 
-                    
-                    amountOfSubjects = this.addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects });
-                    const subjectToPush = {
-                        ...subject,
-                        phase,
-                        semester: currentSemester,
-                        atRisk: totalSubjects === subjects.length + 1 && amountOfSubjects === 1 ? `${atRisk}Unica materia.` : atRisk,
-                        hasModifications: Boolean(subject.hasModifications)
-                    }
-                    
-                    subjects.push(subjectToPush);
-                    unapprovedSubjectsCopy.splice(idx - count, 1);
-                    count ++;
-                }
+            if(!hasAllRequiredSubjects && requiredSubjects.length > 0) return false;
+                
+            const { phase, atRisk } = this.addLastChanceRisk({ 
+                subject, 
+                currentSemester, 
+                mode: subject.mode ?? 'normal'
+            });
+
+            
+            amountOfSubjects = this.addUniqueSubjectRisk( subjects, { currentSemester, amountOfSubjects });
+            const subjectToPush = {
+                ...subject,
+                phase,
+                semester: currentSemester,
+                atRisk: totalSubjects === subjects.length + 1 && amountOfSubjects === 1 ? `${atRisk}Unica materia.` : atRisk,
+                hasModifications: Boolean(subject.hasModifications)
             }
+            
+            subjects.push(subjectToPush);
+            unapprovedSubjectsCopy.splice(idx - count, 1);
+            count ++;
+
+            return (amountOfSubjects === maxSubjects);
+            
+            
         });
 
         if(currentSemester === 13 || unapprovedSubjectsCopy.length === 0 ) {
@@ -114,7 +115,8 @@ class AcademicCareerService {
             unapprovedSubjects: unapprovedSubjectsCopy, 
             currentSemester: currentSemester + 1,
             amountOfSubjects,
-            totalSubjects
+            totalSubjects,
+            maxSubjects
          });
 
     }
