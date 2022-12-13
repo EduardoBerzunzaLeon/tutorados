@@ -22,6 +22,8 @@ module.exports = function({
     router.get('/', restrictTo(get_students), StudentController.findStudents);
     router.get('/excel', restrictTo(get_students), StudentController.findByExcel);
     router.get('/:id/professors', restrictTo(get_students), StudentController.findProfessorsHistory);
+    router.get('/risk', restrictTo(get_students), StudentController.findAtRisk);
+    router.get('/chanelling', restrictTo(get_students), StudentController.findInChanelling);
 
     router.post(
         '/', 

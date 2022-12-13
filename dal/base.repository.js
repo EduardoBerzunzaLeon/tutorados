@@ -24,6 +24,7 @@ class BaseRepository {
   
   async findAggregation(agregation, params = {}, globalFields = undefined ) {
 
+    console.log(params);
     const aggregationWithFeatures = new APIFeaturesAggregationMongo(params, agregation, globalFields)
       .filter()
       .filterGlobal()

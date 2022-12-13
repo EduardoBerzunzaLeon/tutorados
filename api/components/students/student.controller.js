@@ -49,6 +49,32 @@ module.exports = ({
       });
     }
     
+    const findAtRisk = (self) => async (req, res) => {
+
+      const [ total, docs ] = await self.service.findByField(req.user, req.query, 'atRisk');
+      const data = self.dto.multipleByField(docs);
+  
+      return res.status(200).json({
+        status: 'success',
+        total,
+        data,
+      });
+
+    }
+
+    const findInChanelling = (self) => async (req, res) => {
+
+      const [ total, docs ] = await self.service.findByField(req.user, req.query,'inChannelling');
+      const data = self.dto.multipleByField(docs);
+  
+      return res.status(200).json({
+        status: 'success',
+        total,
+        data,
+      });
+      
+    }
+    
     const addNewProfessor = (self) => async (req, res) => {
       const { id } = req.params;
       await  self.service.addNewProfessor(id, req.body);
@@ -82,6 +108,8 @@ module.exports = ({
         findStudents: self.catchAsync(FactoryController.findDocs(self)),
         findProfessorsHistory: self.catchAsync(findProfessorsHistory(self)),
         findByExcel: self.catchAsync(findByExcel(self)),
+        findAtRisk: self.catchAsync(findAtRisk(self)),
+        findInChanelling: self.catchAsync(findInChanelling(self)),
         createStudent: self.catchAsync(createStudent(self)),
         updateStudent: self.catchAsync(
           FactoryController.updateByMethod(

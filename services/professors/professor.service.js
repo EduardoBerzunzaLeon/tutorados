@@ -1,5 +1,6 @@
 const { Types } = require('mongoose');
 
+
 class ProfessorService  {
 
     constructor({ ProfessorRepository, UserRepository, FileService, createAppError }) {
@@ -44,12 +45,10 @@ class ProfessorService  {
 
     async findById(id) {
 
-        if(!id) {
-            throw this.createAppError(
-              'El ID es obligatorio',
-              400
-            );
+        if(!Types.ObjectId.isValid(id)) {
+            throw this.createAppError('El profesor no es válido', 400);
         }
+
 
         const professor = await this.professorRepository.findOne({user: Types.ObjectId(id)}, { 
             path: 'subjects',

@@ -664,7 +664,7 @@
     },
     "phase": [
         {
-            "phaseStatus": "aprobado",
+            "phaseStatus": "reprobado",
             "date": {
                 "$numberLong": "1656176021869"
             },

@@ -30,6 +30,18 @@ class StudentDTO {
       avatar: resource?.avatar && this.getCompleteURLAvatar(resource?.avatar),
     });
 
+    singleByField = (resource) => ({
+      id: resource._id,
+      currentSemester: resource?.currentSemester,
+      classroom: resource?.classroom,
+      atRisk: resource?.atRisk,
+      inChannelling: resource?.inChannelling,
+      enrollment: resource?.enrollment,
+      user: {
+        ...resource.user,
+        avatar: resource?.user?.avatar && this.getCompleteURLAvatar(resource.user.avatar)
+      }
+    });
 
     setProfessorInHistory = (professor) => ({
       createdAt: professor.createdAt,
@@ -68,6 +80,10 @@ class StudentDTO {
 
     multiple = (resources) => {
       return resources.map((resource) => this.single(resource));
+    };
+
+    multipleByField = (resources) => {
+      return resources.map((resource) => this.singleByField(resource));
     };
     
     multipleByExcel = (resources) => {

@@ -75,7 +75,13 @@ class StudentService  {
         as: "professor"
     }},{ $unwind: "$professor" }];
 
-    constructor({ StudentRepository,  UserRepository, createAppError }) {
+    constructor({ 
+        StudentRepository,  
+        UserRepository, 
+        createAppError, 
+        ProfessorService 
+    }) {
+        this.professorService = ProfessorService;
         this.studentRepository = StudentRepository;
         this.userRepository = UserRepository;
         this.createAppError = createAppError;
@@ -174,7 +180,50 @@ class StudentService  {
         const [ newData ] = data;
         return newData;
     }
+    
+    async findByField(user, query, field) {
 
+        const { roles, _id } = user;
+        const aggregation = [{
+            $lookup: {
+                from: 'users',
+                foreignField: '_id',
+                localField: 'user',
+                pipeline: [
+                    { $project: { _id: 1, email: 1, gender: 1, avatar: 1, name: 1}}
+                ],
+                as: 'user',
+            }
+        },
+        { $unwind: '$user'},
+        { $project: {
+            _id: 1,
+            currentSemester: 1,
+            classroom: 1,
+            atRisk: 1,
+            inChannelling: 1,
+            user: 1,
+            enrollment: 1,
+        }}];
+
+        if(roles.includes('professor') && !roles.includes('admin')) {
+            return  await this.studentRepository.findAggregation([
+                { $addFields: { lastProfessor: { $last: '$professorsHistory.professor'} }},
+                { $match: { lastProfessor: _id, [field]: { $ne: 'no' }}},
+                ...aggregation
+             ], query);
+        }
+
+        if(roles.includes('admin')) {
+            return await this.studentRepository.findAggregation([
+                { $match: { [field]: { $ne: 'no' }}},
+                ...aggregation
+             ], query);
+        }
+
+        return [];
+
+    }
 
     async create({ userId, studentData }) {
 
