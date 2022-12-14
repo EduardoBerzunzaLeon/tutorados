@@ -79,12 +79,14 @@ class StudentService  {
         StudentRepository,  
         UserRepository, 
         createAppError, 
-        ProfessorService 
+        ProfessorService,
+        generateRandomString
     }) {
         this.professorService = ProfessorService;
         this.studentRepository = StudentRepository;
         this.userRepository = UserRepository;
         this.createAppError = createAppError;
+        this.generateRandomString = generateRandomString;
     }
 
     async find(query) {        
@@ -231,7 +233,7 @@ class StudentService  {
             throw this.createAppError('El usuario es obligatorios', 500);
 
         const studentInfo = studentData ?? { 
-            enrollment: 'AAAAAA', 
+            enrollment: this.generateRandomString(5), 
             currentSemester: 1,
             classroom: 'A',
             professor: '608064aa1d7963091081ab5d',
