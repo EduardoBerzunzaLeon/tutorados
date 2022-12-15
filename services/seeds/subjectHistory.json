@@ -726,5 +726,565 @@
             "mode": "normal"
         }
     ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "633377969f60166b5ce8328d"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "633377469f60166b5ce8327f"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "6333776e9f60166b5ce83286"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "629a3a34afdb9840f0eadee3"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "627efd044c781f6a8c6608e0"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "6282f1c7cd87677f88ffcb0f"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 1,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "6282f293cd87677f88ffcb1a"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 2,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "633377b79f60166b5ce83294"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 2,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "633377f49f60166b5ce832ab"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 2,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "633378089f60166b5ce832b2"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 2,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "629a3a50afdb9840f0eadef0"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 2,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "633378649f60166b5ce832c0"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 2,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "6333797d9f60166b5ce832ca"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 3,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "6333799e9f60166b5ce832d1"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 3,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "629a3a68afdb9840f0eadefd"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 3,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "633379f79f60166b5ce832d8"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 3,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "63337ad69f60166b5ce832f4"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 3,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "63337aa59f60166b5ce832e6"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "reprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 3,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "63337b059f60166b5ce8330b"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 4,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "63337b2a9f60166b5ce83314"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 4,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "63337b4b9f60166b5ce8331d"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 4,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "63337b7f9f60166b5ce8332f"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "reprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 4,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "633378259f60166b5ce832b9"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "reprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 2,
+            "mode": "normal"
+        },
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 4,
+            "mode": "normal"
+        }
+    ]
+},
+{
+    "student": {
+        "$oid": "63993d680227aa23944718db"
+    },
+    "subject": {
+        "$oid": "63337b959f60166b5ce83338"
+    },
+    "createdAt": {
+        "$date": {
+            "$numberLong": "1656176021869"
+        }
+    },
+    "phase": [
+        {
+            "phaseStatus": "aprobado",
+            "date": {
+                "$numberLong": "1656176021869"
+            },
+            "semester": 4,
+            "mode": "normal"
+        }
+    ]
 }
 ]

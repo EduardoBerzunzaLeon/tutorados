@@ -100,8 +100,7 @@ class SubjectHistoryService  {
         ]);
 
         studentData.subjectHistory = this.isEmpty(subjects) ? [] : subjects;
-        
-        console.log(studentData);
+
         return studentData;
     }
 
@@ -249,7 +248,7 @@ class SubjectHistoryService  {
             subject
          });
 
-         
+
     if(phase.length === 3 && phase[2].phaseStatus !== 'aprobado') {
         return await this.studentRepository.updateOne({ user: userId }, { atRisk: 'ultimo intento' });            
         // const[ , , { phaseStatus }] = phase;

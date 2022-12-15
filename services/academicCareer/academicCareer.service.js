@@ -53,6 +53,7 @@ class AcademicCareerService {
 
         if(amountOfSubjects === 1) {
             subjects[position].atRisk += 'Unica materia.'; 
+            this.atRisk = '';
         }
         amountOfSubjects = 1;
         return amountOfSubjects;
@@ -121,6 +122,16 @@ class AcademicCareerService {
 
     }
 
+    async changeAtRisk(subjects, userId) {
+        const subjectAtRisk = subjects.find(({ atRisk }) => atRisk !== '');
+        const atRisk = subjectAtRisk ? subjectAtRisk.atRisk.split('.')[0] : 'no';
+        const userUpdated = await this.studentRepository.updateOne({ user: userId }, { atRisk });
+
+        if(userUpdated) return;
+
+        throw this.createAppError('No se pudo actualizar su en riesgo', 500);
+    }
+
     adjustBySemester(subjects) {
 
         const subjectsTree = subjects.reduce(( acc, { subject, semester, phase, atRisk } ) => {
@@ -141,6 +152,7 @@ class AcademicCareerService {
                 };
             }
 
+
             acc[key]['children'].push({
                 key: _id,
                 data: {
@@ -152,7 +164,6 @@ class AcademicCareerService {
                     droppable: false
                 }
             });
-
 
             return acc;
         }, []);
@@ -439,6 +450,8 @@ class AcademicCareerService {
             $match: { _id: { $nin: subjectsId }}
         }]);
 
+        await this.changeAtRisk(academicCareer.subjects, userIdMongo);
+
         academicCareer.subjects = this.adjustBySemester( academicCareer.subjects );
 
         return { ...response, academicCareer, unaddedSubjects };
@@ -489,16 +502,24 @@ class AcademicCareerService {
         const modifiedSubjects = await this.getSubjectsWithHasModifications(userIdMongo, subjectIdMongo);
         
         const modifiedSubjectsId = modifiedSubjects.map(({_id}) => _id);
-        
+
         const unapprovedSubjects = await this.getUnapprovedSubjects(userIdMongo, [...ids, ...modifiedSubjectsId]);
-
+        
         const subjectIdx = unapprovedSubjects.findIndex(({ _id }) => _id.toString() === subjectId);
-
+        
         if(subjectIdx === -1 ) {
             throw this.createAppError('La materia a modificar esta aprobada', 400);
         }
+        
+        const currentSubject = unapprovedSubjects[subjectIdx];
+        modifiedSubjects.forEach((ms) => {
+            const reqSubjectIdx = currentSubject.requiredSubjects.findIndex( id => ms._id.toString() === id.toString());
+            if(reqSubjectIdx !== -1 && newSemester <= ms.semester ) {
+                throw this.createAppError(`Tiene materias requeridas (${ms.name} - ${ms.semester}) actualizadas en semestre superior o igual, favor de verificarlas`, 400);
+            }
+        });
 
-        const phase  = unapprovedSubjects[subjectIdx]?.history?.phase;
+        const phase  = currentSubject.history?.phase;
 
         if(phase && phase.length > 0) {
             const lastPhase = phase.length > 1 ? phase[phase.length - 1] : phase[0];

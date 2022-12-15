@@ -2,64 +2,64 @@
   "_id": {
     "$oid": "608064aa1d7963091081ab5d"
   },
+  "avatar": "3890d173739ede982f310ebb9d2e9e.jpg",
+  "roles": [
+    "admin",
+    "mentor"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669943906446"
+    }
+  },
   "active": true,
+  "blocked": false,
   "google": true,
+  "facebook": false,
   "name": {
     "first": "eduardo jesús",
     "last": "berzunza león"
   },
   "email": "eduardoberzunzal@gmail.com",
-  "password": "123456789",
+  "password": "$2a$12$oPOSH3viUdEKnadP2Ukb7u1mGKTQIqFX1O.9kc8KuL29hTCt1mQs2",
   "gender": "M",
-  "__v": 0,
-  "avatar": "109b910e7ffa0c981e17aa5de577d5.png",
-  "passwordChangedAt": {
-    "$date": {
-      "$numberLong": "1648180529985"
-    } 
-  },
-  "facebook": false,
-  "blocked": false,
-  "roles": [
-    "admin",
-    "mentor"
-  ]
+  "__v": 0
 },{
   "_id": {
     "$oid": "62b76003f531ac3614282511"
   },
-  "avatar": "95516c4b46e7cccf0f72e587357cdc.jpg",
+  "avatar": "fe6feaae9cc9842ddd004dd85a78cb.jpg",
   "roles": [
     "professor"
   ],
   "createdAt": {
     "$date": {
-      "$numberLong": "1656176021821"
+      "$numberLong": "1669943906446"
     }
   },
   "active": true,
-  "blocked": true,
+  "blocked": false,
   "google": false,
   "facebook": false,
   "name": {
-    "first": "tutor por",
-    "last": "defecto"
+    "first": "floribeth",
+    "last": "león peréz"
   },
-  "email": "tutordefecto@gmail.com",
-  "password": "123456789",
-  "gender": "M",
+  "email": "floribeth.leon@uacam.mx",
+  "password": "$2a$12$ObKf.7CTLoQ9/BxveO.ww.ystsAeIyf.KlonfPNTLJAoHllWmaY4m",
+  "gender": "F",
   "__v": 0
 },{
   "_id": {
     "$oid": "62b76383f531ac361428254f"
   },
-  "avatar": "551efacf23f46e1ada1f3c2443dc29.jpg",
+  "avatar": "75018ffe59898789bb5225685be00c.jpg",
   "roles": [
     "student"
   ],
   "createdAt": {
     "$date": {
-      "$numberLong": "1656176021821"
+      "$numberLong": "1669943906446"
     }
   },
   "active": true,
@@ -67,24 +67,24 @@
   "google": false,
   "facebook": false,
   "name": {
-    "first": "studenttest",
-    "last": "testgin"
+    "first": "fatima",
+    "last": "pacheco bernés"
   },
-  "email": "studetn@gamil.com",
-  "password": "123456789",
-  "gender": "M",
+  "email": "fatima.pacheco@uacam.mx",
+  "password": "$2a$12$fnRZ7x7AO.40OKvxaEAPTuOQZArtlFvAxAoFjrDHZv/AE9LWvFc5a",
+  "gender": "F",
   "__v": 0
 },{
   "_id": {
     "$oid": "62b76453f531ac361428255f"
   },
-  "avatar": "ed518273d0ce8fae6e29db89ae96f9.jpg",
+  "avatar": "8c0a7af4c3777a5d07c0b7e61bd759.jpg",
   "roles": [
     "student"
   ],
   "createdAt": {
     "$date": {
-      "$numberLong": "1656176021821"
+      "$numberLong": "1669943906446"
     }
   },
   "active": true,
@@ -92,11 +92,86 @@
   "google": false,
   "facebook": false,
   "name": {
-    "first": "studetntwo",
-    "last": "two"
+    "first": "josefina plasma",
+    "last": "berzunza bernés"
   },
-  "email": "studenttoe@gmai.com",
-  "password": "123456789",
+  "email": "josefina.berzunza@uacam.mx",
+  "password": "$2a$12$sBqlCyxzdoNsvPMd.p9Uq.yXVtW/W1rw6CtE6JFVs7h1YOyUlcHMy",
+  "gender": "F",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63992c6719a9b01424fc71bc"
+  },
+  "avatar": "c78327381dd4dc820bf797c8d2b446.jpg",
+  "roles": [
+    "student"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670981360766"
+    }
+  },
+  "active": true,
+  "blocked": false,
+  "google": false,
+  "facebook": false,
+  "name": {
+    "first": "erick manuel",
+    "last": "cabrera aguirre"
+  },
+  "email": "erick.manuel@uacam.mx",
+  "password": "$2a$12$q9PVKyBfLZw3y9tEXcs/nuDtmyFu9EAkKmfkxfsMklW1Qlu93t8sG",
+  "gender": "M",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63993d1f0227aa23944718c8"
+  },
+  "avatar": "963ae89d8ca8717c21274df2a4c8fc.jpg",
+  "roles": [
+    "student"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670987036202"
+    }
+  },
+  "active": true,
+  "blocked": false,
+  "google": false,
+  "facebook": false,
+  "name": {
+    "first": "ramon agustin",
+    "last": "berzunza cruz"
+  },
+  "email": "ramon.berzunza@uacam.mx",
+  "password": "$2a$12$zI4V8KGHQN0ZdiWfrCyTieBPeugX5fmFW0WM.B6Ow7dZoO3AR9w9.",
+  "gender": "M",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63993d680227aa23944718db"
+  },
+  "avatar": "2be55b92dd903f0c57b1b4262067ad.jpg",
+  "roles": [
+    "student"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670987036202"
+    }
+  },
+  "active": true,
+  "blocked": false,
+  "google": false,
+  "facebook": false,
+  "name": {
+    "first": "dash",
+    "last": "castillo"
+  },
+  "email": "dash.castillo@uacam.mx",
+  "password": "$2a$12$KeY/UV.6gkOiuwHAw2BuzeBQXcbeWQLhxxqb6J/9DDh6CL2G1G27C",
   "gender": "M",
   "__v": 0
 }]

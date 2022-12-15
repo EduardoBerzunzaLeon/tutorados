@@ -2,11 +2,13 @@
   "_id": {
     "$oid": "62b76383f531ac3614282553"
   },
+  "currentSemester": 5,
   "classroom": "A",
   "atRisk": "no",
+  "inChannelling": "asesoria",
   "createdAt": {
     "$date": {
-      "$numberLong": "1656176021869"
+      "$numberLong": "1669943906461"
     }
   },
   "user": {
@@ -16,7 +18,7 @@
     {
       "createdAt": {
         "$date": {
-          "$numberLong": "1656176021869"
+          "$numberLong": "1669943906460"
         }
       },
       "comments": "",
@@ -29,12 +31,11 @@
     }
   ],
   "enrollment": "al20325",
-  "currentSemester": 5,
   "statusHistory": [
     {
       "createdAt": {
         "$date": {
-          "$numberLong": "1656176021869"
+          "$numberLong": "1669943906461"
         }
       },
       "_id": {
@@ -43,17 +44,18 @@
       "status": "regular"
     }
   ],
-  "__v": 0,
-  "inChannelling": "no"
+  "__v": 0
 },{
   "_id": {
     "$oid": "62b76453f531ac3614282563"
   },
+  "currentSemester": 2,
   "classroom": "A",
-  "atRisk": "no",
+  "atRisk": "no termina",
+  "inChannelling": "no",
   "createdAt": {
     "$date": {
-      "$numberLong": "1656176021869"
+      "$numberLong": "1669943906461"
     }
   },
   "user": {
@@ -63,7 +65,7 @@
     {
       "createdAt": {
         "$date": {
-          "$numberLong": "1656176021869"
+          "$numberLong": "1669943906460"
         }
       },
       "comments": "",
@@ -76,12 +78,11 @@
     }
   ],
   "enrollment": "al23560",
-  "currentSemester": 2,
   "statusHistory": [
     {
       "createdAt": {
         "$date": {
-          "$numberLong": "1656176021869"
+          "$numberLong": "1669943906461"
         }
       },
       "_id": {
@@ -90,6 +91,241 @@
       "status": "regular"
     }
   ],
-  "__v": 0,
-  "inChannelling": "no"
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63992c6819a9b01424fc71c0"
+  },
+  "currentSemester": 1,
+  "classroom": "A",
+  "atRisk": "no",
+  "inChannelling": "no",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670981360782"
+    }
+  },
+  "user": {
+    "$oid": "63992c6719a9b01424fc71bc"
+  },
+  "professorsHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1671068416856"
+        }
+      },
+      "comments": "",
+      "_id": {
+        "$oid": "63992c6819a9b01424fc71c1"
+      },
+      "professor": {
+        "$oid": "62b76003f531ac3614282511"
+      },
+      "dischargeAt": null
+    }
+  ],
+  "enrollment": "al20125",
+  "statusHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1670981360782"
+        }
+      },
+      "_id": {
+        "$oid": "63992c6819a9b01424fc71c2"
+      },
+      "status": "regular"
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63993d1f0227aa23944718cc"
+  },
+  "currentSemester": 1,
+  "classroom": "A",
+  "atRisk": "no",
+  "inChannelling": "no",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670987036220"
+    }
+  },
+  "user": {
+    "$oid": "63993d1f0227aa23944718c8"
+  },
+  "professorsHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1671069499998"
+        }
+      },
+      "comments": "el maestro es la asginacion por defecto",
+      "_id": {
+        "$oid": "63993d1f0227aa23944718cd"
+      },
+      "professor": {
+        "$oid": "62b76003f531ac3614282511"
+      }
+    }
+  ],
+  "enrollment": "al23650",
+  "statusHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1670987036220"
+        }
+      },
+      "_id": {
+        "$oid": "63993d1f0227aa23944718ce"
+      },
+      "status": "regular"
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63993d680227aa23944718df"
+  },
+  "currentSemester": 5,
+  "classroom": "A",
+  "atRisk": "no",
+  "inChannelling": "no",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670987036220"
+    }
+  },
+  "user": {
+    "$oid": "63993d680227aa23944718db"
+  },
+  "professorsHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1670987036220"
+        }
+      },
+      "comments": "el maestro es la asginacion por defecto",
+      "_id": {
+        "$oid": "63993d680227aa23944718e0"
+      },
+      "professor": {
+        "$oid": "608064aa1d7963091081ab5d"
+      }
+    }
+  ],
+  "enrollment": "al36630",
+  "statusHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1670987036220"
+        }
+      },
+      "_id": {
+        "$oid": "63993d680227aa23944718e1"
+      },
+      "status": "regular"
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "639955750227aa2394471965"
+  },
+  "currentSemester": 1,
+  "classroom": "A",
+  "atRisk": "no",
+  "inChannelling": "no",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670987036220"
+    }
+  },
+  "user": {
+    "$oid": "639955750227aa2394471961"
+  },
+  "professorsHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1670987036220"
+        }
+      },
+      "comments": "el maestro es la asginacion por defecto",
+      "_id": {
+        "$oid": "639955750227aa2394471966"
+      },
+      "professor": {
+        "$oid": "608064aa1d7963091081ab5d"
+      }
+    }
+  ],
+  "enrollment": "a5634",
+  "statusHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1670987036220"
+        }
+      },
+      "_id": {
+        "$oid": "639955750227aa2394471967"
+      },
+      "status": "regular"
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63995dc70227aa2394471a42"
+  },
+  "currentSemester": 1,
+  "classroom": "A",
+  "atRisk": "no",
+  "inChannelling": "no",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670987036220"
+    }
+  },
+  "user": {
+    "$oid": "63995dc60227aa2394471a3e"
+  },
+  "professorsHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1670987036220"
+        }
+      },
+      "comments": "el maestro es la asginacion por defecto",
+      "_id": {
+        "$oid": "63995dc70227aa2394471a43"
+      },
+      "professor": {
+        "$oid": "608064aa1d7963091081ab5d"
+      }
+    }
+  ],
+  "enrollment": "67fbf",
+  "statusHistory": [
+    {
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1670987036220"
+        }
+      },
+      "_id": {
+        "$oid": "63995dc70227aa2394471a44"
+      },
+      "status": "regular"
+    }
+  ],
+  "__v": 0
 }]
