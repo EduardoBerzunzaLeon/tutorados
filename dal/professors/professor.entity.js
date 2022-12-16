@@ -10,6 +10,10 @@ const professorSchema = new Schema({
       default: Date.now(),
       select: false
   },
+  isDefaultProfessor: {
+    type: Boolean,
+    default: false,
+  },
   subjects: [
         {
           type: Schema.ObjectId,

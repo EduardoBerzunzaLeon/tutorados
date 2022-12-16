@@ -181,6 +181,17 @@ class ProfessorService  {
 
     }
 
+    async findDefaultProfessor() {
+        const professor = await this.professorRepository.findOne({ isDefaultProfessor: true }).populate({path: 'user', select: '_id'});
+
+        console.log(professor);
+
+        if(!professor) {
+            throw this.createAppError('No se encontro el maestro por defecto', 404);
+        }
+
+        return professor;
+    }
 
     async deleteById(id) {
         const professorDeleted = await this.professorRepository.deleteById(id);

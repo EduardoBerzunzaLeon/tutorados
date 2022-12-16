@@ -114,6 +114,7 @@ class StudentService  {
            }];
 
         const data =  await this.studentRepository.findAggregation(aggregation, query, this.globalFields);
+        console.log(query);
         return data;
     }
     
@@ -232,11 +233,14 @@ class StudentService  {
         if(!userId) 
             throw this.createAppError('El usuario es obligatorios', 500);
 
+
+        const { user } = await this.professorService.findDefaultProfessor();
+        
         const studentInfo = studentData ?? { 
             enrollment: this.generateRandomString(5), 
             currentSemester: 1,
             classroom: 'A',
-            professor: '608064aa1d7963091081ab5d',
+            professor: user._id,
             comments: 'El maestro es la asginacion por defecto'
         };
 
