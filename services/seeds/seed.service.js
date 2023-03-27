@@ -62,6 +62,7 @@ class SeedService {
   
     setToObjectID( element ) {
 
+
         if( typeof element !== 'object' && !Array.isArray(element) ) {
             return;           
         }
@@ -83,7 +84,7 @@ class SeedService {
 
                 const value = element[key];
 
-                if(Object.keys(value).includes('$oid')) {
+                if(value && Object.keys(value).includes('$oid')) {
                     element[key] =  ObjectId( value['$oid'] );
                 }
                 
